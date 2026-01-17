@@ -1,4 +1,5 @@
 use rand::Rng;
+use crate::monitors::HardwareMonitor;
 
 #[cfg(test)]
 #[path = "mock_test.rs"]
@@ -11,12 +12,10 @@ pub enum ActivityPattern {
     Fluctuating,
 }
 
-#[cfg(debug_assertions)]
 pub struct MockDataGenerator {
     pattern: ActivityPattern,
 }
 
-#[cfg(debug_assertions)]
 #[derive(Debug, Clone)]
 pub struct GpuData {
     pub temperature: f32,
@@ -25,7 +24,6 @@ pub struct GpuData {
     pub memory_total: u64,
 }
 
-#[cfg(debug_assertions)]
 impl MockDataGenerator {
     pub fn new(pattern: ActivityPattern) -> Self {
         Self { pattern }
@@ -53,5 +51,24 @@ impl MockDataGenerator {
                 memory_total: 24576,
             },
         }
+    }
+}
+
+impl HardwareMonitor for MockDataGenerator {
+    fn get_temperature(&self) -> f32 {
+        self.generate_gpu_data().temperature
+    }
+
+    fn get_utilization(&self) -> f32 {
+        self.generate_gpu_data().utilization
+    }
+
+    fn get_memory_usage(&self) -> (u64, u64) {
+        let data = self.generate_gpu_data();
+        (data.memory_used, data.memory_total)
+    }
+
+    fn is_available(&self) -> bool {
+        true
     }
 }

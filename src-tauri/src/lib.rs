@@ -18,6 +18,7 @@ pub fn run() {
         .setup(|app| {
             utils::logger::init_logging(app.handle());
             config::watch_config(app.handle().clone());
+            monitors::spawn_monitor_thread(app.handle().clone());
             utils::hotkeys::setup_global_hotkeys(app.handle())?;
             Ok(())
         })
