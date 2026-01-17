@@ -1,6 +1,6 @@
-use tauri::{AppHandle, Manager, Emitter};
-use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutEvent, ShortcutState, Shortcut};
 use std::str::FromStr;
+use tauri::{AppHandle, Emitter};
+use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutEvent, ShortcutState};
 
 pub fn setup_global_hotkeys(app: &AppHandle) -> anyhow::Result<()> {
     let toggle_click_through = Shortcut::from_str("Ctrl+Shift+E")?;
@@ -17,12 +17,10 @@ pub fn handle_global_shortcut(app: &AppHandle, shortcut: &Shortcut, event: Short
     let quit_shortcut = Shortcut::from_str("Ctrl+Shift+Q").unwrap();
 
     if shortcut == &toggle_click_through {
-         if event.state == ShortcutState::Pressed {
-             let _ = app.emit("toggle-click-through-request", ());
-         }
-    } else if shortcut == &quit_shortcut {
         if event.state == ShortcutState::Pressed {
-            app.exit(0);
+            let _ = app.emit("toggle-click-through-request", ());
         }
+    } else if shortcut == &quit_shortcut && event.state == ShortcutState::Pressed {
+        app.exit(0);
     }
 }

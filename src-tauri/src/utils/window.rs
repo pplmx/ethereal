@@ -1,13 +1,13 @@
 use tauri::{Runtime, Window};
 
 #[cfg(target_os = "windows")]
-use windows::Win32::UI::WindowsAndMessaging::{
-    GetWindowLongPtrW, SetWindowLongPtrW, GWL_EXSTYLE, WS_EX_TRANSPARENT,
-};
+use raw_window_handle::{HasWindowHandle, RawWindowHandle};
 #[cfg(target_os = "windows")]
 use windows::Win32::Foundation::HWND;
 #[cfg(target_os = "windows")]
-use raw_window_handle::{HasWindowHandle, RawWindowHandle};
+use windows::Win32::UI::WindowsAndMessaging::{
+    GetWindowLongPtrW, SetWindowLongPtrW, GWL_EXSTYLE, WS_EX_TRANSPARENT,
+};
 
 #[tauri::command]
 pub fn set_click_through<R: Runtime>(window: Window<R>, enabled: bool) -> Result<(), String> {
@@ -20,9 +20,17 @@ pub fn set_click_through<R: Runtime>(window: Window<R>, enabled: bool) -> Result
                 unsafe {
                     let ex_style = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
                     if enabled {
-                        SetWindowLongPtrW(hwnd, GWL_EXSTYLE, ex_style | WS_EX_TRANSPARENT.0 as isize);
+                        SetWindowLongPtrW(
+                            hwnd,
+                            GWL_EXSTYLE,
+                            ex_style | WS_EX_TRANSPARENT.0 as isize,
+                        );
                     } else {
-                        SetWindowLongPtrW(hwnd, GWL_EXSTYLE, ex_style & !WS_EX_TRANSPARENT.0 as isize);
+                        SetWindowLongPtrW(
+                            hwnd,
+                            GWL_EXSTYLE,
+                            ex_style & !WS_EX_TRANSPARENT.0 as isize,
+                        );
                     }
                 }
             }

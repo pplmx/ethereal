@@ -1,4 +1,5 @@
-pnpm exec lint-staged
 pnpm test:run
-
-
+pnpm format
+pnpm lint:fix
+pnpm lint:rs
+pnpm lint:md

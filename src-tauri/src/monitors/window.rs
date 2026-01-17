@@ -31,28 +31,24 @@ impl WindowMonitor {
 
     pub fn categorize_app(process_name: &str) -> AppCategory {
         let name = process_name.to_lowercase();
-        
-        if name.contains("code") 
-           || name.contains("cursor") 
-           || name.contains("idea") 
-           || name.contains("studio") 
-           || name.contains("nvim")
-           || name.contains("vim")
+
+        if name.contains("code")
+            || name.contains("cursor")
+            || name.contains("idea")
+            || name.contains("studio")
+            || name.contains("nvim")
+            || name.contains("vim")
         {
             AppCategory::Coding
-        } else if name.contains("chrome") 
-                  || name.contains("firefox") 
-                  || name.contains("edge") 
-                  || name.contains("brave")
+        } else if name.contains("chrome")
+            || name.contains("firefox")
+            || name.contains("edge")
+            || name.contains("brave")
         {
             AppCategory::Browsing
-        } else if name.contains("steam") 
-                  || name.contains("game")
-        {
+        } else if name.contains("steam") || name.contains("game") {
             AppCategory::Gaming
-        } else if name.contains("explorer") 
-                  || name.contains("finder")
-        {
+        } else if name.contains("explorer") || name.contains("finder") {
             AppCategory::Idle
         } else {
             AppCategory::Unknown
@@ -66,30 +62,54 @@ mod tests {
 
     #[test]
     fn test_categorize_coding() {
-        assert_eq!(WindowMonitor::categorize_app("Code.exe"), AppCategory::Coding);
-        assert_eq!(WindowMonitor::categorize_app("idea64.exe"), AppCategory::Coding);
+        assert_eq!(
+            WindowMonitor::categorize_app("Code.exe"),
+            AppCategory::Coding
+        );
+        assert_eq!(
+            WindowMonitor::categorize_app("idea64.exe"),
+            AppCategory::Coding
+        );
         assert_eq!(WindowMonitor::categorize_app("nvim"), AppCategory::Coding);
     }
 
     #[test]
     fn test_categorize_browsing() {
-        assert_eq!(WindowMonitor::categorize_app("chrome.exe"), AppCategory::Browsing);
-        assert_eq!(WindowMonitor::categorize_app("firefox"), AppCategory::Browsing);
+        assert_eq!(
+            WindowMonitor::categorize_app("chrome.exe"),
+            AppCategory::Browsing
+        );
+        assert_eq!(
+            WindowMonitor::categorize_app("firefox"),
+            AppCategory::Browsing
+        );
     }
 
     #[test]
     fn test_categorize_gaming() {
-        assert_eq!(WindowMonitor::categorize_app("steam.exe"), AppCategory::Gaming);
-        assert_eq!(WindowMonitor::categorize_app("my_game.exe"), AppCategory::Gaming);
+        assert_eq!(
+            WindowMonitor::categorize_app("steam.exe"),
+            AppCategory::Gaming
+        );
+        assert_eq!(
+            WindowMonitor::categorize_app("my_game.exe"),
+            AppCategory::Gaming
+        );
     }
 
     #[test]
     fn test_categorize_idle() {
-        assert_eq!(WindowMonitor::categorize_app("explorer.exe"), AppCategory::Idle);
+        assert_eq!(
+            WindowMonitor::categorize_app("explorer.exe"),
+            AppCategory::Idle
+        );
     }
 
     #[test]
     fn test_categorize_unknown() {
-        assert_eq!(WindowMonitor::categorize_app("random_app.exe"), AppCategory::Unknown);
+        assert_eq!(
+            WindowMonitor::categorize_app("random_app.exe"),
+            AppCategory::Unknown
+        );
     }
 }

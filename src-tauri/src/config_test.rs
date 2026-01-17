@@ -5,14 +5,14 @@ mod tests {
     #[test]
     fn test_default_config_values() {
         let config = AppConfig::default();
-        
+
         assert_eq!(config.window.default_x, 100);
         assert_eq!(config.window.default_y, 100);
-        assert_eq!(config.window.always_on_top, true);
-        
+        assert!(config.window.always_on_top);
+
         assert_eq!(config.hardware.polling_interval_ms, 2000);
         assert_eq!(config.hardware.thresholds.nvidia_temp, 80.0);
-        
+
         assert_eq!(config.ai.model_name, "llama3.2");
     }
 
@@ -20,7 +20,7 @@ mod tests {
     fn test_config_serialization() {
         let config = AppConfig::default();
         let toml_string = toml::to_string(&config).unwrap();
-        
+
         assert!(toml_string.contains("default_x = 100"));
         assert!(toml_string.contains("model_name = \"llama3.2\""));
     }
@@ -44,14 +44,14 @@ mod tests {
             model_name = "test-model"
             api_endpoint = "http://test:1234"
         "#;
-        
+
         let config: AppConfig = toml::from_str(toml_input).unwrap();
-        
+
         assert_eq!(config.window.default_x, 500);
         assert_eq!(config.hardware.monitor_source, "nvidia");
         assert_eq!(config.hardware.thresholds.nvidia_temp, 75.0);
         assert_eq!(config.ai.model_name, "test-model");
-        
+
         assert_eq!(config.hardware.thresholds.cpu_temp, 85.0);
     }
 }

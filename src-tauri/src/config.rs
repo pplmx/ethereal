@@ -1,8 +1,7 @@
-use serde::{Deserialize, Serialize};
-use tauri::{AppHandle, Manager, Emitter};
-use std::path::PathBuf;
 use notify_debouncer_mini::{new_debouncer, notify::RecursiveMode};
+use serde::{Deserialize, Serialize};
 use std::time::Duration;
+use tauri::{AppHandle, Emitter, Manager};
 
 #[cfg(test)]
 #[path = "config_test.rs"]
@@ -57,17 +56,39 @@ pub struct AiConfig {
     pub cooldown_seconds: u64,
 }
 
-fn default_x() -> i32 { 100 }
-fn default_y() -> i32 { 100 }
-fn default_on_top() -> bool { true }
-fn default_monitor_source() -> String { "auto".to_string() }
-fn default_polling_interval() -> u64 { 2000 }
-fn default_gpu_temp() -> f32 { 80.0 }
-fn default_cpu_temp() -> f32 { 85.0 }
-fn default_model() -> String { "llama3.2".to_string() }
-fn default_api_endpoint() -> String { "http://localhost:11434".to_string() }
-fn default_max_length() -> usize { 100 }
-fn default_cooldown() -> u64 { 30 }
+fn default_x() -> i32 {
+    100
+}
+fn default_y() -> i32 {
+    100
+}
+fn default_on_top() -> bool {
+    true
+}
+fn default_monitor_source() -> String {
+    "auto".to_string()
+}
+fn default_polling_interval() -> u64 {
+    2000
+}
+fn default_gpu_temp() -> f32 {
+    80.0
+}
+fn default_cpu_temp() -> f32 {
+    85.0
+}
+fn default_model() -> String {
+    "llama3.2".to_string()
+}
+fn default_api_endpoint() -> String {
+    "http://localhost:11434".to_string()
+}
+fn default_max_length() -> usize {
+    100
+}
+fn default_cooldown() -> u64 {
+    30
+}
 
 impl Default for ThresholdsConfig {
     fn default() -> Self {
@@ -155,7 +176,10 @@ pub fn watch_config(app: AppHandle) {
             }
         };
 
-        if let Err(e) = debouncer.watcher().watch(&config_path, RecursiveMode::NonRecursive) {
+        if let Err(e) = debouncer
+            .watcher()
+            .watch(&config_path, RecursiveMode::NonRecursive)
+        {
             tracing::error!("Failed to watch config file: {}", e);
             return;
         }
@@ -163,10 +187,10 @@ pub fn watch_config(app: AppHandle) {
         for result in rx {
             match result {
                 Ok(_events) => {
-                     if let Ok(new_config) = AppConfig::load(&app_handle) {
-                         tracing::info!("Config reloaded");
-                         app_handle.emit("config-updated", new_config).ok();
-                     }
+                    if let Ok(new_config) = AppConfig::load(&app_handle) {
+                        tracing::info!("Config reloaded");
+                        app_handle.emit("config-updated", new_config).ok();
+                    }
                 }
                 Err(e) => tracing::error!("Watch error: {:?}", e),
             }

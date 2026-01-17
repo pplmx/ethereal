@@ -1,10 +1,16 @@
-use tauri::{AppHandle, Emitter};
-use std::time::Duration;
-use std::sync::{Arc, Mutex};
 use arboard::Clipboard;
+use std::sync::{Arc, Mutex};
+use std::time::Duration;
+use tauri::{AppHandle, Emitter};
 
 pub struct ClipboardMonitor {
     last_content: Arc<Mutex<String>>,
+}
+
+impl Default for ClipboardMonitor {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl ClipboardMonitor {
@@ -16,7 +22,7 @@ impl ClipboardMonitor {
 
     pub fn start_polling(&self, app: AppHandle) {
         let last_content = self.last_content.clone();
-        
+
         std::thread::spawn(move || {
             let mut clipboard = match Clipboard::new() {
                 Ok(cb) => cb,
@@ -41,7 +47,7 @@ impl ClipboardMonitor {
                                 }
                             }
                         }
-                    },
+                    }
                     Err(_) => {
                         // Ignore errors (empty clipboard, non-text content)
                     }

@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::monitors::mock::{MockDataGenerator, ActivityPattern};
+
+    use crate::monitors::mock::{ActivityPattern, MockDataGenerator};
 
     #[test]
     fn test_mock_gpu_data_generation() {
