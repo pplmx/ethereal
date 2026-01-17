@@ -1,11 +1,13 @@
 import { DevTools } from '@components/DevTools';
 import { SpriteAnimator } from '@components/SpriteAnimator';
 import { useDraggable } from '@hooks/useDraggable';
+import { useWindowPosition } from '@hooks/useWindowPosition';
 import { logger } from '@lib/logger';
 import { useEffect } from 'react';
 
 function App() {
   const { startDragging } = useDraggable();
+  useWindowPosition();
 
   const idleFrames = [
     '/sprites/idle-1.png',

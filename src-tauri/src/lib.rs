@@ -21,7 +21,11 @@ pub fn run() {
             utils::hotkeys::setup_global_hotkeys(app.handle())?;
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![greet, utils::window::set_click_through])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            utils::window::set_click_through,
+            config::save_window_position
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

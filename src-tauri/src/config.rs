@@ -120,7 +120,7 @@ impl AppConfig {
             .add_source(config::File::from(config_path))
             .add_source(config::Environment::with_prefix("ETHEREAL"))
             .build()?;
-            
+
         Ok(config.try_deserialize()?)
     }
 
@@ -132,12 +132,21 @@ impl AppConfig {
     }
 }
 
+#[tauri::command]
+pub fn save_window_position(app: AppHandle, x: i32, y: i32) -> Result<(), String> {
+    let mut config = AppConfig::load(&app).map_err(|e| e.to_string())?;
+    config.window.default_x = x;
+    config.window.default_y = y;
+    config.save(&app).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
 pub fn watch_config(app: AppHandle) {
     let app_handle = app.clone();
     std::thread::spawn(move || {
         let (tx, rx) = std::sync::mpsc::channel();
         let mut debouncer = new_debouncer(Duration::from_secs(2), tx).unwrap();
-        
+
         let config_path = match app_handle.path().app_config_dir() {
             Ok(p) => p.join("ethereal.toml"),
             Err(e) => {
@@ -145,7 +154,7 @@ pub fn watch_config(app: AppHandle) {
                 return;
             }
         };
-        
+
         if let Err(e) = debouncer.watcher().watch(&config_path, RecursiveMode::NonRecursive) {
             tracing::error!("Failed to watch config file: {}", e);
             return;
