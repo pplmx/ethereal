@@ -1,6 +1,7 @@
 import { cn } from '@lib/utils';
 import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { useResourceStore } from '../stores/resourceStore';
 
 interface SpriteAnimatorProps {
   frames: string[];
@@ -19,42 +20,36 @@ export const SpriteAnimator = ({
   className,
 }: SpriteAnimatorProps) => {
   const [currentFrame, setCurrentFrame] = useState(0);
-  const [isLoaded, setIsLoaded] = useState(false);
   const requestRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number | null>(null);
 
+  const { preloadImages, isImageLoaded } = useResourceStore();
+  const [ready, setReady] = useState(false);
+
   useEffect(() => {
-    if (frames.length === 0) {
-      setIsLoaded(true);
-      return;
+    if (frames.length === 0) return;
+
+    let mounted = true;
+
+    // Check if all frames are already loaded
+    const allLoaded = frames.every(isImageLoaded);
+
+    if (allLoaded) {
+      setReady(true);
+    } else {
+      setReady(false);
+      preloadImages(frames).then(() => {
+        if (mounted) setReady(true);
+      });
     }
 
-    let loadedCount = 0;
-    const totalFrames = frames.length;
-
-    frames.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-      img.onload = () => {
-        loadedCount++;
-        if (loadedCount === totalFrames) {
-          setIsLoaded(true);
-        }
-      };
-      if (img.complete && img.naturalWidth > 0) {
-        img.onload(new Event('load'));
-      }
-      img.onerror = () => {
-        loadedCount++;
-        if (loadedCount === totalFrames) {
-          setIsLoaded(true);
-        }
-      };
-    });
-  }, [frames]);
+    return () => {
+      mounted = false;
+    };
+  }, [frames, isImageLoaded, preloadImages]);
 
   useEffect(() => {
-    if (!isLoaded || frames.length === 0) return;
+    if (!ready || frames.length === 0) return;
 
     const frameInterval = 1000 / fps;
 
@@ -91,11 +86,11 @@ export const SpriteAnimator = ({
         cancelAnimationFrame(requestRef.current);
       }
     };
-  }, [isLoaded, frames.length, fps, loop, onAnimationEnd]);
+  }, [ready, frames.length, fps, loop, onAnimationEnd]);
 
   if (frames.length === 0) return null;
 
-  if (!isLoaded) {
+  if (!ready) {
     return (
       <div className={cn('flex items-center justify-center', className)}>
         <div className="animate-pulse">Loading...</div>

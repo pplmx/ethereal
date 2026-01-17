@@ -40,7 +40,7 @@ describe('SpriteAnimator', () => {
     render(<SpriteAnimator frames={frames} fps={10} />);
 
     await act(async () => {
-      vi.runAllTimers();
+      vi.advanceTimersByTime(50); // Just enough to trigger load timeout
     });
 
     expect(screen.getByAltText('Sprite animation')).toBeInTheDocument();
@@ -63,13 +63,12 @@ describe('SpriteAnimator', () => {
     render(<SpriteAnimator frames={frames} fps={10} />);
 
     await act(async () => {
-      vi.runAllTimers(); // Load
+      vi.advanceTimersByTime(50); // Load
     });
 
     const img = screen.getByAltText('Sprite animation');
     expect(img).toHaveAttribute('src', 'frame1.png');
 
-    // Advance 100ms (Frame 2)
     await act(async () => {
       vi.advanceTimersByTime(100);
     });
@@ -78,7 +77,6 @@ describe('SpriteAnimator', () => {
       expect(img).toHaveAttribute('src', 'frame2.png');
     });
 
-    // Advance 100ms (Frame 3)
     await act(async () => {
       vi.advanceTimersByTime(100);
     });
@@ -87,7 +85,6 @@ describe('SpriteAnimator', () => {
       expect(img).toHaveAttribute('src', 'frame3.png');
     });
 
-    // Advance 100ms (Loop back to Frame 1)
     await act(async () => {
       vi.advanceTimersByTime(100);
     });
@@ -117,12 +114,11 @@ describe('SpriteAnimator', () => {
     );
 
     await act(async () => {
-      vi.runAllTimers(); // Load
+      vi.advanceTimersByTime(50); // Load
     });
 
     const img = screen.getByAltText('Sprite animation');
 
-    // Advance 100ms (Frame 2 - Last Frame)
     await act(async () => {
       vi.advanceTimersByTime(100);
     });
@@ -131,7 +127,6 @@ describe('SpriteAnimator', () => {
       expect(img).toHaveAttribute('src', 'frame2.png');
     });
 
-    // Advance 100ms (Should stay on Last Frame and trigger callback)
     await act(async () => {
       vi.advanceTimersByTime(100);
     });
@@ -156,7 +151,7 @@ describe('SpriteAnimator', () => {
     render(<SpriteAnimator frames={['frame1.png']} />);
 
     await act(async () => {
-      vi.runAllTimers();
+      vi.advanceTimersByTime(50); // Load
     });
 
     const img = screen.getByAltText('Sprite animation');
@@ -189,7 +184,7 @@ describe('SpriteAnimator', () => {
     render(<SpriteAnimator frames={['frame1.png']} className="custom-class" />);
 
     await act(async () => {
-      vi.runAllTimers();
+      vi.advanceTimersByTime(50); // Load
     });
 
     const img = screen.getByAltText('Sprite animation');
