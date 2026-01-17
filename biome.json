@@ -9,6 +9,7 @@
     "ignoreUnknown": false,
     "includes": [
       "**",
+      "!**/.claude",
       "!**/node_modules",
       "!**/dist",
       "!**/build",

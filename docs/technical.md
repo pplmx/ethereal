@@ -54,6 +54,7 @@ Desktop Ethereal follows a frontend-backend architecture using Tauri:
 The current implementation is a basic template with limited functionality. Future versions will include:
 
 Three state objects are managed by Tauri:
+
 ```rust
 struct ClickThroughState(Mutex<bool>);
 struct GpuMonitorState {
@@ -70,6 +71,7 @@ struct ClipboardMonitorState {
 #### 2. GPU Monitoring
 
 Uses `nvml-wrapper` crate for NVIDIA GPU monitoring: (Future implementation)
+
 - Temperature monitoring
 - Memory utilization tracking
 - GPU utilization rates
@@ -78,6 +80,7 @@ Uses `nvml-wrapper` crate for NVIDIA GPU monitoring: (Future implementation)
 #### 3. Window Monitoring
 
 Uses `active-win-pos-rs` crate for active window detection: (Future implementation)
+
 - Window title extraction
 - Process name identification
 - Activity categorization (CODING, GAMING, BROWSING, OTHER)
@@ -86,6 +89,7 @@ Uses `active-win-pos-rs` crate for active window detection: (Future implementati
 #### 4. Clipboard Monitoring
 
 Uses `arboard` crate: (Future implementation)
+
 - Event-driven clipboard monitoring
 - Content filtering (10-1000 characters)
 - Duplicate content detection
@@ -93,6 +97,7 @@ Uses `arboard` crate: (Future implementation)
 #### 5. Global Hotkey Handler
 
 Uses `tauri-plugin-global-shortcut`: (Future implementation)
+
 - Registers Ctrl+Shift+D hotkey
 - Toggles click-through state
 - Works even when window is in click-through mode
@@ -100,6 +105,7 @@ Uses `tauri-plugin-global-shortcut`: (Future implementation)
 ### Data Structures
 
 #### GpuStats
+
 ```rust
 #[derive(Serialize, Deserialize, Clone)]
 struct GpuStats {
@@ -113,6 +119,7 @@ struct GpuStats {
 *Future implementation*
 
 #### WindowInfo
+
 ```rust
 #[derive(Serialize, Deserialize, Clone)]
 struct WindowInfo {
@@ -125,6 +132,7 @@ struct WindowInfo {
 *Future implementation*
 
 #### Ollama Integration
+
 ```rust
 #[derive(Serialize, Deserialize)]
 struct OllamaRequest {
@@ -138,6 +146,7 @@ struct OllamaRequest {
 *Future implementation*
 
 #### WindowInfo
+
 ```rust
 #[derive(Serialize, Deserialize, Clone)]
 struct WindowInfo {
@@ -148,6 +157,7 @@ struct WindowInfo {
 ```
 
 #### Ollama Integration
+
 ```rust
 #[derive(Serialize, Deserialize)]
 struct OllamaRequest {
@@ -168,19 +178,25 @@ struct OllamaResponse {
 ### Component Structure
 
 #### App Component
+
 Main application component that:
+
 - Integrates all sub-components
 - Handles basic UI interactions
 - Displays a greeting message
 
 #### SpriteAnimator Component
+
 Responsible for:
+
 - Cycling through animation frames
 - Managing frame rates
 - Rendering images with proper styling
 
 #### spriteStore Store
+
 Zustand store that:
+
 - Manages ethereal state
 - Handles state persistence
 - Provides state update functions
@@ -188,6 +204,7 @@ Zustand store that:
 ### State Management
 
 Uses Zustand for state management:
+
 ```typescript
 type EtherealState = 'IDLE' | 'CODING' | 'OVERHEATING' | 'GAMING';
 
@@ -204,6 +221,7 @@ interface State {
 ### Animation Configuration
 
 Defined in `src/config/animations.ts`: (Future implementation)
+
 ```typescript
 export const ANIMATIONS = {
   IDLE: {
@@ -219,6 +237,7 @@ export const ANIMATIONS = {
 ### Backend Commands
 
 Exposed through Tauri's IPC system:
+
 1. `greet(name: string) -> String`
 2. `set_click_through(window: Window, enabled: bool) -> Result<(), String>` (Future implementation)
 3. `get_gpu_stats() -> Result<GpuStats, String>` (Future implementation)
@@ -227,6 +246,7 @@ Exposed through Tauri's IPC system:
 ### Event System
 
 Backend emits events that frontend listens to: (Future implementation)
+
 1. `gpu-update`: GPU statistics updates
 2. `window-update`: Active window changes
 3. `clipboard-changed`: Clipboard content changes
@@ -237,9 +257,9 @@ Backend emits events that frontend listens to: (Future implementation)
 
 - Main thread: UI and event handling
 - Background threads: (Future implementation)
-  - GPU monitoring (2-second intervals)
-  - Window monitoring (1-second intervals)
-  - Clipboard monitoring (event-driven)
+    - GPU monitoring (2-second intervals)
+    - Window monitoring (1-second intervals)
+    - Clipboard monitoring (event-driven)
 
 ### Memory Management
 
@@ -258,6 +278,7 @@ Backend emits events that frontend listens to: (Future implementation)
 ### Permissions
 
 The application requires several permissions: (Future implementation)
+
 - Window management (for overlay functionality)
 - GPU monitoring (for NVIDIA libraries)
 - Clipboard access (for contextual awareness)
@@ -322,6 +343,7 @@ The application requires several permissions: (Future implementation)
 ### Dependencies
 
 #### Rust Dependencies
+
 - `serde`: Serialization/deserialization
 - `tauri`: Core framework
 - `tokio`: Async runtime
@@ -329,6 +351,7 @@ The application requires several permissions: (Future implementation)
 - `tauri-plugin-opener`: Tauri plugin for opening URLs
 
 #### Node.js Dependencies
+
 - `react`: UI library
 - `@tauri-apps/api`: Tauri frontend API
 - `@tauri-apps/cli`: Build tools

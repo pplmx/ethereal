@@ -52,7 +52,7 @@ Use this checklist when generating or reviewing tests for Dify frontend componen
 ### Conditional Sections (Add When Feature Present)
 
 | Feature | Add Tests For |
-|---------|---------------|
+| --------- | --------------- |
 | `useState` | Initial state, transitions, cleanup |
 | `useEffect` | Execution, dependencies, cleanup |
 | Event handlers | onClick, onChange, onSubmit, keyboard |

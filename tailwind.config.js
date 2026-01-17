@@ -1,9 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    './index.html',
-    './src/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       // 自定义颜色
@@ -19,7 +16,7 @@ export default {
 
       // 自定义动画
       animation: {
-        'float': 'float 3s ease-in-out infinite',
+        float: 'float 3s ease-in-out infinite',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'spin-slow': 'spin 3s linear infinite',
         'fade-in': 'fadeIn 0.3s ease-in',
@@ -43,7 +40,7 @@ export default {
 
       // 自定义阴影
       boxShadow: {
-        'ethereal': '0 8px 32px rgba(99, 102, 241, 0.3)',
+        ethereal: '0 8px 32px rgba(99, 102, 241, 0.3)',
         'ethereal-lg': '0 12px 48px rgba(99, 102, 241, 0.4)',
       },
 

@@ -51,18 +51,8 @@
     // Vitest 全局类型
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
-  "include": [
-    "src/**/*",
-    "src/**/*.tsx",
-    "vite.config.ts",
-    "vitest.config.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    "src-tauri"
-  ],
+  "include": ["src/**/*", "src/**/*.tsx", "vite.config.ts", "vitest.config.ts"],
+  "exclude": [".claude", "node_modules", "dist", "build", "src-tauri"],
   "references": [
     {
       "path": "./tsconfig.node.json"

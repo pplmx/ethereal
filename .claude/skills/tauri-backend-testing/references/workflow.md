@@ -17,7 +17,7 @@ When assigned to test a module or directory, test **ALL functions** within that 
 Before writing tests, analyze the target module:
 
 1. **Inventory Functions**: List all public functions that need testing
-2. **Categorize Complexity**: 
+2. **Categorize Complexity**:
    - Simple (pure functions)
    - Medium (functions with dependencies)
    - Complex (system integration, async operations)
@@ -104,6 +104,7 @@ Use a todo list approach for tracking progress:
 5. **Move to next function**
 
 Example todo list:
+
 - [ ] `calculate_animation_frame` (simple function)
 - [ ] `parse_window_title` (medium function)  
 - [ ] `monitor_gpu_temperature` (complex async function)

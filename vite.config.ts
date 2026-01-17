@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import path from 'path';
+import { defineConfig } from 'vite';
 
 const host = process.env.TAURI_DEV_HOST;
 
@@ -50,8 +50,8 @@ export default defineConfig({
         // 手动分包,优化加载性能
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
-          'animation': ['framer-motion'],
-          'tauri': ['@tauri-apps/api', '@tauri-apps/plugin-shell'],
+          animation: ['framer-motion'],
+          tauri: ['@tauri-apps/api', '@tauri-apps/plugin-shell'],
         },
       },
     },

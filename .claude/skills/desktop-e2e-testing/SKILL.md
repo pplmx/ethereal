@@ -28,7 +28,7 @@ Apply this skill when the user:
 ### Tech Stack
 
 | Tool | Version | Purpose |
-|------|---------|---------|
+| ------ | --------- | --------- |
 | Playwright | 1.40+ | E2E testing framework |
 | TypeScript | 5.9+ | Test scripting |
 | Node.js | 18+ | Runtime environment |
@@ -211,7 +211,7 @@ test('should animate ethereal when system activity changes')
 ### Conditional (When Present)
 
 | Feature | Test Focus |
-|---------|------------|
+| --------- | ------------ |
 | System Monitoring | Response to GPU/CPU events |
 | State Transitions | Correct state changes based on system activity |
 | Sprite Animation | Animations play correctly for each state |

@@ -40,7 +40,7 @@ Only mock these categories:
 ## Mock Placement
 
 | Location | Purpose |
-|----------|---------|
+| ---------- | --------- |
 | `web/vitest.setup.ts` | Global mocks shared by all tests (for example `react-i18next`, `next/image`) |
 | `web/__mocks__/` | Reusable mock factories shared across multiple test files |
 | Test file | Test-specific mocks, inline with `vi.mock()` |
@@ -146,16 +146,16 @@ const mockedApi = vi.mocked(api)
 describe('Component', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    
+
     // Setup default mock implementation
     mockedApi.fetchData.mockResolvedValue({ data: [] })
   })
 
   it('should show data on success', async () => {
     mockedApi.fetchData.mockResolvedValue({ data: [{ id: 1 }] })
-    
+
     render(<Component />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('1')).toBeInTheDocument()
     })
@@ -163,9 +163,9 @@ describe('Component', () => {
 
   it('should show error on failure', async () => {
     mockedApi.fetchData.mockRejectedValue(new Error('Network error'))
-    
+
     render(<Component />)
-    
+
     await waitFor(() => {
       expect(screen.getByText(/error/i)).toBeInTheDocument()
     })
@@ -195,9 +195,9 @@ describe('GithubComponent', () => {
 
   it('should display repo info', async () => {
     mockGithubApi(200, { name: 'dify', stars: 1000 })
-    
+
     render(<GithubComponent />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('dify')).toBeInTheDocument()
     })
@@ -205,9 +205,9 @@ describe('GithubComponent', () => {
 
   it('should handle API error', async () => {
     mockGithubApi(500, { message: 'Server error' })
-    
+
     render(<GithubComponent />)
-    
+
     await waitFor(() => {
       expect(screen.getByText(/error/i)).toBeInTheDocument()
     })
@@ -224,25 +224,25 @@ import { createMockProviderContextValue, createMockPlan } from '@/__mocks__/prov
 describe('Component with Context', () => {
   it('should render for free plan', () => {
     const mockContext = createMockPlan('sandbox')
-    
+
     render(
       <ProviderContext.Provider value={mockContext}>
         <Component />
       </ProviderContext.Provider>
     )
-    
+
     expect(screen.getByText('Upgrade')).toBeInTheDocument()
   })
 
   it('should render for pro plan', () => {
     const mockContext = createMockPlan('professional')
-    
+
     render(
       <ProviderContext.Provider value={mockContext}>
         <Component />
       </ProviderContext.Provider>
     )
-    
+
     expect(screen.queryByText('Upgrade')).not.toBeInTheDocument()
   })
 })
@@ -342,7 +342,7 @@ it('should display project owner', () => {
   const project = createMockProject({
     owner: createMockUser({ name: 'John Doe' }),
   })
-  
+
   render(<ProjectCard project={project} />)
   expect(screen.getByText('John Doe')).toBeInTheDocument()
 })

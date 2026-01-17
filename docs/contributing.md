@@ -61,11 +61,13 @@ When suggesting enhancements:
 
 1. **Branch Naming**: Use descriptive names like `feature/new-animation` or `bugfix/window-drag-issue`
 2. **Commit Messages**: Follow conventional commit format:
+
    ```
    feat: Add new animation system
    fix: Resolve window dragging issue
    docs: Update contribution guidelines
    ```
+
 3. **Code Style**: Follow existing code conventions
 4. **Testing**: Add tests for new functionality
 5. **Documentation**: Update relevant documentation
@@ -208,6 +210,7 @@ Reviewers will consider:
 ### Maintainers
 
 Current maintainers:
+
 - [Your Name] - Project creator and lead maintainer
 
 ### Contributors
@@ -217,6 +220,7 @@ We welcome contributors of all skill levels. Whether you're fixing typos or impl
 ### Events
 
 We plan to participate in:
+
 - Hacktoberfest
 - Google Summer of Code (when eligible)
 - Local hackathons and meetups

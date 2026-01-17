@@ -30,7 +30,7 @@ Apply this skill when the user:
 ### Tech Stack
 
 | Tool | Version | Purpose |
-|------|---------|---------|
+| ------ | --------- | --------- |
 | Vitest | ^3.0.4 | Test runner |
 | React Testing Library | ^16.2.0 | Component testing |
 | jsdom | ^26.0.0 | Test environment |
@@ -264,7 +264,7 @@ it('should disable input when isReadOnly is true')
 ### Conditional (When Present)
 
 | Feature | Test Focus |
-|---------|-----------|
+| --------- | ----------- |
 | `useState` | Initial state, transitions, cleanup |
 | `useEffect` | Execution, dependencies, cleanup |
 | Event handlers | All onClick, onChange, onSubmit, keyboard |

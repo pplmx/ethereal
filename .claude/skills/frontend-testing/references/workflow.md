@@ -7,7 +7,7 @@ This guide defines the workflow for generating tests, especially for complex com
 This guide addresses **multi-file workflow** (how to process multiple test files). For coverage requirements within a single test file, see `web/testing/testing.md` § Coverage Goals.
 
 | Scope | Rule |
-|-------|------|
+| ------- | ------ |
 | **Single file** | Complete coverage in one generation (100% function, >95% branch) |
 | **Multi-file directory** | Process one file at a time, verify each before proceeding |
 
@@ -18,7 +18,7 @@ When testing a **directory with multiple files**, **NEVER generate all test file
 ### Why Incremental?
 
 | Batch Approach (❌) | Incremental Approach (✅) |
-|---------------------|---------------------------|
+| --------------------- | --------------------------- |
 | Generate 5+ tests at once | Generate 1 test at a time |
 | Run tests only at the end | Run test immediately after each file |
 | Multiple failures compound | Single point of failure, easy to debug |
@@ -190,7 +190,7 @@ Update status as you complete each:
 ```
 # BAD: Writing all files then testing
 Write component-a.spec.tsx
-Write component-b.spec.tsx  
+Write component-b.spec.tsx
 Write component-c.spec.tsx
 Write component-d.spec.tsx
 Run pnpm test  ← Multiple failures, hard to debug

@@ -10,6 +10,7 @@ Category: Business Logic
 Ensure consistent state management patterns across the application. Use the same approach for similar functionality and encapsulate complex state logic in custom hooks.
 
 Wrong:
+
 ```tsx
 // Inconsistent state management
 const [localState, setLocalState] = useState(initialValue);
@@ -17,6 +18,7 @@ const globalState = useContext(GlobalStateContext);
 ```
 
 Right:
+
 ```tsx
 // Consistent state management
 const { state, dispatch } = useEtherealState(); // Custom hook for consistent state management
@@ -32,12 +34,14 @@ Category: Business Logic
 Use consistent naming conventions for Tauri commands. Follow snake_case for all Tauri command names.
 
 Wrong:
+
 ```tsx
 invoke('getGpuStats');
 invoke('setClickThrough');
 ```
 
 Right:
+
 ```tsx
 invoke('get_gpu_stats');
 invoke('set_click_through');
@@ -53,12 +57,14 @@ Category: Business Logic
 Use consistent naming for Tauri events. Follow kebab-case for all Tauri event names.
 
 Wrong:
+
 ```tsx
 emit('GPU_UPDATE');
 emit('windowUpdate');
 ```
 
 Right:
+
 ```tsx
 emit('gpu-update');
 emit('window-update');
@@ -74,6 +80,7 @@ Category: Business Logic
 Separate business logic from UI components. Use hooks or utility functions to encapsulate complex logic.
 
 Wrong:
+
 ```tsx
 // Business logic mixed with UI
 const handleStateTransition = (gpuTemp: number, activity: string) => {
@@ -85,6 +92,7 @@ const handleStateTransition = (gpuTemp: number, activity: string) => {
 ```
 
 Right:
+
 ```tsx
 // Business logic encapsulated
 const etherealState = useEtherealState(); // Encapsulates all state transition logic
@@ -100,12 +108,14 @@ Category: Business Logic
 Handle error states properly in business logic. Always provide fallback behavior for failed operations.
 
 Wrong:
+
 ```tsx
 // No error handling
 const gpuStats = await invoke<GpuStats>('get_gpu_stats');
 ```
 
 Right:
+
 ```tsx
 // Proper error handling
 try {

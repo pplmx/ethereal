@@ -28,7 +28,7 @@ Apply this skill when the user:
 ### Tech Stack
 
 | Tool | Version | Purpose |
-|------|---------|---------|
+| ------ | --------- | --------- |
 | Rust | 1.70+ | Programming language |
 | Tauri | 2.0+ | Desktop framework |
 | cargo-nextest | 0.9+ | Test runner |
@@ -230,7 +230,7 @@ fn test_listen_for_events_handles_multiple_events()
 ### Conditional (When Present)
 
 | Feature | Test Focus |
-|---------|-----------|
+| --------- | ----------- |
 | `Result<T, E>` return | Both Ok and Err variants |
 | System calls | Mock system dependencies |
 | Async operations | Test with tokio runtime |

@@ -21,9 +21,11 @@
     "coverage": "vitest run --coverage",
     "lint": "biome check ./src",
     "lint:fix": "biome check --write ./src",
+    "lint:md": "markdownlint -f **/*.md",
     "format": "biome format --write ./src",
     "type-check": "tsc --noEmit",
-    "prepare": "husky"
+    "prepare": "husky",
+    "cz": "cz"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.9.1",
@@ -40,6 +42,10 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.11",
+    "@commitlint/cli": "^20.0.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "@commitlint/cz-commitlint": "^20.0.0",
+    "@commitlint/types": "^20.0.0",
     "@tauri-apps/cli": "^2.9.6",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
@@ -53,6 +59,7 @@
     "husky": "^9.1.7",
     "jsdom": "^27.4.0",
     "lint-staged": "^16.2.7",
+    "markdownlint-cli": "^0.47.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
@@ -64,6 +71,11 @@
       "biome check --write",
       "vitest related --run"
     ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
   },
   "engines": {
     "node": ">=20.0.0",

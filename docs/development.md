@@ -43,17 +43,20 @@ ethereal/
 ### Installation Steps
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/your-username/ethereal.git
    cd ethereal
    ```
 
 2. Install frontend dependencies:
+
    ```bash
    pnpm install
    ```
 
 3. Verify Rust installation:
+
    ```bash
    rustc --version
    cargo --version
@@ -68,6 +71,7 @@ pnpm tauri dev
 ```
 
 This command will:
+
 1. Start the Vite development server
 2. Compile the Rust backend
 3. Launch the Tauri application
@@ -82,6 +86,7 @@ pnpm tauri build
 ```
 
 This command will:
+
 1. Build the frontend for production
 2. Compile the Rust backend for release
 3. Package the application for distribution
@@ -107,6 +112,7 @@ This command will:
 ### TypeScript/JavaScript
 
 Follow these guidelines:
+
 - Use TypeScript for all frontend code
 - Strict typing is enforced
 - Use functional components with hooks
@@ -116,6 +122,7 @@ Follow these guidelines:
 ### Rust
 
 Follow these guidelines:
+
 - Use Rust 2021 edition
 - Follow Rust naming conventions
 - Use `clippy` for linting
@@ -153,6 +160,7 @@ For Rust testing:
 3. **System Testing**: Test system integration components
 
 Example unit test in Rust:
+
 ```rust
 #[cfg(test)]
 mod tests {
@@ -255,6 +263,7 @@ When contributing, keep these security principles in mind:
 ### Issue Reporting
 
 When reporting issues, include:
+
 1. Clear description of the problem
 2. Steps to reproduce
 3. Expected vs. actual behavior
@@ -273,6 +282,7 @@ When reporting issues, include:
 ### Code Review Process
 
 All pull requests must:
+
 1. Pass all tests
 2. Follow coding standards
 3. Include appropriate documentation
@@ -283,6 +293,7 @@ All pull requests must:
 ### Versioning
 
 Follow semantic versioning (SemVer):
+
 - MAJOR version for incompatible changes
 - MINOR version for feature additions
 - PATCH version for bug fixes
@@ -338,6 +349,7 @@ npm run tauri info
 ### Environment Variables
 
 The application may use environment variables for configuration:
+
 - `DEBUG`: Enable debug logging
 - `OLLAMA_HOST`: Custom Ollama endpoint
 - `POLL_INTERVAL`: Custom polling intervals
@@ -352,6 +364,7 @@ Modify `src-tauri/Cargo.toml` for backend dependencies and features.
 ### Platform-Specific Code
 
 Use conditional compilation in Rust:
+
 ```rust
 #[cfg(target_os = "windows")]
 // Windows-specific code
@@ -363,6 +376,7 @@ Use conditional compilation in Rust:
 ### Feature Flags
 
 Use Cargo features for optional functionality:
+
 ```toml
 [features]
 default = []

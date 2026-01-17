@@ -149,6 +149,7 @@ Use a todo list approach for tracking progress:
 5. **Move to next workflow**
 
 Example todo list:
+
 - [ ] Application startup and initial display
 - [ ] Basic UI interactions (button clicks)
 - [ ] Click-through mode toggling

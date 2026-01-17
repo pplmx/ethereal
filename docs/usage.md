@@ -12,6 +12,7 @@ This guide provides detailed instructions on how to use Desktop Ethereal and cus
    - Install [pnpm](https://pnpm.io/installation) as the package manager
 
 2. **First Run**:
+
    ```bash
    pnpm install
    pnpm tauri dev
@@ -24,15 +25,18 @@ This guide provides detailed instructions on how to use Desktop Ethereal and cus
 ### Window Controls
 
 **Moving the Window**:
+
 - Click and drag anywhere on the ethereal window to move it
 - The entire window acts as a drag handle
 
 **Toggling Modes**:
 The current implementation is a basic template with limited functionality. Future versions will include:
+
 - **Interactive Mode**: Full control, window can be moved and buttons are visible
 - **Ghost Mode**: Click-through, window ignores mouse input
 
 Toggle between modes using:
+
 1. **Hotkey**: Future implementation will support `Ctrl+Shift+D` (works even in ghost mode)
 2. **UI Buttons**: Future implementation will include "Enable Click-Through" or "Disable Click-Through" buttons
 
@@ -41,18 +45,21 @@ Toggle between modes using:
 The current implementation is a basic template with limited functionality. Future versions will include:
 
 **GPU Temperature Monitoring**:
+
 - Automatically monitors your NVIDIA GPU temperature
 - Switches to OVERHEATING state when temperature exceeds 80°C
 - Displays current temperature in the status bar (bottom left)
 
 **Activity Detection**:
+
 - Automatically detects when you're:
-  - Coding (VS Code, Vim, Sublime, etc.)
-  - Browsing (Chrome, Firefox, Edge)
-  - Gaming (Steam, Epic Games, game executables)
+    - Coding (VS Code, Vim, Sublime, etc.)
+    - Browsing (Chrome, Firefox, Edge)
+    - Gaming (Steam, Epic Games, game executables)
 - Switches between CODING, BROWSING, GAMING, and IDLE states accordingly
 
 **Clipboard Monitoring**:
+
 - Monitors clipboard content changes
 - Ignores content shorter than 10 characters or longer than 1000 characters
 - Can be used for contextual responses (future feature)
@@ -64,6 +71,7 @@ The current implementation is a basic template with limited functionality. Futur
 The current implementation is a basic template with limited functionality. Future versions will include:
 
 Talk to your ethereal companion:
+
 1. Ensure Ollama is running
 2. Pull a model: `ollama pull llama3.2:3b`
 3. Use the chat functionality (accessible through future UI expansion)
@@ -87,6 +95,7 @@ The current implementation is a basic template with limited functionality. Futur
 ### Adjusting Animation Speed
 
 Modify animation speeds in `src/config/animations.ts`:
+
 ```typescript
 export const ANIMATIONS = {
   IDLE: {
@@ -100,6 +109,7 @@ export const ANIMATIONS = {
 ### Customizing State Transitions
 
 Modify the state machine in `src/hooks/useEtherealState.ts`:
+
 - Adjust temperature thresholds
 - Add new activity categories
 - Modify transition logic
@@ -109,6 +119,7 @@ Modify the state machine in `src/hooks/useEtherealState.ts`:
 ### Window Properties
 
 Adjust window behavior in `src-tauri/tauri.conf.json`:
+
 ```json
 {
   "windows": [
@@ -124,6 +135,7 @@ Adjust window behavior in `src-tauri/tauri.conf.json`:
 ### Hotkey Modification
 
 Future implementations will support hotkey modification in `src-tauri/src/main.rs`:
+
 ```rust
 let shortcut = Shortcut::new("Ctrl+Shift+D"); // Modify this string
 ```
@@ -142,10 +154,12 @@ Refer to Tauri's global shortcut documentation for syntax.
 ### Log Access
 
 During development:
+
 - View console output in the terminal where you ran `pnpm tauri dev`
 - Check browser DevTools (Ctrl+Shift+I) for frontend errors
 
 In production builds:
+
 - Logs are typically found in system event logs
 - Application-specific logs may be in user directories
 
@@ -154,6 +168,7 @@ In production builds:
 ### Resource Usage
 
 Desktop Ethereal is designed to be lightweight:
+
 - CPU usage: Typically < 5% when idle
 - Memory usage: ~50-100MB depending on system
 
@@ -162,6 +177,7 @@ Desktop Ethereal is designed to be lightweight:
 ### Data Collection
 
 Desktop Ethereal collects minimal system information locally:
+
 - Active window titles and process names (future implementation)
 - GPU temperature and utilization data (future implementation)
 - Clipboard content (filtered and processed locally) (future implementation)
@@ -171,6 +187,7 @@ No data is transmitted to external servers by default.
 ### Permissions
 
 The application requires:
+
 - Window management permissions (for overlay functionality) (future implementation)
 - GPU monitoring permissions (for NVIDIA libraries) (future implementation)
 - Clipboard access (for contextual awareness) (future implementation)
@@ -197,6 +214,7 @@ A: Currently, the application supports one ethereal per instance. You can run mu
 ## Support
 
 For issues, feature requests, or questions:
+
 1. Check the project's GitHub issues
 2. Submit a new issue with detailed information
 3. Contact the development team through the project's communication channels
@@ -204,6 +222,7 @@ For issues, feature requests, or questions:
 ## Changelog
 
 ### v0.1.0
+
 - Initial release
 - Basic ghost window functionality
 - System monitoring (GPU, active windows, clipboard)

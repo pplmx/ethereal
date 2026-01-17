@@ -41,16 +41,19 @@ npm run tauri build -- --release
 #### 3. Build for Specific Platforms
 
 **Windows (.msi, .exe):**
+
 ```bash
 npm run tauri build -- --target x86_64-pc-windows-msvc
 ```
 
 **macOS (.app, .dmg):**
+
 ```bash
 npm run tauri build -- --target x86_64-apple-darwin
 ```
 
 **Linux (.deb, .appimage):**
+
 ```bash
 npm run tauri build -- --target x86_64-unknown-linux-gnu
 ```
@@ -106,9 +109,10 @@ The build process is configured in `src-tauri/tauri.conf.json`:
 ### Icons
 
 Replace the default icons in `src-tauri/icons/`:
+
 - 32x32.png
 - 128x128.png
-- 128x128@2x.png
+- <128x128@2x.png>
 - icon.icns (macOS)
 - icon.ico (Windows)
 
@@ -138,6 +142,7 @@ Update `src-tauri/tauri.conf.json`:
 For production distribution, code signing is recommended:
 
 **Windows:**
+
 ```bash
 # Set environment variables
 set TAURI_SIGNING_PRIVATE_KEY=password
@@ -148,6 +153,7 @@ npm run tauri build
 ```
 
 **macOS:**
+
 ```bash
 # Set environment variables
 export APPLE_CERTIFICATE="certificate-content"
@@ -168,23 +174,29 @@ Host the built packages on your website or file hosting service.
 ### Package Managers
 
 #### Windows Package Manager (winget)
+
 Create a manifest file and submit to the Windows Package Manager repository.
 
 #### Homebrew (macOS)
+
 Create a formula and submit to homebrew-core or maintain your own tap.
 
 #### Snap/Apt (Linux)
+
 Publish to the Snap Store or maintain your own apt repository.
 
 ### Application Stores
 
 #### Microsoft Store
+
 Package as MSIX and submit to Microsoft Partner Center.
 
 #### Mac App Store
+
 Package and submit through Apple App Store Connect (requires Apple Developer account).
 
 #### Linux Application Stores
+
 Submit to Flathub (Flatpak) or Snap Store.
 
 ## Installation Instructions
@@ -197,6 +209,7 @@ Submit to Flathub (Flatpak) or Snap Store.
 4. Launch Desktop Ethereal from the Start menu
 
 **Silent Installation:**
+
 ```bash
 DesktopEthereal-installer.exe /S
 ```
@@ -209,6 +222,7 @@ DesktopEthereal-installer.exe /S
 4. Launch from Applications or Spotlight
 
 **Command Line Installation:**
+
 ```bash
 # Mount the DMG
 hdiutil attach DesktopEthereal.dmg
@@ -223,12 +237,14 @@ hdiutil detach /Volumes/DesktopEthereal
 ### Linux
 
 #### Debian/Ubuntu (.deb)
+
 ```bash
 sudo dpkg -i ethereal.deb
 sudo apt-get install -f  # Fix dependencies if needed
 ```
 
 #### AppImage
+
 ```bash
 # Make executable
 chmod +x Desktop_Ethereal.AppImage
@@ -289,6 +305,7 @@ When updating between versions:
 #### 1. Windows SmartScreen Warning
 
 **Solution**:
+
 - Click "More info"
 - Select "Run anyway"
 - Or sign the application with a code signing certificate
@@ -296,6 +313,7 @@ When updating between versions:
 #### 2. macOS Gatekeeper Blocking
 
 **Solution**:
+
 ```bash
 # Remove quarantine attribute
 xattr -rd com.apple.quarantine /Applications/Desktop\ Ethereal.app
@@ -304,6 +322,7 @@ xattr -rd com.apple.quarantine /Applications/Desktop\ Ethereal.app
 #### 3. Linux Dependency Issues
 
 **Solution**:
+
 ```bash
 # Install missing dependencies
 sudo apt-get update

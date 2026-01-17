@@ -11,17 +11,21 @@ These commands are exposed by the Rust backend and can be called from the fronte
 Simple greeting function for testing IPC connectivity.
 
 **Signature:**
+
 ```rust
 fn greet(name: &str) -> String
 ```
 
 **Parameters:**
+
 - `name`: A string to include in the greeting
 
 **Returns:**
+
 - A greeting string: `"Hello, {name}! You've been greeted from Rust!"`
 
 **Example:**
+
 ```typescript
 import { invoke } from '@tauri-apps/api/core';
 
@@ -34,19 +38,23 @@ console.log(greeting); // "Hello, User! You've been greeted from Rust!"
 Enables or disables click-through mode for the main window. (Future implementation)
 
 **Signature:**
+
 ```rust
 fn set_click_through(window: tauri::Window, enabled: bool) -> Result<(), String>
 ```
 
 **Parameters:**
+
 - `window`: The Tauri window object
 - `enabled`: Boolean indicating whether to enable or disable click-through
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(String)` with error message on failure
 
 **Example:**
+
 ```typescript
 import { invoke } from '@tauri-apps/api/core';
 import { getCurrentWindow } from '@tauri-apps/api/window';
@@ -60,18 +68,22 @@ await invoke('set_click_through', { window: appWindow, enabled: true });
 Retrieves the latest cached GPU statistics. (Future implementation)
 
 **Signature:**
+
 ```rust
 fn get_gpu_stats(state: tauri::State<GpuMonitorState>) -> Result<GpuStats, String>
 ```
 
 **Parameters:**
+
 - `state`: Tauri-managed state containing cached GPU stats
 
 **Returns:**
+
 - `Ok(GpuStats)` with current GPU statistics
 - `Err(String)` with error message on failure
 
 **GpuStats Structure:**
+
 ```rust
 struct GpuStats {
   temperature: u32,     // Temperature in Celsius
@@ -82,6 +94,7 @@ struct GpuStats {
 ```
 
 **Example:**
+
 ```typescript
 import { invoke } from '@tauri-apps/api/core';
 
@@ -94,18 +107,22 @@ console.log(`GPU Temp: ${gpuStats.temperature}°C`);
 Sends a message to the Ollama LLM and returns the ethereal's response. (Future implementation)
 
 **Signature:**
+
 ```rust
 async fn chat_with_ethereal(message: String) -> Result<String, String>
 ```
 
 **Parameters:**
+
 - `message`: The user's message to send to the LLM
 
 **Returns:**
+
 - `Ok(String)` with the LLM's response
 - `Err(String)` with error message on failure
 
 **Example:**
+
 ```typescript
 import { invoke } from '@tauri-apps/api/core';
 
@@ -124,6 +141,7 @@ The backend emits events that the frontend can listen to for real-time updates. 
 Emitted when GPU statistics are updated (every 2 seconds).
 
 **Payload:**
+
 ```typescript
 interface GpuStats {
   temperature: number;     // Temperature in Celsius
@@ -134,6 +152,7 @@ interface GpuStats {
 ```
 
 **Listening:**
+
 ```typescript
 import { listen } from '@tauri-apps/api/event';
 
@@ -147,6 +166,7 @@ const unlisten = await listen<GpuStats>('gpu-update', (event) => {
 Emitted when the active window changes (every 1 second). (Future implementation)
 
 **Payload:**
+
 ```typescript
 interface WindowInfo {
   title: string;         // Window title
@@ -156,6 +176,7 @@ interface WindowInfo {
 ```
 
 **Listening:**
+
 ```typescript
 import { listen } from '@tauri-apps/api/event';
 
@@ -169,11 +190,13 @@ const unlisten = await listen<WindowInfo>('window-update', (event) => {
 Emitted when clipboard content changes (event-driven). (Future implementation)
 
 **Payload:**
+
 ```typescript
 type ClipboardContent = string;  // The clipboard text content
 ```
 
 **Listening:**
+
 ```typescript
 import { listen } from '@tauri-apps/api/event';
 
@@ -189,6 +212,7 @@ const unlisten = await listen<string>('clipboard-changed', (event) => {
 A custom React hook that manages the ethereal's state based on system events. (Future implementation)
 
 **Signature:**
+
 ```typescript
 function useEtherealState(): {
   current: 'IDLE' | 'CODING' | 'OVERHEATING' | 'GAMING';
@@ -198,11 +222,13 @@ function useEtherealState(): {
 ```
 
 **Returns:**
+
 - `current`: Current ethereal state
 - `gpuTemp`: Current GPU temperature
 - `activity`: Current activity category
 
 **Usage:**
+
 ```typescript
 import { useEtherealState } from './hooks/useEtherealState';
 
@@ -226,6 +252,7 @@ function MyComponent() {
 Animation configuration mapping states to sprite frames and frame rates. (Future implementation)
 
 **Structure:**
+
 ```typescript
 const ANIMATIONS = {
   IDLE: {
@@ -248,6 +275,7 @@ const ANIMATIONS = {
 ```
 
 **Usage:**
+
 ```typescript
 import { ANIMATIONS } from './config/animations';
 
@@ -319,9 +347,9 @@ type ActivityCategory = 'CODING' | 'BROWSING' | 'GAMING' | 'OTHER';
 - Main UI thread for frontend
 - Main event loop for backend
 - Separate threads for:
-  - GPU monitoring (Future implementation)
-  - Window monitoring (Future implementation)
-  - Clipboard monitoring (Future implementation)
+    - GPU monitoring (Future implementation)
+    - Window monitoring (Future implementation)
+    - Clipboard monitoring (Future implementation)
 
 ## Security
 
@@ -329,12 +357,13 @@ type ActivityCategory = 'CODING' | 'BROWSING' | 'GAMING' | 'OTHER';
 
 - All data remains local to the user's machine
 - No data is transmitted over the network except:
-  - Ollama API calls (local only by default) (Future implementation)
-  - Update checks (if implemented in future) (Future implementation)
+    - Ollama API calls (local only by default) (Future implementation)
+    - Update checks (if implemented in future) (Future implementation)
 
 ### Permissions
 
 The application requires the following permissions:
+
 - Window management (essential for overlay functionality) (Future implementation)
 - GPU monitoring (essential for temperature-based features) (Future implementation)
 - Clipboard access (essential for contextual awareness) (Future implementation)
