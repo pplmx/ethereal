@@ -62,13 +62,5 @@ export default defineConfig({
 
     // 并发运行测试 (提升速度)
     pool: 'threads',
-    poolOptions: {
-      threads: {
-        singleThread: false,
-      },
-    },
-
-    // 监听模式排除
-    watchExclude: ['**/node_modules/**', '**/dist/**', '**/src-tauri/**'],
   },
 });
