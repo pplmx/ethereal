@@ -1,4 +1,5 @@
 import { DevTools } from '@components/DevTools';
+import { SettingsModal } from '@components/SettingsModal';
 import { SpeechBubble } from '@components/SpeechBubble';
 import { SpriteAnimator } from '@components/SpriteAnimator';
 import { useDraggable } from '@hooks/useDraggable';
@@ -8,11 +9,13 @@ import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { useEffect } from 'react';
 import { useChatStore } from './stores/chatStore';
+import { useSettingsStore } from './stores/settingsStore';
 
 function App() {
   const { startDragging } = useDraggable();
   useWindowPosition();
   const { setThinking, showResponse, setVisible } = useChatStore();
+  const { initialize: initSettings } = useSettingsStore();
 
   const idleFrames = [
     '/sprites/idle-1.png',
@@ -23,6 +26,7 @@ function App() {
 
   useEffect(() => {
     logger.info('App mounted');
+    initSettings();
 
     const handleContextMenu = (e: MouseEvent) => e.preventDefault();
     document.addEventListener('contextmenu', handleContextMenu);
@@ -65,6 +69,7 @@ function App() {
       onMouseDown={startDragging}
     >
       <DevTools />
+      <SettingsModal />
 
       <div className="relative w-full h-full flex items-center justify-center">
         <SpeechBubble />

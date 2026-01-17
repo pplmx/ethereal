@@ -43,6 +43,8 @@ pub fn run() {
             greet,
             utils::window::set_click_through,
             config::save_window_position,
+            config::get_config,
+            config::update_config,
             chat_with_ethereal
         ])
         .run(tauri::generate_context!())

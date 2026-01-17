@@ -154,6 +154,19 @@ impl AppConfig {
 }
 
 #[tauri::command]
+pub fn get_config(app: AppHandle) -> Result<AppConfig, String> {
+    AppConfig::load(&app).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn update_config(app: AppHandle, config: AppConfig) -> Result<(), String> {
+    config.save(&app).map_err(|e| e.to_string())?;
+    
+    app.emit("config-updated", config).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+#[tauri::command]
 pub fn save_window_position(app: AppHandle, x: i32, y: i32) -> Result<(), String> {
     let mut config = AppConfig::load(&app).map_err(|e| e.to_string())?;
     config.window.default_x = x;
