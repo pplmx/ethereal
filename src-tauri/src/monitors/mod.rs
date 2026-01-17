@@ -1,6 +1,8 @@
-pub mod mock;
 pub mod cpu;
 pub mod factory;
+pub mod mock;
+pub mod state;
+pub mod window;
 
 pub trait HardwareMonitor: Send + Sync {
     fn get_temperature(&self) -> f32;
@@ -9,10 +11,13 @@ pub trait HardwareMonitor: Send + Sync {
     fn is_available(&self) -> bool;
 }
 
+use crate::monitors::factory::create_monitor;
+use crate::monitors::window::WindowMonitor;
+use crate::monitors::state::determine_state;
+use crate::config::AppConfig;
+use serde::Serialize;
 use tauri::{AppHandle, Emitter};
 use std::time::Duration;
-use crate::monitors::factory::create_monitor;
-use serde::Serialize;
 
 #[derive(Clone, Serialize)]
 struct GpuStats {
@@ -20,19 +25,30 @@ struct GpuStats {
     utilization: f32,
     memory_used: u64,
     memory_total: u64,
+    state: String,
 }
 
 pub fn spawn_monitor_thread(app: AppHandle) {
     std::thread::spawn(move || {
         let monitor = create_monitor();
+        let window_monitor = WindowMonitor::new();
+        
         loop {
             if monitor.is_available() {
+                let config = match AppConfig::load(&app) {
+                    Ok(c) => c,
+                    Err(_) => AppConfig::default(),
+                };
+
                 let (used, total) = monitor.get_memory_usage();
+                let state = determine_state(monitor.as_ref(), &window_monitor, &config);
+                
                 let stats = GpuStats {
                     temperature: monitor.get_temperature(),
                     utilization: monitor.get_utilization(),
                     memory_used: used,
                     memory_total: total,
+                    state: format!("{:?}", state),
                 };
                 
                 if let Err(e) = app.emit("gpu-update", stats) {

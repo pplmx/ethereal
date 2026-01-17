@@ -4,7 +4,7 @@ This guide provides information for developers who want to contribute to or exte
 
 ## Project Structure
 
-```
+```text
 ethereal/
 ├── src/                    # Frontend source code
 │   ├── components/         # React components

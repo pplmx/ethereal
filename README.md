@@ -39,16 +39,16 @@ The ethereal has four distinct states: *(Future implementation)*
 
 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/your-username/ethereal.git
-   cd ethereal
-   ```
+```bash
+git clone https://github.com/your-username/ethereal.git
+cd ethereal
+```
 
 2. Install dependencies with pnpm:
 
-   ```bash
-   pnpm install
-   ```
+```bash
+pnpm install
+```
 
 ## Usage
 
@@ -113,7 +113,7 @@ This project includes Dev Container configuration for consistent development env
 
 ## Project Structure
 
-```
+```text
 ethereal/
 ├── src/                 # Frontend React components
 │   ├── components/      # Sprite component

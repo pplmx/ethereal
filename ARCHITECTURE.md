@@ -84,7 +84,7 @@ export default defineConfig({
 
 **性能对比** (实际测量):
 
-```
+```bash
 项目: 100 个测试用例
 
 Jest:

@@ -12,7 +12,7 @@ Desktop Ethereal follows a frontend-backend architecture using Tauri:
 
 ### Component Diagram
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                        Frontend (React)                     │
 ├─────────────────────────────────────────────────────────────┤
@@ -144,34 +144,6 @@ struct OllamaRequest {
 ```
 
 *Future implementation*
-
-#### WindowInfo
-
-```rust
-#[derive(Serialize, Deserialize, Clone)]
-struct WindowInfo {
-  title: String,
-  process_name: String,
-  category: String,
-}
-```
-
-#### Ollama Integration
-
-```rust
-#[derive(Serialize, Deserialize)]
-struct OllamaRequest {
-  model: String,
-  prompt: String,
-  system: String,
-  stream: bool,
-}
-
-#[derive(Serialize, Deserialize)]
-struct OllamaResponse {
-  response: String,
-}
-```
 
 ## Frontend Implementation (React/TypeScript)
 

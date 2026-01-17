@@ -62,7 +62,7 @@ When suggesting enhancements:
 1. **Branch Naming**: Use descriptive names like `feature/new-animation` or `bugfix/window-drag-issue`
 2. **Commit Messages**: Follow conventional commit format:
 
-   ```
+   ```text
    feat: Add new animation system
    fix: Resolve window dragging issue
    docs: Update contribution guidelines
@@ -116,7 +116,7 @@ When suggesting enhancements:
 
 Understanding the project structure is important for effective contributions:
 
-```
+```text
 ethereal/
 ├── src/                 # Frontend (React/TypeScript)
 ├── src-tauri/           # Backend (Rust)
