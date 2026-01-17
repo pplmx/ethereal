@@ -20,7 +20,8 @@ export const SpriteAnimator = ({
 }: SpriteAnimatorProps) => {
   const [currentFrame, setCurrentFrame] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const frameTimeoutRef = useRef<number>();
+  const requestRef = useRef<number | null>(null);
+  const lastTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (frames.length === 0) {
@@ -50,63 +51,47 @@ export const SpriteAnimator = ({
         }
       };
     });
-
-    return () => {
-      frames.forEach((src) => {
-        const img = new Image();
-
-        img.onload = () => {
-          loadedCount++;
-          if (loadedCount === totalFrames) {
-            setIsLoaded(true);
-          }
-        };
-
-        img.onerror = () => {
-          loadedCount++;
-          if (loadedCount === totalFrames) {
-            setIsLoaded(true);
-          }
-        };
-
-        img.src = src;
-
-        if (img.complete && img.naturalWidth > 0) {
-          img.onload(new Event('load'));
-        }
-      });
-    };
   }, [frames]);
 
   useEffect(() => {
     if (!isLoaded || frames.length === 0) return;
 
-    const frameDelay = 1000 / fps;
+    const frameInterval = 1000 / fps;
 
-    const nextFrame = () => {
-      setCurrentFrame((prev) => {
-        const next = prev + 1;
+    const animate = (time: number) => {
+      if (lastTimeRef.current === null) {
+        lastTimeRef.current = time;
+      }
 
-        if (next >= frames.length) {
-          if (!loop) {
-            onAnimationEnd?.();
-            return prev;
+      const deltaTime = time - lastTimeRef.current;
+
+      if (deltaTime >= frameInterval) {
+        setCurrentFrame((prev) => {
+          const next = prev + 1;
+
+          if (next >= frames.length) {
+            if (!loop) {
+              if (onAnimationEnd) onAnimationEnd();
+              return prev;
+            }
+            return 0;
           }
-          return 0;
-        }
+          return next;
+        });
+        lastTimeRef.current = time;
+      }
 
-        return next;
-      });
+      requestRef.current = requestAnimationFrame(animate);
     };
 
-    frameTimeoutRef.current = window.setTimeout(nextFrame, frameDelay);
+    requestRef.current = requestAnimationFrame(animate);
 
     return () => {
-      if (frameTimeoutRef.current) {
-        clearTimeout(frameTimeoutRef.current);
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
       }
     };
-  }, [currentFrame, fps, frames.length, loop, onAnimationEnd, isLoaded]);
+  }, [isLoaded, frames.length, fps, loop, onAnimationEnd]);
 
   if (frames.length === 0) return null;
 

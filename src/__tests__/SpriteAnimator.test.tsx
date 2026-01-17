@@ -1,10 +1,12 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SpriteAnimator } from '../components/SpriteAnimator';
 
 describe('SpriteAnimator', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
+    vi.useFakeTimers({
+      shouldAdvanceTime: true,
+    });
   });
 
   afterEach(() => {
@@ -28,7 +30,6 @@ describe('SpriteAnimator', () => {
     window.Image = class {
       onload: any;
       set src(_: string) {
-        // trigger async to simulate real behavior and allow react to handle state
         setTimeout(() => {
           if (this.onload) this.onload();
         }, 0);
@@ -38,8 +39,7 @@ describe('SpriteAnimator', () => {
     const frames = ['frame1.png', 'frame2.png'];
     render(<SpriteAnimator frames={frames} fps={10} />);
 
-    // Run timers to process the setTimeout in mock
-    act(() => {
+    await act(async () => {
       vi.runAllTimers();
     });
 
@@ -62,29 +62,39 @@ describe('SpriteAnimator', () => {
     const frames = ['frame1.png', 'frame2.png', 'frame3.png'];
     render(<SpriteAnimator frames={frames} fps={10} />);
 
-    act(() => {
-      vi.runAllTimers(); // Load images
+    await act(async () => {
+      vi.runAllTimers(); // Load
     });
 
     const img = screen.getByAltText('Sprite animation');
     expect(img).toHaveAttribute('src', 'frame1.png');
 
-    // Advance 100ms
-    act(() => {
+    // Advance 100ms (Frame 2)
+    await act(async () => {
       vi.advanceTimersByTime(100);
     });
-    expect(img).toHaveAttribute('src', 'frame2.png');
 
-    act(() => {
-      vi.advanceTimersByTime(100);
+    await waitFor(() => {
+      expect(img).toHaveAttribute('src', 'frame2.png');
     });
-    expect(img).toHaveAttribute('src', 'frame3.png');
 
-    // Loop back to start
-    act(() => {
+    // Advance 100ms (Frame 3)
+    await act(async () => {
       vi.advanceTimersByTime(100);
     });
-    expect(img).toHaveAttribute('src', 'frame1.png');
+
+    await waitFor(() => {
+      expect(img).toHaveAttribute('src', 'frame3.png');
+    });
+
+    // Advance 100ms (Loop back to Frame 1)
+    await act(async () => {
+      vi.advanceTimersByTime(100);
+    });
+
+    await waitFor(() => {
+      expect(img).toHaveAttribute('src', 'frame1.png');
+    });
 
     window.Image = originalImage;
   });
@@ -106,24 +116,23 @@ describe('SpriteAnimator', () => {
       <SpriteAnimator frames={frames} fps={10} loop={false} onAnimationEnd={onAnimationEnd} />,
     );
 
-    act(() => {
+    await act(async () => {
       vi.runAllTimers(); // Load
     });
 
     const img = screen.getByAltText('Sprite animation');
 
-    // Advance to end (frame 2)
-    act(() => {
+    // Advance 100ms (Frame 2 - Last Frame)
+    await act(async () => {
       vi.advanceTimersByTime(100);
     });
 
-    expect(img).toHaveAttribute('src', 'frame2.png');
-    // Callback might happen after render? Check logic.
-    // Logic: if (next >= frames.length) { onAnimationEnd(); return prev; }
-    // So on the NEXT tick after the last frame duration.
+    await waitFor(() => {
+      expect(img).toHaveAttribute('src', 'frame2.png');
+    });
 
-    // Advance another 100ms
-    act(() => {
+    // Advance 100ms (Should stay on Last Frame and trigger callback)
+    await act(async () => {
       vi.advanceTimersByTime(100);
     });
 
@@ -146,7 +155,7 @@ describe('SpriteAnimator', () => {
 
     render(<SpriteAnimator frames={['frame1.png']} />);
 
-    act(() => {
+    await act(async () => {
       vi.runAllTimers();
     });
 
@@ -154,7 +163,6 @@ describe('SpriteAnimator', () => {
     expect(img).toHaveAttribute('draggable', 'false');
 
     const preventDefault = vi.fn();
-    // fireEvent contextMenu
     const event = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
     Object.defineProperty(event, 'preventDefault', { value: preventDefault });
 
@@ -180,7 +188,7 @@ describe('SpriteAnimator', () => {
 
     render(<SpriteAnimator frames={['frame1.png']} className="custom-class" />);
 
-    act(() => {
+    await act(async () => {
       vi.runAllTimers();
     });
 
