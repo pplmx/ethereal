@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SpriteAnimator } from '../SpriteAnimator';
 
 describe('SpriteAnimator', () => {
@@ -77,12 +77,7 @@ describe('SpriteAnimator', () => {
   it('非循环模式应该停在最后一帧', async () => {
     const onAnimationEnd = vi.fn();
     render(
-      <SpriteAnimator
-        frames={mockFrames}
-        fps={10}
-        loop={false}
-        onAnimationEnd={onAnimationEnd}
-      />
+      <SpriteAnimator frames={mockFrames} fps={10} loop={false} onAnimationEnd={onAnimationEnd} />,
     );
 
     await vi.runAllTimersAsync();

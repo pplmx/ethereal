@@ -50,8 +50,7 @@ export const useSpriteStore = create<SpriteStore>()(
 
         setPosition: (x, y) => set({ position: { x, y } }),
 
-        toggleClickThrough: () =>
-          set((state) => ({ isClickThrough: !state.isClickThrough })),
+        toggleClickThrough: () => set((state) => ({ isClickThrough: !state.isClickThrough })),
 
         updateHardware: (hardware) => {
           set({ hardware });
@@ -81,7 +80,7 @@ export const useSpriteStore = create<SpriteStore>()(
 
           return Array.from(
             { length: frameCount },
-            (_, i) => `${baseUrl}/${state}/frame_${i + 1}.png`
+            (_, i) => `${baseUrl}/${state}/frame_${i + 1}.png`,
           );
         },
       }),
@@ -92,8 +91,8 @@ export const useSpriteStore = create<SpriteStore>()(
           position: state.position,
           isClickThrough: state.isClickThrough,
         }),
-      }
+      },
     ),
-    { name: 'SpriteStore' } // DevTools 名称
-  )
+    { name: 'SpriteStore' }, // DevTools 名称
+  ),
 );
