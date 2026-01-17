@@ -8,6 +8,7 @@ interface SpriteAnimatorProps {
   loop?: boolean;
   onAnimationEnd?: () => void;
   className?: string;
+  draggable?: boolean;
 }
 
 export const SpriteAnimator = ({
@@ -21,8 +22,12 @@ export const SpriteAnimator = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const frameTimeoutRef = useRef<number>();
 
-  // 预加载所有帧
   useEffect(() => {
+    if (frames.length === 0) {
+      setIsLoaded(true);
+      return;
+    }
+
     let loadedCount = 0;
     const totalFrames = frames.length;
 
@@ -35,20 +40,46 @@ export const SpriteAnimator = ({
           setIsLoaded(true);
         }
       };
+      if (img.complete && img.naturalWidth > 0) {
+        img.onload(new Event('load'));
+      }
+      img.onerror = () => {
+        loadedCount++;
+        if (loadedCount === totalFrames) {
+          setIsLoaded(true);
+        }
+      };
     });
 
     return () => {
       frames.forEach((src) => {
         const img = new Image();
+
+        img.onload = () => {
+          loadedCount++;
+          if (loadedCount === totalFrames) {
+            setIsLoaded(true);
+          }
+        };
+
+        img.onerror = () => {
+          loadedCount++;
+          if (loadedCount === totalFrames) {
+            setIsLoaded(true);
+          }
+        };
+
         img.src = src;
-        img.onload = null;
+
+        if (img.complete && img.naturalWidth > 0) {
+          img.onload(new Event('load'));
+        }
       });
     };
   }, [frames]);
 
-  // 帧动画循环
   useEffect(() => {
-    if (!isLoaded) return;
+    if (!isLoaded || frames.length === 0) return;
 
     const frameDelay = 1000 / fps;
 
@@ -56,13 +87,12 @@ export const SpriteAnimator = ({
       setCurrentFrame((prev) => {
         const next = prev + 1;
 
-        // 到达最后一帧
         if (next >= frames.length) {
           if (!loop) {
             onAnimationEnd?.();
-            return prev; // 停在最后一帧
+            return prev;
           }
-          return 0; // 循环到第一帧
+          return 0;
         }
 
         return next;
@@ -77,6 +107,8 @@ export const SpriteAnimator = ({
       }
     };
   }, [currentFrame, fps, frames.length, loop, onAnimationEnd, isLoaded]);
+
+  if (frames.length === 0) return null;
 
   if (!isLoaded) {
     return (
