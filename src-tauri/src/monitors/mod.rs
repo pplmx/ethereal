@@ -11,13 +11,13 @@ pub trait HardwareMonitor: Send + Sync {
     fn is_available(&self) -> bool;
 }
 
-use crate::monitors::factory::create_monitor;
-use crate::monitors::window::WindowMonitor;
-use crate::monitors::state::determine_state;
 use crate::config::AppConfig;
+use crate::monitors::factory::create_monitor;
+use crate::monitors::state::determine_state;
+use crate::monitors::window::WindowMonitor;
 use serde::Serialize;
-use tauri::{AppHandle, Emitter};
 use std::time::Duration;
+use tauri::{AppHandle, Emitter};
 
 #[derive(Clone, Serialize)]
 struct GpuStats {
@@ -32,17 +32,14 @@ pub fn spawn_monitor_thread(app: AppHandle) {
     std::thread::spawn(move || {
         let monitor = create_monitor();
         let window_monitor = WindowMonitor::new();
-        
+
         loop {
             if monitor.is_available() {
-                let config = match AppConfig::load(&app) {
-                    Ok(c) => c,
-                    Err(_) => AppConfig::default(),
-                };
+                let config = AppConfig::load(&app).unwrap_or_default();
 
                 let (used, total) = monitor.get_memory_usage();
                 let state = determine_state(monitor.as_ref(), &window_monitor, &config);
-                
+
                 let stats = GpuStats {
                     temperature: monitor.get_temperature(),
                     utilization: monitor.get_utilization(),
@@ -50,7 +47,7 @@ pub fn spawn_monitor_thread(app: AppHandle) {
                     memory_total: total,
                     state: format!("{:?}", state),
                 };
-                
+
                 if let Err(e) = app.emit("gpu-update", stats) {
                     tracing::error!("Failed to emit gpu-update: {}", e);
                 }
