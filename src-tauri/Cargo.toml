@@ -76,6 +76,7 @@ parking_lot = "0.12"
 chrono = { version = "0.4", features = ["serde"] }
 rand = "0.8"
 tauri-plugin-opener = "2"
+raw-window-handle = "0.6.2"
 
 # ============ Windows 特定 ============
 [target.'cfg(windows)'.dependencies]
