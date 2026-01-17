@@ -5,8 +5,7 @@
   "type": "module",
   "description": "以太之灵 - 智能桌面精灵助手",
   "author": {
-    "name": "Your Name",
-    "email": "your.email@example.com"
+    "name": "Mystvio"
   },
   "license": "MIT",
   "scripts": {
