@@ -55,7 +55,24 @@ global.IntersectionObserver = class IntersectionObserver {
   unobserve() {}
 } as any;
 
-// Mock ResizeObserver
+// Mock Tauri APIs globally
+vi.mock('@tauri-apps/api/core', () => ({
+  invoke: vi.fn(),
+}));
+
+vi.mock('@tauri-apps/api/event', () => ({
+  listen: vi.fn(),
+  emit: vi.fn(),
+}));
+
+vi.mock('@tauri-apps/api/window', () => ({
+  getCurrentWindow: () => ({
+    onMoved: vi.fn(),
+    startDragging: vi.fn(),
+  }),
+}));
+
+// Mock Globals
 global.ResizeObserver = class ResizeObserver {
   constructor() {}
   disconnect() {}

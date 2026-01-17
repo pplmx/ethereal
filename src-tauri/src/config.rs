@@ -161,8 +161,9 @@ pub fn get_config(app: AppHandle) -> Result<AppConfig, String> {
 #[tauri::command]
 pub fn update_config(app: AppHandle, config: AppConfig) -> Result<(), String> {
     config.save(&app).map_err(|e| e.to_string())?;
-    
-    app.emit("config-updated", config).map_err(|e| e.to_string())?;
+
+    app.emit("config-updated", config)
+        .map_err(|e| e.to_string())?;
     Ok(())
 }
 
