@@ -10,8 +10,23 @@ afterEach(() => {
   cleanup();
 });
 
-// Mock Tauri API
+// Mock Tauri APIs globally
+vi.mock('@tauri-apps/api/core', () => ({
+  invoke: vi.fn(),
+}));
+
+vi.mock('@tauri-apps/api/event', () => ({
+  listen: vi.fn(),
+  emit: vi.fn(),
+}));
+
 vi.mock('@tauri-apps/api/window', () => ({
+  getCurrentWindow: () => ({
+    onMoved: vi.fn(),
+    startDragging: vi.fn(),
+    listen: vi.fn(),
+    emit: vi.fn(),
+  }),
   appWindow: {
     listen: vi.fn(),
     emit: vi.fn(),
@@ -19,14 +34,6 @@ vi.mock('@tauri-apps/api/window', () => ({
     minimize: vi.fn(),
     startDragging: vi.fn(),
   },
-  getCurrentWindow: vi.fn(() => ({
-    listen: vi.fn(),
-    emit: vi.fn(),
-  })),
-}));
-
-vi.mock('@tauri-apps/api/core', () => ({
-  invoke: vi.fn(),
 }));
 
 // Mock window.matchMedia (Framer Motion 需要)
@@ -55,22 +62,7 @@ global.IntersectionObserver = class IntersectionObserver {
   unobserve() {}
 } as any;
 
-// Mock Tauri APIs globally
-vi.mock('@tauri-apps/api/core', () => ({
-  invoke: vi.fn(),
-}));
-
-vi.mock('@tauri-apps/api/event', () => ({
-  listen: vi.fn(),
-  emit: vi.fn(),
-}));
-
-vi.mock('@tauri-apps/api/window', () => ({
-  getCurrentWindow: () => ({
-    onMoved: vi.fn(),
-    startDragging: vi.fn(),
-  }),
-}));
+// Remove duplicate mocks at the bottom if they exist
 
 // Mock Globals
 global.ResizeObserver = class ResizeObserver {
@@ -79,6 +71,27 @@ global.ResizeObserver = class ResizeObserver {
   observe() {}
   unobserve() {}
 } as any;
+
+// Mock LocalStorage
+const localStorageMock = (() => {
+  let store: Record<string, string> = {};
+  return {
+    getItem: (key: string) => store[key] || null,
+    setItem: (key: string, value: string) => {
+      store[key] = value.toString();
+    },
+    clear: () => {
+      store = {};
+    },
+    removeItem: (key: string) => {
+      delete store[key];
+    },
+  };
+})();
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+});
 
 // 全局测试超时设置
 vi.setConfig({ testTimeout: 10000 });
