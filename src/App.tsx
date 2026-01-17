@@ -17,7 +17,7 @@ function App() {
   useWindowPosition();
   const { setThinking, showResponse, setVisible } = useChatStore();
   const { initialize: initSettings } = useSettingsStore();
-  const { updateHardware, getAnimationFrames } = useSpriteStore();
+  const { updateHardware, getAnimationFrames, getCurrentFps, shouldLoop } = useSpriteStore();
 
   useEffect(() => {
     logger.info('App mounted');
@@ -85,7 +85,8 @@ function App() {
 
         <SpriteAnimator
           frames={getAnimationFrames()}
-          fps={8}
+          fps={getCurrentFps()}
+          loop={shouldLoop()}
           className="w-48 h-48 object-contain pointer-events-none drop-shadow-xl"
         />
 

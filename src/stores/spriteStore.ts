@@ -18,11 +18,20 @@ export interface HardwareData {
   state: string;
 }
 
+interface SpriteConfig {
+  [key: string]: {
+    frameCount: number;
+    fps: number;
+    loop: boolean;
+  };
+}
+
 interface SpriteStore {
   state: SpriteState;
   isClickThrough: boolean;
   hardware: HardwareData | null;
   aiMessage: string | null;
+  spriteConfig: SpriteConfig;
 
   setState: (state: SpriteState) => void;
   toggleClickThrough: () => void;
@@ -30,6 +39,8 @@ interface SpriteStore {
   setAiMessage: (message: string | null) => void;
 
   getAnimationFrames: () => string[];
+  getCurrentFps: () => number;
+  shouldLoop: () => boolean;
 }
 
 const mapBackendStateToFrontend = (backendState: string): SpriteState => {
@@ -49,6 +60,16 @@ const mapBackendStateToFrontend = (backendState: string): SpriteState => {
   }
 };
 
+const DEFAULT_SPRITE_CONFIG: SpriteConfig = {
+  idle: { frameCount: 4, fps: 8, loop: true },
+  working: { frameCount: 4, fps: 12, loop: true },
+  gaming: { frameCount: 4, fps: 12, loop: true },
+  browsing: { frameCount: 4, fps: 8, loop: true },
+  overheating: { frameCount: 4, fps: 24, loop: true },
+  high_load: { frameCount: 4, fps: 16, loop: true },
+  thinking: { frameCount: 4, fps: 12, loop: true },
+};
+
 export const useSpriteStore = create<SpriteStore>()(
   devtools(
     persist(
@@ -57,6 +78,7 @@ export const useSpriteStore = create<SpriteStore>()(
         isClickThrough: false,
         hardware: null,
         aiMessage: null,
+        spriteConfig: DEFAULT_SPRITE_CONFIG,
 
         setState: (state) => set({ state }),
 
@@ -81,12 +103,30 @@ export const useSpriteStore = create<SpriteStore>()(
         },
 
         getAnimationFrames: () => {
+          const { state, spriteConfig } = get();
+          // Safe fallback to idle if config missing
+          const config = spriteConfig[state] ?? spriteConfig.idle;
+
+          // Ensure config is not undefined (TS check)
+          if (!config) return [];
+
           const baseUrl = '/sprites';
+          const prefix = state;
 
-          const prefix = 'idle';
-          const frameCount = 4;
+          return Array.from(
+            { length: config.frameCount },
+            (_, i) => `${baseUrl}/${prefix}-${i + 1}.png`,
+          );
+        },
 
-          return Array.from({ length: frameCount }, (_, i) => `${baseUrl}/${prefix}-${i + 1}.png`);
+        getCurrentFps: () => {
+          const { state, spriteConfig } = get();
+          return spriteConfig[state]?.fps ?? 8;
+        },
+
+        shouldLoop: () => {
+          const { state, spriteConfig } = get();
+          return spriteConfig[state]?.loop ?? true;
         },
       }),
       {
