@@ -6,7 +6,7 @@ import type { AppConfig } from '../types/config';
 export const SettingsModal = () => {
   const { isOpen, setIsOpen, config, updateConfig, loadConfig } = useSettingsStore();
   const [formData, setFormData] = useState<AppConfig | null>(null);
-  const [activeTab, setActiveTab] = useState<'window' | 'hardware' | 'ai'>('window');
+  const [activeTab, setActiveTab] = useState<'window' | 'hardware' | 'ai' | 'sound'>('window');
 
   useEffect(() => {
     if (isOpen && !config) {
@@ -64,7 +64,7 @@ export const SettingsModal = () => {
             </div>
 
             <div className="flex border-b">
-              {(['window', 'hardware', 'ai'] as const).map((tab) => (
+              {(['window', 'hardware', 'ai', 'sound'] as const).map((tab) => (
                 <button
                   type="button"
                   key={tab}
@@ -267,6 +267,22 @@ export const SettingsModal = () => {
                         className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
                       />
                     </label>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'sound' && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium flex items-center gap-2 cursor-pointer">
+                      Enable Sound
+                      <input
+                        type="checkbox"
+                        disabled
+                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </label>
+                    <span className="text-xs text-slate-500">Coming soon</span>
                   </div>
                 </div>
               )}
