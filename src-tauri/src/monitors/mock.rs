@@ -1,5 +1,5 @@
-use rand::Rng;
 use crate::monitors::HardwareMonitor;
+use rand::Rng;
 
 #[cfg(test)]
 #[path = "mock_test.rs"]

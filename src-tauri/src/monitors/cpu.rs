@@ -1,9 +1,15 @@
-use sysinfo::{Components, System, RefreshKind, CpuRefreshKind, MemoryRefreshKind};
 use crate::monitors::HardwareMonitor;
 use std::sync::{Arc, Mutex};
+use sysinfo::{Components, CpuRefreshKind, MemoryRefreshKind, RefreshKind, System};
 
 pub struct CpuMonitor {
     sys: Arc<Mutex<System>>,
+}
+
+impl Default for CpuMonitor {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl CpuMonitor {
@@ -11,11 +17,11 @@ impl CpuMonitor {
         let mut sys = System::new_with_specifics(
             RefreshKind::new()
                 .with_cpu(CpuRefreshKind::everything())
-                .with_memory(MemoryRefreshKind::everything())
+                .with_memory(MemoryRefreshKind::everything()),
         );
         sys.refresh_cpu_usage();
         sys.refresh_memory();
-        
+
         Self {
             sys: Arc::new(Mutex::new(sys)),
         }
@@ -25,10 +31,10 @@ impl CpuMonitor {
 impl HardwareMonitor for CpuMonitor {
     fn get_temperature(&self) -> f32 {
         let components = Components::new_with_refreshed_list();
-        
+
         let mut sum = 0.0;
         let mut count = 0;
-        
+
         for component in &components {
             let label = component.label().to_lowercase();
             if label.contains("cpu") || label.contains("package") || label.contains("core") {
@@ -36,7 +42,7 @@ impl HardwareMonitor for CpuMonitor {
                 count += 1;
             }
         }
-        
+
         if count > 0 {
             sum / count as f32
         } else {
@@ -53,7 +59,10 @@ impl HardwareMonitor for CpuMonitor {
     fn get_memory_usage(&self) -> (u64, u64) {
         let mut sys = self.sys.lock().unwrap();
         sys.refresh_memory();
-        (sys.used_memory() / 1024 / 1024, sys.total_memory() / 1024 / 1024)
+        (
+            sys.used_memory() / 1024 / 1024,
+            sys.total_memory() / 1024 / 1024,
+        )
     }
 
     fn is_available(&self) -> bool {
