@@ -1,49 +1,50 @@
-import { invoke } from '@tauri-apps/api/core';
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import './App.css';
+import { DevTools } from '@components/DevTools';
+import { SpriteAnimator } from '@components/SpriteAnimator';
+import { useDraggable } from '@hooks/useDraggable';
+import { logger } from '@lib/logger';
+import { useEffect } from 'react';
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState('');
-  const [name, setName] = useState('');
+  const { startDragging } = useDraggable();
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke('greet', { name }));
-  }
+  const idleFrames = [
+    '/sprites/idle-1.png',
+    '/sprites/idle-2.png',
+    '/sprites/idle-3.png',
+    '/sprites/idle-4.png',
+  ];
+
+  useEffect(() => {
+    logger.info('App mounted');
+
+    const handleContextMenu = (e: MouseEvent) => e.preventDefault();
+    document.addEventListener('contextmenu', handleContextMenu);
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+    };
+  }, []);
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <main
+      className="w-screen h-screen overflow-hidden bg-transparent flex items-center justify-center select-none"
+      onMouseDown={startDragging}
+    >
+      <DevTools />
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank" rel="noreferrer">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank" rel="noreferrer">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
+      <div className="relative w-full h-full flex items-center justify-center">
+        <SpriteAnimator
+          frames={idleFrames}
+          fps={8}
+          className="w-48 h-48 object-contain pointer-events-none drop-shadow-xl"
         />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
+
+        {idleFrames.length === 0 && (
+          <div className="w-32 h-32 bg-white/20 backdrop-blur-md rounded-full animate-pulse border border-white/30 flex items-center justify-center text-white/50 text-xs">
+            No Sprites
+          </div>
+        )}
+      </div>
     </main>
   );
 }
