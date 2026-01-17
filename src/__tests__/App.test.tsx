@@ -7,6 +7,10 @@ vi.mock('@hooks/useDraggable', () => ({
   useDraggable: vi.fn(),
 }));
 
+vi.mock('@hooks/useWindowPosition', () => ({
+  useWindowPosition: vi.fn(),
+}));
+
 vi.mock('@components/DevTools', () => ({
   DevTools: () => <div data-testid="devtools" />,
 }));
@@ -15,6 +19,18 @@ vi.mock('@components/SpriteAnimator', () => ({
   SpriteAnimator: ({ frames }: { frames: string[] }) => (
     <img src={frames[0]} alt="sprite" data-testid="sprite-animator" />
   ),
+}));
+
+vi.mock('@components/SpeechBubble', () => ({
+  SpeechBubble: () => <div data-testid="speech-bubble" />,
+}));
+
+vi.mock('@tauri-apps/api/event', () => ({
+  listen: vi.fn().mockResolvedValue(() => {}),
+}));
+
+vi.mock('@tauri-apps/api/core', () => ({
+  invoke: vi.fn(),
 }));
 
 describe('App', () => {
@@ -33,6 +49,7 @@ describe('App', () => {
     render(<App />);
     expect(screen.getByTestId('devtools')).toBeInTheDocument();
     expect(screen.getByTestId('sprite-animator')).toBeInTheDocument();
+    expect(screen.getByTestId('speech-bubble')).toBeInTheDocument();
   });
 
   it('initiates drag on mouse down', () => {
