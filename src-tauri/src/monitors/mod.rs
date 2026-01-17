@@ -3,6 +3,7 @@ pub mod factory;
 pub mod mock;
 pub mod state;
 pub mod window;
+pub mod clipboard;
 
 pub trait HardwareMonitor: Send + Sync {
     fn get_temperature(&self) -> f32;

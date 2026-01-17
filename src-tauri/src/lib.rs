@@ -1,7 +1,19 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
+pub mod ai;
 pub mod config;
 pub mod monitors;
 pub mod utils;
+
+#[tauri::command]
+async fn chat_with_ethereal(app: tauri::AppHandle, message: String) -> Result<String, String> {
+    use crate::config::AppConfig;
+
+    let config = AppConfig::load(&app).unwrap_or_default();
+
+    let client = crate::ai::OllamaClient::new(config.ai);
+
+    client.chat(&message).await.map_err(|e| e.to_string())
+}
 
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -23,13 +35,15 @@ pub fn run() {
             utils::logger::init_logging(app.handle());
             config::watch_config(app.handle().clone());
             monitors::spawn_monitor_thread(app.handle().clone());
+            monitors::clipboard::ClipboardMonitor::new().start_polling(app.handle().clone());
             utils::hotkeys::setup_global_hotkeys(app.handle())?;
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             greet,
             utils::window::set_click_through,
-            config::save_window_position
+            config::save_window_position,
+            chat_with_ethereal
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
