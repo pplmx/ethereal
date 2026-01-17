@@ -1,0 +1,15 @@
+packages:
+  # 前端项目
+  - '.'
+
+# 严格模式 (防止幽灵依赖)
+prefer-workspace-packages: true
+
+# 共享设置
+shared-workspace-lockfile: true
+
+# 依赖提升设置
+public-hoist-pattern:
+  - '@tauri-apps/*'
+  - 'react'
+  - 'react-dom'
