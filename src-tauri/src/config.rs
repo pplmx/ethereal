@@ -19,6 +19,13 @@ pub struct AppConfig {
     pub sleep: SleepConfig,
     pub interaction: InteractionConfig,
     pub battery: BatteryConfig,
+    pub autostart: AutostartConfig,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct AutostartConfig {
+    #[serde(default = "default_false")]
+    pub enabled: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -153,6 +160,9 @@ impl Default for AppConfig {
             battery: BatteryConfig {
                 low_battery_threshold: default_low_battery_threshold(),
                 notify_on_low_battery: default_true(),
+            },
+            autostart: AutostartConfig {
+                enabled: default_false(),
             },
         }
     }

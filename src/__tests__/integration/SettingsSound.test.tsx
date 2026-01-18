@@ -64,6 +64,9 @@ describe('Settings Sound Integration', () => {
       low_battery_threshold: 20.0,
       notify_on_low_battery: true,
     },
+    autostart: {
+      enabled: false,
+    },
   };
 
   beforeEach(() => {

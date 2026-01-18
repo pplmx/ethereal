@@ -73,7 +73,7 @@ export const SettingsModal = () => {
               </button>
             </div>
 
-            <div className="flex border-b overflow-x-auto">
+            <div className="flex border-b overflow-x-auto scrollbar-hide">
               {(
                 [
                   'window',
@@ -101,7 +101,7 @@ export const SettingsModal = () => {
               ))}
             </div>
 
-            <div className="p-6 overflow-y-auto flex-1">
+            <div className="p-6 overflow-y-auto flex-1 text-slate-800">
               {activeTab === 'window' && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -114,6 +114,23 @@ export const SettingsModal = () => {
                           setFormData({
                             ...formData,
                             window: { ...formData.window, always_on_top: e.target.checked },
+                          })
+                        }
+                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium flex items-center gap-2 cursor-pointer">
+                      Launch at Login (Autostart)
+                      <input
+                        type="checkbox"
+                        checked={formData.autostart.enabled}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            autostart: { ...formData.autostart, enabled: e.target.checked },
                           })
                         }
                         className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"

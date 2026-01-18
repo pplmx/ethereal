@@ -34,7 +34,13 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   updateConfig: async (newConfig) => {
     set({ isLoading: true });
     try {
+      const oldConfig = get().config;
       await invoke('update_config', { config: newConfig });
+
+      if (newConfig.autostart.enabled !== oldConfig?.autostart?.enabled) {
+        await invoke('set_autostart', { enabled: newConfig.autostart.enabled });
+      }
+
       set({ config: newConfig, isLoading: false });
       logger.info('Config updated');
     } catch (e) {

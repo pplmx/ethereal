@@ -1,3 +1,4 @@
+pub mod autostart;
 pub mod display;
 pub mod hotkeys;
 pub mod logger;

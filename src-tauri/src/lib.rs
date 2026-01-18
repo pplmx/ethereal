@@ -39,6 +39,10 @@ fn greet(name: &str) -> String {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_autostart::init(
+            tauri_plugin_autostart::MacosLauncher::LaunchAgent,
+            Some(vec!["--silent"]),
+        ))
         .plugin(tauri_plugin_notification::init())
         .on_menu_event(|app, event| match event.id().as_ref() {
             "settings" => {
@@ -76,6 +80,8 @@ pub fn run() {
             utils::window::show_context_menu,
             utils::display::get_monitors,
             utils::display::move_to_monitor,
+            utils::autostart::set_autostart,
+            utils::autostart::is_autostart_enabled,
             config::save_window_position,
             config::get_config,
             config::update_config,

@@ -61,6 +61,10 @@ export interface BatteryConfig {
   notify_on_low_battery: boolean;
 }
 
+export interface AutostartConfig {
+  enabled: boolean;
+}
+
 export interface AppConfig {
   window: WindowConfig;
   hardware: HardwareConfig;
@@ -72,4 +76,5 @@ export interface AppConfig {
   sleep: SleepConfig;
   interaction: InteractionConfig;
   battery: BatteryConfig;
+  autostart: AutostartConfig;
 }

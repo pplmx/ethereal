@@ -67,6 +67,7 @@ describe('Click-through Shortcut Integration', () => {
     notifications: { enabled: true, notify_on_overheating: true, notify_on_angry: true },
     sleep: { enabled: false, start_time: '23:00', end_time: '07:00' },
     interaction: { double_click_action: 'chat', enable_hover_effects: true },
+    autostart: { enabled: false },
   };
 
   beforeEach(() => {

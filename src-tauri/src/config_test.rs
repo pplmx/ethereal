@@ -74,6 +74,9 @@ mod tests {
             [battery]
             low_battery_threshold = 15.0
             notify_on_low_battery = false
+
+            [autostart]
+            enabled = true
         "#;
 
         let config: AppConfig = toml::from_str(toml_input).unwrap();
@@ -91,6 +94,7 @@ mod tests {
         assert_eq!(config.sleep.start_time, "22:00");
         assert_eq!(config.interaction.double_click_action, "settings");
         assert_eq!(config.battery.low_battery_threshold, 15.0);
+        assert!(config.autostart.enabled);
 
         assert_eq!(config.hardware.thresholds.cpu_temp, 85.0);
     }
