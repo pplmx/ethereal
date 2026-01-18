@@ -39,6 +39,18 @@ export interface HotkeyConfig {
   quit: string;
 }
 
+export interface NotificationConfig {
+  enabled: boolean;
+  notify_on_overheating: boolean;
+  notify_on_angry: boolean;
+}
+
+export interface SleepConfig {
+  enabled: boolean;
+  start_time: string;
+  end_time: string;
+}
+
 export interface AppConfig {
   window: WindowConfig;
   hardware: HardwareConfig;
@@ -46,4 +58,6 @@ export interface AppConfig {
   sound: SoundConfig;
   mood: MoodConfig;
   hotkeys: HotkeyConfig;
+  notifications: NotificationConfig;
+  sleep: SleepConfig;
 }

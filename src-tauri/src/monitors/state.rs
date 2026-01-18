@@ -1,6 +1,6 @@
 use crate::config::AppConfig;
 use crate::monitors::{window::AppCategory, HardwareMonitor};
-
+use chrono::{Local, NaiveTime};
 use serde::Serialize;
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -11,6 +11,7 @@ pub enum SpriteState {
     Gaming,
     Browsing,
     Idle,
+    Sleeping,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -22,12 +23,25 @@ pub enum Mood {
     Angry,
 }
 
+pub fn is_within_sleep_time(start: &str, end: &str) -> bool {
+    let now = Local::now().time();
+    let start_time = NaiveTime::parse_from_str(start, "%H:%M").unwrap_or_else(|_| NaiveTime::from_hms_opt(23, 0, 0).unwrap());
+    let end_time = NaiveTime::parse_from_str(end, "%H:%M").unwrap_or_else(|_| NaiveTime::from_hms_opt(7, 0, 0).unwrap());
+
+    if start_time < end_time {
+        now >= start_time && now <= end_time
+    } else {
+        now >= start_time || now <= end_time
+    }
+}
+
 pub fn determine_mood(state: &SpriteState, usage: f32, config: &AppConfig) -> Mood {
     match state {
         SpriteState::Overheating => Mood::Angry,
         SpriteState::HighLoad => Mood::Tired,
         SpriteState::Gaming => Mood::Excited,
         SpriteState::Working => Mood::Happy,
+        SpriteState::Sleeping => Mood::Bored,
         _ => {
             if usage < config.mood.boredom_threshold_cpu {
                 Mood::Bored
@@ -58,6 +72,10 @@ pub fn determine_state(
 
     if temp > config.hardware.thresholds.nvidia_temp {
         return SpriteState::Overheating;
+    }
+
+    if config.sleep.enabled && is_within_sleep_time(&config.sleep.start_time, &config.sleep.end_time) {
+        return SpriteState::Sleeping;
     }
 
     if usage > 80.0 || mem_pressure > 90.0 {

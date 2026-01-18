@@ -10,7 +10,7 @@ export const SettingsModal = () => {
   const { monitors, fetchMonitors, moveToMonitor } = useMonitorStore();
   const [formData, setFormData] = useState<AppConfig | null>(null);
   const [activeTab, setActiveTab] = useState<
-    'window' | 'hardware' | 'ai' | 'sound' | 'sprite' | 'hotkeys'
+    'window' | 'hardware' | 'ai' | 'sound' | 'sprite' | 'hotkeys' | 'notifications' | 'sleep'
   >('window');
 
   useEffect(() => {
@@ -74,7 +74,18 @@ export const SettingsModal = () => {
             </div>
 
             <div className="flex border-b overflow-x-auto">
-              {(['window', 'hardware', 'ai', 'sound', 'sprite', 'hotkeys'] as const).map((tab) => (
+              {(
+                [
+                  'window',
+                  'hardware',
+                  'ai',
+                  'sound',
+                  'sprite',
+                  'hotkeys',
+                  'notifications',
+                  'sleep',
+                ] as const
+              ).map((tab) => (
                 <button
                   type="button"
                   key={tab}
@@ -468,6 +479,121 @@ export const SettingsModal = () => {
                   </div>
                   <p className="text-xs text-slate-500 mt-4">
                     Note: Use standard accelerator format (e.g., Ctrl+Shift+Alt+K).
+                  </p>
+                </div>
+              )}
+
+              {activeTab === 'notifications' && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium flex items-center gap-2 cursor-pointer">
+                      Enable System Notifications
+                      <input
+                        type="checkbox"
+                        checked={formData.notifications.enabled}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            notifications: { ...formData.notifications, enabled: e.target.checked },
+                          })
+                        }
+                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </label>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-2 text-sm cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.notifications.notify_on_overheating}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            notifications: {
+                              ...formData.notifications,
+                              notify_on_overheating: e.target.checked,
+                            },
+                          })
+                        }
+                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      Notify on System Overheating
+                    </label>
+                    <label className="flex items-center gap-2 text-sm cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.notifications.notify_on_angry}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            notifications: {
+                              ...formData.notifications,
+                              notify_on_angry: e.target.checked,
+                            },
+                          })
+                        }
+                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      Notify when Ethereal is Angry
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'sleep' && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium flex items-center gap-2 cursor-pointer">
+                      Enable Sleep Mode
+                      <input
+                        type="checkbox"
+                        checked={formData.sleep.enabled}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            sleep: { ...formData.sleep, enabled: e.target.checked },
+                          })
+                        }
+                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </label>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Start Time
+                        <input
+                          type="time"
+                          value={formData.sleep.start_time}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              sleep: { ...formData.sleep, start_time: e.target.value },
+                            })
+                          }
+                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                        />
+                      </label>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        End Time
+                        <input
+                          type="time"
+                          value={formData.sleep.end_time}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              sleep: { ...formData.sleep, end_time: e.target.value },
+                            })
+                          }
+                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-2">
+                    Note: During sleep mode, Sprite activity is minimized.
                   </p>
                 </div>
               )}

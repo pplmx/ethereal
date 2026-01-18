@@ -19,10 +19,11 @@ pub trait HardwareMonitor: Send + Sync {
 
 use crate::config::AppConfig;
 use crate::monitors::factory::create_monitor;
-use crate::monitors::state::{determine_mood, determine_state};
+use crate::monitors::state::{determine_mood, determine_state, Mood, SpriteState};
 use crate::monitors::window::WindowMonitor;
+use crate::utils::notification::send_notification;
 use serde::Serialize;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use tauri::{AppHandle, Emitter};
 
 #[derive(Clone, Serialize)]
@@ -45,6 +46,8 @@ pub fn spawn_monitor_thread(app: AppHandle) {
     std::thread::spawn(move || {
         let monitor = create_monitor();
         let window_monitor = WindowMonitor::new();
+        let mut last_overheat_notif = Instant::now() - Duration::from_secs(300);
+        let mut last_angry_notif = Instant::now() - Duration::from_secs(300);
 
         loop {
             if monitor.is_available() {
@@ -59,6 +62,32 @@ pub fn spawn_monitor_thread(app: AppHandle) {
                 let state =
                     determine_state(monitor.as_ref(), rx, tx, read, write, category, &config);
                 let mood = determine_mood(&state, monitor.get_utilization(), &config);
+
+                if config.notifications.enabled {
+                    if state == SpriteState::Overheating
+                        && config.notifications.notify_on_overheating
+                        && last_overheat_notif.elapsed() > Duration::from_secs(300)
+                    {
+                        send_notification(
+                            &app,
+                            "Ethereal: Hot Hot Hot!",
+                            "The system is getting too hot. I'm melting!",
+                        );
+                        last_overheat_notif = Instant::now();
+                    }
+
+                    if mood == Mood::Angry
+                        && config.notifications.notify_on_angry
+                        && last_angry_notif.elapsed() > Duration::from_secs(300)
+                    {
+                        send_notification(
+                            &app,
+                            "Ethereal is Angry",
+                            "Stop pushing the system so hard! I need a break.",
+                        );
+                        last_angry_notif = Instant::now();
+                    }
+                }
 
                 let stats = GpuStats {
                     temperature: monitor.get_temperature(),

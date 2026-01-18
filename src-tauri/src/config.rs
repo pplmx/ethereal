@@ -15,6 +15,41 @@ pub struct AppConfig {
     pub sound: SoundConfig,
     pub mood: MoodConfig,
     pub hotkeys: HotkeyConfig,
+    pub notifications: NotificationConfig,
+    pub sleep: SleepConfig,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct NotificationConfig {
+    #[serde(default = "default_true")]
+    pub enabled: bool,
+    #[serde(default = "default_true")]
+    pub notify_on_overheating: bool,
+    #[serde(default = "default_true")]
+    pub notify_on_angry: bool,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct SleepConfig {
+    #[serde(default = "default_false")]
+    pub enabled: bool,
+    #[serde(default = "default_sleep_start")]
+    pub start_time: String,
+    #[serde(default = "default_sleep_end")]
+    pub end_time: String,
+}
+
+fn default_true() -> bool {
+    true
+}
+fn default_false() -> bool {
+    false
+}
+fn default_sleep_start() -> String {
+    "23:00".to_string()
+}
+fn default_sleep_end() -> String {
+    "07:00".to_string()
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -74,6 +109,16 @@ impl Default for AppConfig {
             hotkeys: HotkeyConfig {
                 toggle_click_through: default_toggle_click_through(),
                 quit: default_quit(),
+            },
+            notifications: NotificationConfig {
+                enabled: default_true(),
+                notify_on_overheating: default_true(),
+                notify_on_angry: default_true(),
+            },
+            sleep: SleepConfig {
+                enabled: default_false(),
+                start_time: default_sleep_start(),
+                end_time: default_sleep_end(),
             },
         }
     }
