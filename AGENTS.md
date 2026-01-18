@@ -31,7 +31,6 @@ Before declaring a task done or creating a commit, the following commands MUST b
 - Generate a commit **IMMEDIATELY** after a functional unit is verified.
 - Follow the **Conventional Commits** standard (Section 5.2).
 - Commit messages must be descriptive and reflect actual changes.
-- **Commit Body**: Detailed bullet points explaining the nature of changes.
 
 ## 2. Testing Protocol (CRITICAL)
 
@@ -85,11 +84,40 @@ When implementing AI features:
 
 ### 5.2 Git Standards
 
+#### 5.2.1 Commitment Scenarios
+
+Commit immediately when:
+
+- A standalone function/trait/struct is implemented and tested.
+- A frontend component or hook logic is completed and verified.
+- A bug is fixed and a regression test is added.
+- Documentation or configuration is updated.
+- **DO NOT** accumulate changes across multiple features.
+
+#### 5.2.2 Conventional Commits
+
+Format: `<type>(<scope>): <description>`
+
+Types:
+
+- `feat`: A new feature.
+- `fix`: A bug fix.
+- `refactor`: Code change that neither fixes a bug nor adds a feature.
+- `perf`: Code change that improves performance.
+- `test`: Adding missing tests or correcting existing tests.
+- `build`: Changes that affect the build system or external dependencies.
+- `docs`: Documentation only changes.
+- `chore`: Other changes that don't modify src or test files.
+
+#### 5.2.3 Commit Content Requirements
+
+- **Subject Line**: Concise summary of the change.
 - **Commit Body**:
     - Lines < 100 characters.
-    - Use bullet points for changes (e.g., `- add feature X`).
-    - Describe **WHAT** and **WHY**, focusing on actual technical改动.
-    - No need to strictly follow categories if they don't fit.
+    - Use bullet points (`-`) for multiple technical changes.
+    - Describe **WHAT** was changed and **WHY** (context).
+    - Be detailed but avoid fluff.
+    - Focus on technical accuracy over generic categories.
 
 ### 5.3 Asset Management
 
