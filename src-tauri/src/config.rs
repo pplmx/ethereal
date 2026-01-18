@@ -12,6 +12,7 @@ pub struct AppConfig {
     pub window: WindowConfig,
     pub hardware: HardwareConfig,
     pub ai: AiConfig,
+    pub sound: SoundConfig,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -56,6 +57,14 @@ pub struct AiConfig {
     pub cooldown_seconds: u64,
 }
 
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct SoundConfig {
+    #[serde(default = "default_sound_enabled")]
+    pub enabled: bool,
+    #[serde(default = "default_volume")]
+    pub volume: f32,
+}
+
 fn default_x() -> i32 {
     100
 }
@@ -89,6 +98,12 @@ fn default_max_length() -> usize {
 fn default_cooldown() -> u64 {
     30
 }
+fn default_sound_enabled() -> bool {
+    true
+}
+fn default_volume() -> f32 {
+    0.5
+}
 
 impl Default for ThresholdsConfig {
     fn default() -> Self {
@@ -118,6 +133,10 @@ impl Default for AppConfig {
                 api_endpoint: default_api_endpoint(),
                 max_response_length: default_max_length(),
                 cooldown_seconds: default_cooldown(),
+            },
+            sound: SoundConfig {
+                enabled: default_sound_enabled(),
+                volume: default_volume(),
             },
         }
     }

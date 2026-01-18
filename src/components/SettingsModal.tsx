@@ -278,11 +278,35 @@ export const SettingsModal = () => {
                       Enable Sound
                       <input
                         type="checkbox"
-                        disabled
+                        checked={formData.sound.enabled}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            sound: { ...formData.sound, enabled: e.target.checked },
+                          })
+                        }
                         className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                       />
                     </label>
-                    <span className="text-xs text-slate-500">Coming soon</span>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Volume ({Math.round(formData.sound.volume * 100)}%)
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.05"
+                        value={formData.sound.volume}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            sound: { ...formData.sound, volume: parseFloat(e.target.value) },
+                          })
+                        }
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer mt-2"
+                      />
+                    </label>
                   </div>
                 </div>
               )}

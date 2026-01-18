@@ -8,16 +8,20 @@ import { logger } from '@lib/logger';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { useEffect } from 'react';
+import { useSoundEffects } from './hooks/useSoundEffects';
 import { useChatStore } from './stores/chatStore';
 import { useSettingsStore } from './stores/settingsStore';
+import { useSoundStore } from './stores/soundStore';
 import { type HardwareData, useSpriteStore } from './stores/spriteStore';
 
 function App() {
   const { startDragging } = useDraggable();
   useWindowPosition();
+  useSoundEffects();
   const { setThinking, showResponse, setVisible } = useChatStore();
-  const { initialize: initSettings } = useSettingsStore();
+  const { initialize: initSettings, config } = useSettingsStore();
   const { updateHardware, getAnimationFrames, getCurrentFps, shouldLoop } = useSpriteStore();
+  const { syncWithConfig } = useSoundStore();
 
   useEffect(() => {
     logger.info('App mounted');
@@ -71,6 +75,13 @@ function App() {
       hardwareUnlistenPromise.then((unlisten) => unlisten?.());
     };
   }, [initSettings, setThinking, setVisible, showResponse, updateHardware]);
+
+  // Sync sound config
+  useEffect(() => {
+    if (config?.sound) {
+      syncWithConfig(config.sound);
+    }
+  }, [config, syncWithConfig]);
 
   return (
     <main

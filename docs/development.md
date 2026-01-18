@@ -139,11 +139,34 @@ Follow these guidelines:
 
 ### Frontend Testing
 
-The project uses Vitest for testing:
+The project uses **Vitest** + **React Testing Library** for testing.
 
-1. **Unit Testing**: Vitest for testing React components and hooks
-2. **Integration Testing**: React Testing Library for component integration tests
-3. **E2E Testing**: Playwright for end-to-end tests
+#### Integration Testing Strategy (Recommended)
+
+We prioritize integration tests to verify full feature flows.
+
+**Key Patterns:**
+
+1.  **Mocking Time**: Use `vi.useFakeTimers({ shouldAdvanceTime: true })` for animations.
+    ```typescript
+    await act(async () => {
+      vi.advanceTimersByTime(100);
+    });
+    ```
+
+2.  **Mocking Audio**:
+    ```typescript
+    vi.stubGlobal('Audio', vi.fn().mockImplementation(() => ({
+      play: vi.fn(),
+      volume: 1,
+    })));
+    ```
+
+3.  **State Reset**: Always reset Zustand stores in `beforeEach`.
+
+#### Unit Testing
+
+Use Vitest for testing pure logic (e.g., utility functions, store reducers).
 
 To run tests:
 

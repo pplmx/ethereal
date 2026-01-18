@@ -7,6 +7,7 @@ interface SoundState {
 
   toggleSound: () => void;
   setVolume: (volume: number) => void;
+  syncWithConfig: (config: { enabled: boolean; volume: number }) => void;
   playSound: (sound: string) => Promise<void>;
 }
 
@@ -18,6 +19,11 @@ export const useSoundStore = create<SoundState>((set, get) => ({
 
   toggleSound: () => set((state) => ({ enabled: !state.enabled })),
   setVolume: (volume) => set({ volume }),
+
+  // Sync with backend config
+  syncWithConfig: (config) => {
+    set({ enabled: config.enabled, volume: config.volume });
+  },
 
   playSound: async (soundUrl) => {
     const { enabled, volume } = get();

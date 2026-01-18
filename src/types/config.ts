@@ -23,8 +23,14 @@ export interface AiConfig {
   cooldown_seconds: number;
 }
 
+export interface SoundConfig {
+  enabled: boolean;
+  volume: number;
+}
+
 export interface AppConfig {
   window: WindowConfig;
   hardware: HardwareConfig;
   ai: AiConfig;
+  sound: SoundConfig;
 }
