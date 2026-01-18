@@ -2,6 +2,10 @@ use crate::config::AiConfig;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 
+#[cfg(test)]
+#[path = "test.rs"]
+mod test;
+
 #[derive(Serialize)]
 struct GenerateRequest {
     model: String,
@@ -40,7 +44,7 @@ impl OllamaClient {
         }
     }
 
-    pub async fn chat(&self, prompt: &str, mood: Option<&str>) -> anyhow::Result<String> {
+    pub fn build_system_prompt(&self, mood: Option<&str>) -> String {
         let mut system_prompt = self.config.system_prompt.clone();
 
         if let Some(m) = mood {
@@ -49,6 +53,11 @@ impl OllamaClient {
                 system_prompt = format!("{}\n\nIMPORTANT: {}", system_prompt, modifier);
             }
         }
+        system_prompt
+    }
+
+    pub async fn chat(&self, prompt: &str, mood: Option<&str>) -> anyhow::Result<String> {
+        let system_prompt = self.build_system_prompt(mood);
 
         let request = GenerateRequest {
             model: self.config.model_name.clone(),

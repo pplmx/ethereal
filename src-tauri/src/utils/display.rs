@@ -1,6 +1,10 @@
 use serde::Serialize;
 use tauri::{AppHandle, Manager};
 
+#[cfg(test)]
+#[path = "display_test.rs"]
+mod display_test;
+
 #[derive(Debug, Serialize, Clone)]
 pub struct MonitorInfo {
     pub name: Option<String>,
