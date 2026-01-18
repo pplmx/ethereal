@@ -27,6 +27,8 @@ function App() {
     shouldLoop,
     state: spriteState,
     hardware,
+    isClickThrough,
+    toggleClickThrough,
   } = useSpriteStore();
   const { syncWithConfig } = useSoundStore();
 
@@ -36,6 +38,25 @@ function App() {
 
     const handleContextMenu = (e: MouseEvent) => e.preventDefault();
     document.addEventListener('contextmenu', handleContextMenu);
+
+    const setupShortcutListener = async () => {
+      try {
+        const unlisten = await listen('toggle-click-through-request', async () => {
+          const newState = !isClickThrough;
+          logger.info('Click-through toggle requested:', newState);
+          try {
+            await invoke('set_click_through', { enabled: newState });
+            toggleClickThrough();
+          } catch (e) {
+            logger.error('Failed to set click-through:', e);
+          }
+        });
+        return unlisten;
+      } catch (e) {
+        logger.error('Failed to setup shortcut listener', e);
+        return undefined;
+      }
+    };
 
     const setupClipboardListener = async () => {
       try {
@@ -77,11 +98,13 @@ function App() {
       }
     };
 
+    const shortcutUnlistenPromise = setupShortcutListener();
     const clipboardUnlistenPromise = setupClipboardListener();
     const hardwareUnlistenPromise = setupHardwareListener();
 
     return () => {
       document.removeEventListener('contextmenu', handleContextMenu);
+      shortcutUnlistenPromise.then((unlisten) => unlisten?.());
       clipboardUnlistenPromise.then((unlisten) => unlisten?.());
       hardwareUnlistenPromise.then((unlisten) => unlisten?.());
     };
@@ -93,6 +116,8 @@ function App() {
     updateHardware,
     spriteState,
     hardware?.utilization,
+    isClickThrough,
+    toggleClickThrough,
   ]);
 
   // Sync sound config

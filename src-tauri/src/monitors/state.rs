@@ -1,8 +1,5 @@
 use crate::config::AppConfig;
-use crate::monitors::{
-    window::{AppCategory},
-    HardwareMonitor,
-};
+use crate::monitors::{window::AppCategory, HardwareMonitor};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum SpriteState {
@@ -23,12 +20,18 @@ pub fn determine_state(
 ) -> SpriteState {
     let temp = monitor.get_temperature();
     let usage = monitor.get_utilization();
+    let (mem_used, mem_total) = monitor.get_memory_usage();
+    let mem_pressure = if mem_total > 0 {
+        (mem_used as f32 / mem_total as f32) * 100.0
+    } else {
+        0.0
+    };
 
     if temp > config.hardware.thresholds.nvidia_temp {
         return SpriteState::Overheating;
     }
 
-    if usage > 80.0 {
+    if usage > 80.0 || mem_pressure > 90.0 {
         return SpriteState::HighLoad;
     }
 
