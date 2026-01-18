@@ -32,7 +32,7 @@
   # 创建项目 (选择 pnpm + React + TypeScript)
   cargo create-tauri-app ethereal
   # 或使用 npm
-  npm create tauri-app@latest
+  pnpm create tauri-app@latest
   ```
 
 - [ ] 配置 pnpm 工作空间:
@@ -979,7 +979,7 @@
   }
   ```
 
-- [ ] 生成安装包 `npm run tauri build`
+- [ ] 生成安装包 `pnpm tauri build`
 - [ ] 测试安装/卸载流程
 - [ ] 签名配置 (可选)
 

@@ -43,19 +43,19 @@ npm run tauri build -- --release
 **Windows (.msi, .exe):**
 
 ```bash
-npm run tauri build -- --target x86_64-pc-windows-msvc
+pnpm tauri build -- --target x86_64-pc-windows-msvc
 ```
 
 **macOS (.app, .dmg):**
 
 ```bash
-npm run tauri build -- --target x86_64-apple-darwin
+pnpm tauri build -- --release
 ```
 
 **Linux (.deb, .appimage):**
 
 ```bash
-npm run tauri build -- --target x86_64-unknown-linux-gnu
+pnpm tauri build -- --target x86_64-unknown-linux-gnu
 ```
 
 ### Build Configuration

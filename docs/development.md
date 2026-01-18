@@ -147,14 +147,16 @@ We prioritize integration tests to verify full feature flows.
 
 **Key Patterns:**
 
-1.  **Mocking Time**: Use `vi.useFakeTimers({ shouldAdvanceTime: true })` for animations.
+1. **Mocking Time**: Use `vi.useFakeTimers({ shouldAdvanceTime: true })` for animations.
+
     ```typescript
     await act(async () => {
       vi.advanceTimersByTime(100);
     });
     ```
 
-2.  **Mocking Audio**:
+2. **Mocking Audio**:
+
     ```typescript
     vi.stubGlobal('Audio', vi.fn().mockImplementation(() => ({
       play: vi.fn(),
@@ -162,7 +164,7 @@ We prioritize integration tests to verify full feature flows.
     })));
     ```
 
-3.  **State Reset**: Always reset Zustand stores in `beforeEach`.
+3. **State Reset**: Always reset Zustand stores in `beforeEach`.
 
 #### Unit Testing
 

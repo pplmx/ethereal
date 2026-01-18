@@ -25,9 +25,13 @@
 - 严格的依赖隔离避免"幽灵依赖"问题
 
 ```bash
-# 全局安装
-npm install -g pnpm
+# 使用 Corepack (Node.js 16.13+)
+corepack enable
+corepack prepare pnpm@latest --activate
 
+# 或独立安装
+# https://pnpm.io/installation
+```
 # 项目配置
 pnpm config set store-dir ~/.pnpm-store
 pnpm config set auto-install-peers true
