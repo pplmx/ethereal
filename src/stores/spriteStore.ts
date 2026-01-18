@@ -111,11 +111,12 @@ export const useSpriteStore = create<SpriteStore>()(
           if (!config) return [];
 
           const baseUrl = '/sprites';
+
           const prefix = state;
 
           return Array.from(
             { length: config.frameCount },
-            (_, i) => `${baseUrl}/${prefix}-${i + 1}.png`,
+            (_, i) => `${baseUrl}/${prefix}-${i + 1}.svg`,
           );
         },
 

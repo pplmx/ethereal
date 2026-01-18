@@ -19,7 +19,7 @@ export const useResourceStore = create<ResourceState>((set, get) => ({
     const promises = urls.map((url) => {
       if (get().loadedSprites.has(url)) return Promise.resolve();
 
-      return new Promise<void>((resolve, reject) => {
+      return new Promise<void>((resolve) => {
         const img = new Image();
         img.src = url;
         img.onload = () => {

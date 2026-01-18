@@ -37,11 +37,14 @@ pub fn run() {
             monitors::spawn_monitor_thread(app.handle().clone());
             monitors::clipboard::ClipboardMonitor::new().start_polling(app.handle().clone());
             utils::hotkeys::setup_global_hotkeys(app.handle())?;
+            utils::startup::apply_config(app.handle());
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             greet,
             utils::window::set_click_through,
+            utils::display::get_monitors,
+            utils::display::move_to_monitor,
             config::save_window_position,
             config::get_config,
             config::update_config,
