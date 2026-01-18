@@ -21,7 +21,7 @@ function App() {
   const { startDragging } = useDraggable();
   useWindowPosition();
   useSoundEffects();
-  const { setThinking, showResponse, setVisible } = useChatStore();
+  const { setThinking, showResponse, setVisible, addToHistory, history } = useChatStore();
   const { initialize: initSettings, config, setIsOpen, updateConfig } = useSettingsStore();
   const {
     updateHardware,
@@ -78,10 +78,12 @@ function App() {
         const unlistenClipboard = await listen<string>('clipboard-changed', async (event) => {
           const content = event.payload;
           const { state, mood, hardware: hw } = useSpriteStore.getState();
+          const { history: chatHistory } = useChatStore.getState();
 
           logger.info('Clipboard changed detected');
           setThinking(true);
           setVisible(true);
+          addToHistory('user', content);
 
           try {
             const system_context = `Current State: ${state}, Mood: ${mood}, CPU: ${
@@ -92,6 +94,7 @@ function App() {
 
             const response = await invoke<string>('chat_with_ethereal', {
               message: content,
+              history: chatHistory,
               systemContext: system_context,
               mood: mood,
             });
@@ -108,11 +111,21 @@ function App() {
         });
         unlisteners.push(unlistenHardware);
 
-        const unlistenDragDrop = await listen('tauri://drag-drop', (event) => {
-          const paths = event.payload as string[];
-          if (paths.length > 0) {
-            const firstPath = paths[0];
-            logger.info('File dropped, updating sprite path:', firstPath);
+        const unlistenDragDrop = await listen<string[]>('tauri://drag-drop', (event) => {
+          const paths = event.payload;
+          if (paths && paths.length > 0) {
+            const firstPathRaw = paths[0];
+            if (!firstPathRaw) return;
+            let firstPath = firstPathRaw;
+
+            if (firstPath.includes('.') && (firstPath.includes('/') || firstPath.includes('\\'))) {
+              const lastSlash = Math.max(firstPath.lastIndexOf('/'), firstPath.lastIndexOf('\\'));
+              if (lastSlash > 0) {
+                firstPath = firstPath.substring(0, lastSlash);
+              }
+            }
+
+            logger.info('File/Folder dropped, updating sprite path:', firstPath);
             if (config) {
               updateConfig({
                 ...config,
@@ -144,6 +157,9 @@ function App() {
     setVisible,
     showResponse,
     updateHardware,
+    addToHistory,
+    config,
+    updateConfig,
   ]);
 
   useEffect(() => {
@@ -157,8 +173,10 @@ function App() {
 
   const handleDoubleClick = async () => {
     if (config?.interaction?.double_click_action === 'chat') {
+      const message = 'Hello! I just double-clicked you.';
       setThinking(true);
       setVisible(true);
+      addToHistory('user', message);
       try {
         const system_context = `Current State: ${spriteState}, Mood: ${spriteMood}, CPU: ${
           hardware?.utilization
@@ -167,7 +185,8 @@ function App() {
         }KB/s down, Bat: ${hardware?.battery_level}% (${hardware?.battery_state})`;
 
         const response = await invoke<string>('chat_with_ethereal', {
-          message: 'Hello! I just double-clicked you.',
+          message: message,
+          history: history,
           systemContext: system_context,
           mood: spriteMood,
         });

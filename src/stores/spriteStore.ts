@@ -1,3 +1,4 @@
+import { convertFileSrc, isTauri } from '@tauri-apps/api/core';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
@@ -141,12 +142,19 @@ export const useSpriteStore = create<SpriteStore>()(
           const config = spriteConfig[state] ?? spriteConfig.idle;
           if (!config) return [];
 
-          const baseUrl = customSpritePath || '/sprites';
           const prefix = state;
+
+          if (customSpritePath) {
+            return Array.from({ length: config.frameCount }, (_, i) => {
+              const separator = customSpritePath.includes('\\') ? '\\' : '/';
+              const path = `${customSpritePath}${separator}${prefix}-${i + 1}.svg`;
+              return isTauri() ? convertFileSrc(path) : path;
+            });
+          }
 
           return Array.from(
             { length: config.frameCount },
-            (_, i) => `${baseUrl}/${prefix}-${i + 1}.svg`,
+            (_, i) => `/sprites/${prefix}-${i + 1}.svg`,
           );
         },
 

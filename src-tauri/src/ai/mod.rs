@@ -6,17 +6,22 @@ use serde::{Deserialize, Serialize};
 #[path = "test.rs"]
 mod test;
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct ChatMessage {
+    pub role: String,
+    pub content: String,
+}
+
 #[derive(Serialize)]
-struct GenerateRequest {
+struct ChatRequest {
     model: String,
-    prompt: String,
+    messages: Vec<ChatMessage>,
     stream: bool,
-    system: Option<String>,
 }
 
 #[derive(Deserialize)]
-struct GenerateResponse {
-    response: String,
+struct ChatResponse {
+    message: ChatMessage,
 }
 
 pub struct OllamaClient {
@@ -56,17 +61,27 @@ impl OllamaClient {
         system_prompt
     }
 
-    pub async fn chat(&self, prompt: &str, mood: Option<&str>) -> anyhow::Result<String> {
+    pub async fn chat(
+        &self,
+        history: Vec<ChatMessage>,
+        mood: Option<&str>,
+    ) -> anyhow::Result<String> {
         let system_prompt = self.build_system_prompt(mood);
 
-        let request = GenerateRequest {
+        let mut messages = vec![ChatMessage {
+            role: "system".to_string(),
+            content: system_prompt,
+        }];
+
+        messages.extend(history);
+
+        let request = ChatRequest {
             model: self.config.model_name.clone(),
-            prompt: prompt.to_string(),
+            messages,
             stream: false,
-            system: Some(system_prompt),
         };
 
-        let url = format!("{}/api/generate", self.config.api_endpoint);
+        let url = format!("{}/api/chat", self.config.api_endpoint);
 
         let res = self.client.post(&url).json(&request).send().await?;
 
@@ -77,7 +92,7 @@ impl OllamaClient {
             ));
         }
 
-        let body: GenerateResponse = res.json().await?;
-        Ok(body.response)
+        let body: ChatResponse = res.json().await?;
+        Ok(body.message.content)
     }
 }

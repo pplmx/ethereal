@@ -10,6 +10,7 @@ pub mod utils;
 async fn chat_with_ethereal(
     app: tauri::AppHandle,
     message: String,
+    history: Vec<crate::ai::ChatMessage>,
     system_context: Option<String>,
     mood: Option<String>,
 ) -> Result<String, String> {
@@ -19,14 +20,21 @@ async fn chat_with_ethereal(
 
     let client = crate::ai::OllamaClient::new(config.ai);
 
-    let prompt = if let Some(ctx) = system_context {
+    let mut full_history = history;
+
+    let user_content = if let Some(ctx) = system_context {
         format!("System Context: {}\n\nUser Message: {}", ctx, message)
     } else {
         message
     };
 
+    full_history.push(crate::ai::ChatMessage {
+        role: "user".to_string(),
+        content: user_content,
+    });
+
     client
-        .chat(&prompt, mood.as_deref())
+        .chat(full_history, mood.as_deref())
         .await
         .map_err(|e| e.to_string())
 }

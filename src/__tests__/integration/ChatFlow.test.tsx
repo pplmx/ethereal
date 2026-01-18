@@ -87,6 +87,7 @@ describe('Chat Flow Integration', () => {
     store.setMessage(null);
     store.setVisible(false);
     store.setThinking(false);
+    store.clearHistory();
   });
 
   afterEach(() => {
@@ -124,8 +125,7 @@ describe('Chat Flow Integration', () => {
       'chat_with_ethereal',
       expect.objectContaining({
         message: 'User copied text',
-        systemContext: expect.stringContaining('Mood:'),
-        mood: expect.any(String),
+        history: [],
       }),
     );
 
@@ -134,6 +134,57 @@ describe('Chat Flow Integration', () => {
       expect(state.message).toBe('Hello from AI!');
       expect(state.isVisible).toBe(true);
       expect(state.isThinking).toBe(false);
+      expect(state.history).toHaveLength(2);
+      expect(state.history[0]).toEqual({ role: 'user', content: 'User copied text' });
+      expect(state.history[1]).toEqual({ role: 'assistant', content: 'Hello from AI!' });
+    });
+  });
+
+  it('maintains conversation history across multiple chats', async () => {
+    let clipboardCallback: ((event: any) => void) | undefined;
+
+    (listen as Mock).mockImplementation(async (event, callback) => {
+      if (event === 'clipboard-changed') {
+        clipboardCallback = callback;
+        return () => {};
+      }
+      return () => {};
+    });
+
+    (invoke as Mock).mockResolvedValue('Second response');
+
+    render(<App />);
+
+    await waitFor(() => expect(clipboardCallback).toBeDefined());
+
+    act(() => {
+      useChatStore.getState().addToHistory('user', 'First message');
+      useChatStore.getState().addToHistory('assistant', 'First response');
+    });
+
+    await act(async () => {
+      if (clipboardCallback) {
+        await clipboardCallback({ payload: 'Second message' });
+      }
+    });
+
+    expect(invoke).toHaveBeenCalledWith(
+      'chat_with_ethereal',
+      expect.objectContaining({
+        message: 'Second message',
+        history: expect.arrayContaining([
+          { role: 'user', content: 'First message' },
+          { role: 'assistant', content: 'First response' },
+        ]),
+      }),
+    );
+
+    await waitFor(() => {
+      const state = useChatStore.getState();
+      expect(state.history).toHaveLength(4);
+      const lastMessage = state.history[state.history.length - 1];
+      expect(lastMessage).toBeDefined();
+      expect(lastMessage?.content).toBe('Second response');
     });
   });
 
@@ -166,7 +217,7 @@ describe('Chat Flow Integration', () => {
       'chat_with_ethereal',
       expect.objectContaining({
         message: 'User copied text',
-        systemContext: expect.any(String),
+        history: [],
       }),
     );
 
