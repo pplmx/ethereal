@@ -1,8 +1,3 @@
-/**
- * Simple script to generate placeholder assets (sprites and sounds)
- * Usage: pnpm generate-assets
- */
-
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,83 +12,105 @@ const ensureDir = (dir: string) => {
   }
 };
 
-// Generate a simple SVG sprite
-const generateSprite = (name: string, color: string) => {
+const generateEtherealSprite = (name: string, color: string, index: number) => {
   const svg = `
-<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-  <rect width="200" height="200" fill="transparent" />
-  <circle cx="100" cy="100" r="80" fill="${color}" fill-opacity="0.8" />
-  <circle cx="70" cy="80" r="10" fill="white" />
-  <circle cx="130" cy="80" r="10" fill="white" />
-  <path d="M 70 130 Q 100 160 130 130" stroke="white" stroke-width="5" fill="none" />
-  <text x="50%" y="180" text-anchor="middle" fill="white" font-family="Arial" font-size="20">${name}</text>
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="15" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <radialGradient id="coreGrad-${name}-${index}" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="${color}" stop-opacity="1" />
+      <stop offset="30%" stop-color="${color}" stop-opacity="0.7" />
+      <stop offset="60%" stop-color="${color}" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="${color}" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Spirit Aura -->
+  <circle cx="128" cy="128" r="95" fill="url(#coreGrad-${name}-${index})" opacity="0.6" filter="url(#glow)">
+    <animate attributeName="r" values="85;105;85" dur="3s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="3s" repeatCount="indefinite" />
+  </circle>
+
+  <!-- Prominent Energy Ribbons -->
+  <path d="M128 40 Q200 128 128 216 Q56 128 128 40" fill="none" stroke="${color}" stroke-width="4" stroke-opacity="0.8" filter="url(#glow)">
+    <animate attributeName="d" 
+             values="M128 40 Q200 128 128 216 Q56 128 128 40;
+                     M128 20 Q260 128 128 236 Q-4 128 128 20;
+                     M128 40 Q200 128 128 216 Q56 128 128 40" 
+             dur="4s" repeatCount="indefinite" />
+  </path>
+  
+  <path d="M128 60 Q180 128 128 196 Q76 128 128 60" fill="none" stroke="white" stroke-width="2" stroke-opacity="0.5" filter="url(#glow)">
+    <animate attributeName="d" 
+             values="M128 60 Q180 128 128 196 Q76 128 128 60;
+                     M128 40 Q220 128 128 216 Q36 128 128 40;
+                     M128 60 Q180 128 128 196 Q76 128 128 60" 
+             dur="6s" repeatCount="indefinite" />
+  </path>
+
+  <!-- Intelligence Core -->
+  <g filter="url(#glow)">
+    <circle cx="128" cy="128" r="28" fill="white" opacity="0.2" />
+    <circle cx="128" cy="128" r="14" fill="white" opacity="1">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="1s" repeatCount="indefinite" />
+      <animate attributeName="r" values="12;16;12" dur="1s" repeatCount="indefinite" />
+    </circle>
+  </g>
+
+  <!-- Floating Particles -->
+  <circle cx="100" cy="100" r="3" fill="white" opacity="0.9">
+    <animate attributeName="cy" values="100;70;100" dur="2s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="156" cy="140" r="2" fill="white" opacity="0.7">
+    <animate attributeName="cy" values="140;170;140" dur="3s" repeatCount="indefinite" />
+  </circle>
+
+  <text x="128" y="245" text-anchor="middle" fill="white" font-family="monospace" font-size="11" font-weight="bold" opacity="0.6">
+    ETHEREAL::${name.toUpperCase()}
+  </text>
 </svg>`;
   return svg;
 };
 
-// Generate sprites
 const spritesDir = path.join(PUBLIC_DIR, 'sprites');
 ensureDir(spritesDir);
 
 const sprites = [
   { name: 'idle', color: '#60A5FA' },
-  { name: 'working', color: '#34D399' },
-  { name: 'gaming', color: '#F472B6' },
-  { name: 'browsing', color: '#FBBF24' },
+  { name: 'working', color: '#10B981' },
+  { name: 'gaming', color: '#F43F5E' },
+  { name: 'browsing', color: '#F59E0B' },
   { name: 'overheating', color: '#EF4444' },
-  { name: 'high_load', color: '#F87171' },
-  { name: 'thinking', color: '#A78BFA' },
+  { name: 'high_load', color: '#8B5CF6' },
+  { name: 'thinking', color: '#EC4899' },
+  { name: 'sleeping', color: '#64748B' },
+  { name: 'low_battery', color: '#D946EF' },
 ];
 
-sprites.forEach(({ name, color }) => {
+for (const { name, color } of sprites) {
   for (let i = 1; i <= 4; i++) {
-    const fileName = `${name}-${i}.png`; // Actually SVG content but saved as png extension for mock compatibility
-    // In real SVG to PNG conversion we would need canvas/sharp, but for browser testing
-    // browsers can render SVG in IMG tags even with wrong extension sometimes, or we just save as .svg
-    // To match current code expecting .png, we will save as .svg but code expects .png.
-    // Let's just create .svg files and update the store later, OR just create fake PNGs (empty or simple header)
-    // Actually, simple SVGs are best placeholders. Let's save as .svg and update store to use .svg for placeholders?
-    // No, let's stick to the plan: simple SVG content in .svg file.
-
-    // WAIT: The app expects .png. If we provide SVG content in .png file, it might fail to decode.
-    // For a zero-dependency script, we can't easily generate valid PNG binaries.
-    // Let's copy a 1x1 pixel transparent PNG or base64 decode one.
-
-    // Better approach: Generate SVGs and update the store to look for SVGs if PNGs fail?
-    // OR: Just generate SVGs and name them .svg, and update `DEFAULT_SPRITE_CONFIG` in `spriteStore.ts` to extension: 'svg'
-    // But store hardcodes .png.
-
-    // Let's write valid SVGs with .svg extension and tell user to update store if needed.
-    // OR, easiest: Just generate SVGs. The code currently hardcodes .png.
-
-    // Let's generate SVGs and update the store to use .svg.
     fs.writeFileSync(
       path.join(spritesDir, `${name}-${i}.svg`),
-      generateSprite(`${name} ${i}`, color),
+      generateEtherealSprite(name, color, i),
     );
   }
-});
+}
 
-// Generate dummy sound files (empty text files or simple wav header)
 const soundsDir = path.join(PUBLIC_DIR, 'sounds');
 ensureDir(soundsDir);
-
-const sounds = ['alert.mp3', 'active.mp3', 'thinking.mp3', 'notification.mp3', 'focus.mp3'];
-
-// Minimal valid MP3 header (silence) or just a text file (browser might warn but won't crash)
-// A 1-second silent MP3 base64
-const silentMp3 = new Uint8Array(
+const soundsList = ['alert.mp3', 'active.mp3', 'thinking.mp3', 'notification.mp3', 'focus.mp3'];
+const silentAudio = new Uint8Array(
   Buffer.from(
     '//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq',
     'base64',
   ),
 );
+for (const sound of soundsList) {
+  fs.writeFileSync(path.join(soundsDir, sound), silentAudio);
+}
 
-sounds.forEach((sound) => {
-  fs.writeFileSync(path.join(soundsDir, sound), silentMp3);
-});
-
-console.log('✅ Generated placeholder assets in public/');
-console.log(
-  '👉 NOTE: Sprites are .svg files. You may need to update spriteStore.ts to use .svg extension for testing.',
-);
+console.log('✨ Ultimate High-Fidelity Ethereal Assets Generated! ✨');

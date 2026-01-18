@@ -10,6 +10,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
+import './App.css';
 import { useSoundEffects } from './hooks/useSoundEffects';
 import { useChatStore } from './stores/chatStore';
 import { useSettingsStore } from './stores/settingsStore';

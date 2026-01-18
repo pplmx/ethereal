@@ -116,6 +116,7 @@ export const SpriteAnimator = ({
         ) : (
           <motion.img
             key={currentFrame}
+            data-testid="sprite-animator"
             src={frames[currentFrame]}
             alt="Sprite"
             draggable={false}
