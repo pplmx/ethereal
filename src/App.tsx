@@ -22,7 +22,7 @@ function App() {
   useWindowPosition();
   useSoundEffects();
   const { setThinking, showResponse, setVisible } = useChatStore();
-  const { initialize: initSettings, config, setIsOpen } = useSettingsStore();
+  const { initialize: initSettings, config, setIsOpen, updateConfig } = useSettingsStore();
   const {
     updateHardware,
     getAnimationFrames,
@@ -32,6 +32,7 @@ function App() {
     mood: spriteMood,
     hardware,
     toggleClickThrough,
+    setCustomSpritePath,
   } = useSpriteStore();
   const { syncWithConfig } = useSoundStore();
 
@@ -106,6 +107,22 @@ function App() {
           updateHardware(event.payload);
         });
         unlisteners.push(unlistenHardware);
+
+        const unlistenDragDrop = await listen('tauri://drag-drop', (event) => {
+          const paths = event.payload as string[];
+          if (paths.length > 0) {
+            const firstPath = paths[0];
+            logger.info('File dropped, updating sprite path:', firstPath);
+            if (config) {
+              updateConfig({
+                ...config,
+                interaction: { ...config.interaction, custom_sprite_path: firstPath },
+              });
+              showResponse('Ooooh, new clothes? Let me try this on!');
+            }
+          }
+        });
+        unlisteners.push(unlistenDragDrop);
       } catch (e) {
         logger.error('Failed to setup listeners', e);
       }
@@ -133,7 +150,10 @@ function App() {
     if (config?.sound) {
       syncWithConfig(config.sound);
     }
-  }, [config, syncWithConfig]);
+    if (config?.interaction?.custom_sprite_path) {
+      setCustomSpritePath(config.interaction.custom_sprite_path);
+    }
+  }, [config, syncWithConfig, setCustomSpritePath]);
 
   const handleDoubleClick = async () => {
     if (config?.interaction?.double_click_action === 'chat') {

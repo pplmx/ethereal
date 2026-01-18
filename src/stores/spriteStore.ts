@@ -53,9 +53,11 @@ interface SpriteStore {
   hardware: HardwareData | null;
   aiMessage: string | null;
   spriteConfig: SpriteConfig;
+  customSpritePath: string | null;
 
   setState: (state: SpriteState) => void;
   setMood: (mood: MoodState) => void;
+  setCustomSpritePath: (path: string | null) => void;
   toggleClickThrough: () => void;
   updateHardware: (data: HardwareData) => void;
   setAiMessage: (message: string | null) => void;
@@ -107,9 +109,11 @@ export const useSpriteStore = create<SpriteStore>()(
         hardware: null,
         aiMessage: null,
         spriteConfig: DEFAULT_SPRITE_CONFIG,
+        customSpritePath: null,
 
         setState: (state) => set({ state }),
         setMood: (mood) => set({ mood }),
+        setCustomSpritePath: (customSpritePath) => set({ customSpritePath }),
 
         toggleClickThrough: () => set((state) => ({ isClickThrough: !state.isClickThrough })),
 
@@ -133,11 +137,11 @@ export const useSpriteStore = create<SpriteStore>()(
         },
 
         getAnimationFrames: () => {
-          const { state, spriteConfig } = get();
+          const { state, spriteConfig, customSpritePath } = get();
           const config = spriteConfig[state] ?? spriteConfig.idle;
           if (!config) return [];
 
-          const baseUrl = '/sprites';
+          const baseUrl = customSpritePath || '/sprites';
           const prefix = state;
 
           return Array.from(

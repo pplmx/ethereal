@@ -54,6 +54,7 @@ export interface SleepConfig {
 export interface InteractionConfig {
   double_click_action: string;
   enable_hover_effects: boolean;
+  custom_sprite_path?: string;
 }
 
 export interface BatteryConfig {

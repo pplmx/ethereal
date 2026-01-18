@@ -56,6 +56,7 @@ describe('Hardware Dashboard Integration', () => {
     sleep: { enabled: false, start_time: '23:00', end_time: '07:00' },
     interaction: { double_click_action: 'chat', enable_hover_effects: true },
     autostart: { enabled: false },
+    privacy: { share_window_title: false },
   };
 
   beforeEach(() => {

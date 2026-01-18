@@ -34,6 +34,7 @@ describe('SettingsStore', () => {
     interaction: { double_click_action: 'chat', enable_hover_effects: true },
     battery: { low_battery_threshold: 20.0, notify_on_low_battery: true },
     autostart: { enabled: false },
+    privacy: { share_window_title: false },
   };
 
   beforeEach(() => {

@@ -53,6 +53,7 @@ pub struct InteractionConfig {
     pub double_click_action: String,
     #[serde(default = "default_true")]
     pub enable_hover_effects: bool,
+    pub custom_sprite_path: Option<String>,
 }
 
 fn default_double_click_action() -> String {
@@ -163,6 +164,7 @@ impl Default for AppConfig {
             interaction: InteractionConfig {
                 double_click_action: default_double_click_action(),
                 enable_hover_effects: default_true(),
+                custom_sprite_path: None,
             },
             battery: BatteryConfig {
                 low_battery_threshold: default_low_battery_threshold(),
