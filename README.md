@@ -1,9 +1,9 @@
 # Desktop Ethereal
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Platform](https://img.shields.io/badge/platform-windows-blue)](https://github.com/your-username/ethereal)
-[![Version](https://img.shields.io/badge/version-0.1.0-orange)](https://github.com/your-username/ethereal)
-[![CI](https://github.com/your-username/ethereal/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/ethereal/actions/workflows/ci.yml)
+[![Platform](https://img.shields.io/badge/platform-windows-blue)](https://github.com/pplmx/ethereal)
+[![Version](https://img.shields.io/badge/version-0.1.0-orange)](https://github.com/pplmx/ethereal)
+[![CI](https://github.com/pplmx/ethereal/actions/workflows/ci.yml/badge.svg)](https://github.com/pplmx/ethereal/actions/workflows/ci.yml)
 
 Desktop Ethereal is an interactive desktop companion that monitors your system activity and responds with dynamic behaviors. Built with Rust and Tauri, this ghost-like creature lives on your desktop and changes its appearance based on what you're doing.
 

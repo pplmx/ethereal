@@ -45,7 +45,7 @@ ethereal/
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/ethereal.git
+   git clone https://github.com/pplmx/ethereal.git
    cd ethereal
    ```
 
