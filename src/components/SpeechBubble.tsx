@@ -8,24 +8,38 @@ export const SpeechBubble = () => {
     <AnimatePresence>
       {(isVisible || isThinking) && (
         <motion.div
-          initial={{ opacity: 0, y: 10, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 10, scale: 0.9 }}
-          className="absolute -top-24 left-1/2 -translate-x-1/2 max-w-[200px] z-50"
+          initial={{ opacity: 0, y: 20, scale: 0.8, filter: 'blur(10px)' }}
+          animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+          exit={{ opacity: 0, y: 20, scale: 0.8, filter: 'blur(10px)' }}
+          transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+          className="w-full max-w-[240px] pointer-events-none"
         >
-          <div className="bg-white/90 backdrop-blur-sm text-slate-800 px-4 py-3 rounded-2xl shadow-lg border border-white/50 text-sm font-medium relative">
+          <div className="relative glass-effect p-4 rounded-2xl shadow-indigo-500/20">
             {isThinking ? (
-              <div className="flex space-x-1 items-center justify-center h-5">
-                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" />
+              <div className="flex space-x-2 items-center justify-center py-2">
+                {[0, 1, 2].map((i) => (
+                  <motion.div
+                    key={i}
+                    animate={{
+                      scale: [1, 1.5, 1],
+                      opacity: [0.3, 1, 0.3],
+                    }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      delay: i * 0.2,
+                    }}
+                    className="w-2 h-2 bg-cyan-400 rounded-full shadow-[0_0_8px_#22d3ee]"
+                  />
+                ))}
               </div>
             ) : (
-              message
+              <p className="text-white text-sm font-medium leading-relaxed text-center">
+                {message}
+              </p>
             )}
 
-            {/* Arrow */}
-            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white/90 border-r border-b border-white/50 transform rotate-45" />
+            <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 glass-effect rotate-45 border-t-0 border-l-0" />
           </div>
         </motion.div>
       )}

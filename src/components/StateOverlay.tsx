@@ -24,21 +24,21 @@ export const StateOverlay = () => {
   };
 
   return (
-    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none z-40">
+    <div className="w-full flex justify-center py-2 pointer-events-none">
       <AnimatePresence mode="wait">
         <motion.div
           key={`${state}-${mood}`}
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -5 }}
-          className="flex flex-col items-center"
+          initial={{ opacity: 0, scale: 0.8, filter: 'blur(5px)' }}
+          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+          exit={{ opacity: 0, scale: 0.8, filter: 'blur(5px)' }}
+          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
         >
-          <div className="bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10 flex items-center gap-1.5 shadow-sm">
-            <span className="text-[10px] text-white/90 font-medium uppercase tracking-wider">
+          <div className="flex items-center gap-2.5 px-4 py-1.5 glass-effect rounded-full shadow-lg ring-1 ring-white/5">
+            <span className="text-[10px] font-bold tracking-[0.15em] text-indigo-200 uppercase">
               {state.replace('_', ' ')}
             </span>
-            <div className="w-1 h-1 rounded-full bg-white/20" />
-            <span className="text-xs" title={mood}>
+            <div className="w-1 h-1 rounded-full bg-indigo-400/40 shadow-[0_0_5px_#818cf8]" />
+            <span className="text-sm filter drop-shadow-md" title={mood}>
               {getMoodEmoji(mood)}
             </span>
           </div>

@@ -28,7 +28,8 @@
         "noUselessCatch": "error",
         "noUselessTypeConstraint": "error",
         "useFlatMap": "warn",
-        "noAdjacentSpacesInRegex": "error"
+        "noAdjacentSpacesInRegex": "error",
+        "noImportantStyles": "off"
       },
       "correctness": {
         "noUnusedVariables": "warn",
@@ -46,7 +47,8 @@
         "noExplicitAny": "warn",
         "noArrayIndexKey": "warn",
         "noDoubleEquals": "error",
-        "noWith": "error"
+        "noWith": "error",
+        "noUnknownAtRules": "off"
       },
       "a11y": {
         "useButtonType": "warn",

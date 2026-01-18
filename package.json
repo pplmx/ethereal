@@ -66,6 +66,7 @@
     "lint-staged": "^16.2.7",
     "markdownlint-cli": "^0.47.0",
     "postcss": "^8.5.6",
+    "serve": "^14.2.5",
     "tailwindcss": "^4.1.18",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",

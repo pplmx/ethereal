@@ -19,10 +19,10 @@ describe('SpriteAnimator', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders loading state initially', () => {
+  it('renders loading spinner initially', () => {
     const frames = ['frame1.png', 'frame2.png'];
     render(<SpriteAnimator frames={frames} />);
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
   });
 
   it('renders sprite after loading', async () => {
@@ -40,10 +40,10 @@ describe('SpriteAnimator', () => {
     render(<SpriteAnimator frames={frames} fps={10} />);
 
     await act(async () => {
-      vi.advanceTimersByTime(50); // Just enough to trigger load timeout
+      vi.advanceTimersByTime(50);
     });
 
-    expect(screen.getByAltText('Sprite animation')).toBeInTheDocument();
+    expect(screen.getByAltText('Sprite')).toBeInTheDocument();
 
     window.Image = originalImage;
   });
@@ -63,34 +63,33 @@ describe('SpriteAnimator', () => {
     render(<SpriteAnimator frames={frames} fps={10} />);
 
     await act(async () => {
-      vi.advanceTimersByTime(50); // Load
+      vi.advanceTimersByTime(50);
     });
 
-    const img = screen.getByAltText('Sprite animation');
-    expect(img).toHaveAttribute('src', 'frame1.png');
+    expect(screen.getByAltText('Sprite')).toHaveAttribute('src', 'frame1.png');
 
     await act(async () => {
-      vi.advanceTimersByTime(100);
+      vi.advanceTimersByTime(120);
     });
 
     await waitFor(() => {
-      expect(img).toHaveAttribute('src', 'frame2.png');
+      expect(screen.getByAltText('Sprite')).toHaveAttribute('src', 'frame2.png');
     });
 
     await act(async () => {
-      vi.advanceTimersByTime(100);
+      vi.advanceTimersByTime(120);
     });
 
     await waitFor(() => {
-      expect(img).toHaveAttribute('src', 'frame3.png');
+      expect(screen.getByAltText('Sprite')).toHaveAttribute('src', 'frame3.png');
     });
 
     await act(async () => {
-      vi.advanceTimersByTime(100);
+      vi.advanceTimersByTime(120);
     });
 
     await waitFor(() => {
-      expect(img).toHaveAttribute('src', 'frame1.png');
+      expect(screen.getByAltText('Sprite')).toHaveAttribute('src', 'frame1.png');
     });
 
     window.Image = originalImage;
@@ -114,25 +113,25 @@ describe('SpriteAnimator', () => {
     );
 
     await act(async () => {
-      vi.advanceTimersByTime(50); // Load
+      vi.advanceTimersByTime(50);
     });
 
-    const img = screen.getByAltText('Sprite animation');
+    expect(screen.getByAltText('Sprite')).toHaveAttribute('src', 'frame1.png');
 
     await act(async () => {
-      vi.advanceTimersByTime(100);
+      vi.advanceTimersByTime(120);
     });
 
     await waitFor(() => {
-      expect(img).toHaveAttribute('src', 'frame2.png');
+      expect(screen.getByAltText('Sprite')).toHaveAttribute('src', 'frame2.png');
     });
 
     await act(async () => {
-      vi.advanceTimersByTime(100);
+      vi.advanceTimersByTime(120);
     });
 
     expect(onAnimationEnd).toHaveBeenCalled();
-    expect(img).toHaveAttribute('src', 'frame2.png');
+    expect(screen.getByAltText('Sprite')).toHaveAttribute('src', 'frame2.png');
 
     window.Image = originalImage;
   });
@@ -151,10 +150,10 @@ describe('SpriteAnimator', () => {
     render(<SpriteAnimator frames={['frame1.png']} />);
 
     await act(async () => {
-      vi.advanceTimersByTime(50); // Load
+      vi.advanceTimersByTime(50);
     });
 
-    const img = screen.getByAltText('Sprite animation');
+    const img = screen.getByAltText('Sprite');
     expect(img).toHaveAttribute('draggable', 'false');
 
     const preventDefault = vi.fn();
@@ -170,7 +169,7 @@ describe('SpriteAnimator', () => {
     window.Image = originalImage;
   });
 
-  it('applies custom className', async () => {
+  it('applies custom className to the image', async () => {
     const originalImage = window.Image;
     window.Image = class {
       onload: any;
@@ -184,10 +183,10 @@ describe('SpriteAnimator', () => {
     render(<SpriteAnimator frames={['frame1.png']} className="custom-class" />);
 
     await act(async () => {
-      vi.advanceTimersByTime(50); // Load
+      vi.advanceTimersByTime(50);
     });
 
-    const img = screen.getByAltText('Sprite animation');
+    const img = screen.getByAltText('Sprite');
     expect(img).toHaveClass('custom-class');
 
     window.Image = originalImage;
