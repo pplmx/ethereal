@@ -18,16 +18,16 @@ Desktop Ethereal aims to become the ultimate desktop companion that intelligentl
 - [x] Configuration panel for customizing behavior
 - [x] Settings persistence between sessions
 - [ ] Improved status indicators and notifications
-- [ ] Animation preview functionality
+- [x] Animation preview functionality
 - [ ] User-friendly setup wizard
 
 ### Enhanced System Monitoring
 
 - [x] CPU utilization tracking
-- [ ] Network activity monitoring
-- [ ] Disk I/O monitoring
+- [x] Network activity monitoring
+- [x] Disk I/O monitoring
 - [ ] Battery status for laptops
-- [ ] Memory pressure detection
+- [x] Memory pressure detection
 
 ### Ethereal Intelligence
 
@@ -47,8 +47,8 @@ Desktop Ethereal aims to become the ultimate desktop companion that intelligentl
 
 ### Advanced Features
 
-- [ ] Sound effect integration with animations
-- [ ] Multi-monitor support with positioning options
+- [x] Sound effect integration with animations
+- [x] Multi-monitor support with positioning options
 - [ ] User-defined hotkeys and gestures
 - [ ] Animation editor for creating custom sprites
 - [ ] Custom personality prompts and character creation

@@ -2,7 +2,7 @@
 mod tests {
     use crate::config::AppConfig;
     use crate::monitors::{
-        state::{determine_state, SpriteState},
+        state::{determine_mood, determine_state, Mood, SpriteState},
         window::AppCategory,
         HardwareMonitor,
     };
@@ -156,5 +156,27 @@ mod tests {
         let config = create_config(80.0);
         let state = determine_state(&monitor, 0, 0, 0, 0, AppCategory::Unknown, &config);
         assert_eq!(state, SpriteState::Idle);
+    }
+
+    #[test]
+    fn test_determine_mood() {
+        let config = AppConfig::default();
+
+        assert_eq!(
+            determine_mood(&SpriteState::Overheating, 50.0, &config),
+            Mood::Angry
+        );
+        assert_eq!(
+            determine_mood(&SpriteState::HighLoad, 90.0, &config),
+            Mood::Tired
+        );
+        assert_eq!(
+            determine_mood(&SpriteState::Idle, 1.0, &config),
+            Mood::Bored
+        );
+        assert_eq!(
+            determine_mood(&SpriteState::Idle, 10.0, &config),
+            Mood::Happy
+        );
     }
 }

@@ -35,6 +35,13 @@ describe('Settings Flow Integration', () => {
       max_response_length: 100,
       cooldown_seconds: 30,
     },
+    sound: {
+      enabled: true,
+      volume: 0.5,
+    },
+    mood: {
+      boredom_threshold_cpu: 5.0,
+    },
   };
 
   beforeEach(() => {

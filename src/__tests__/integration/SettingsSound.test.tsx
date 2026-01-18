@@ -39,6 +39,9 @@ describe('Settings Sound Integration', () => {
       enabled: true,
       volume: 0.5,
     },
+    mood: {
+      boredom_threshold_cpu: 5.0,
+    },
   };
 
   beforeEach(() => {

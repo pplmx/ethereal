@@ -6,7 +6,8 @@ pub struct BatteryMonitor {
 
 impl BatteryMonitor {
     pub fn new() -> anyhow::Result<Self> {
-        let _ = Manager::new().map_err(|e| anyhow::anyhow!("Failed to init battery manager: {}", e))?;
+        let _ =
+            Manager::new().map_err(|e| anyhow::anyhow!("Failed to init battery manager: {}", e))?;
         Ok(Self {})
     }
 

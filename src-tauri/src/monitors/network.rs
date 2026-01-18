@@ -1,11 +1,17 @@
 use std::sync::{Arc, Mutex};
 use std::time::Instant;
-use sysinfo::{Networks};
+use sysinfo::Networks;
 
 pub struct NetworkMonitor {
     networks: Arc<Mutex<Networks>>,
     last_update: Arc<Mutex<Instant>>,
     last_data: Arc<Mutex<(u64, u64)>>,
+}
+
+impl Default for NetworkMonitor {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl NetworkMonitor {
