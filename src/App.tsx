@@ -26,6 +26,7 @@ function App() {
     getCurrentFps,
     shouldLoop,
     state: spriteState,
+    mood: spriteMood,
     hardware,
     isClickThrough,
     toggleClickThrough,
@@ -68,7 +69,7 @@ function App() {
           setVisible(true);
 
           try {
-            const system_context = `Current State: ${spriteState}, CPU: ${hardware?.utilization}%`;
+            const system_context = `Current State: ${spriteState}, Mood: ${spriteMood}, CPU: ${hardware?.utilization}%`;
             const response = await invoke<string>('chat_with_ethereal', {
               message: content,
               systemContext: system_context,
@@ -115,6 +116,7 @@ function App() {
     showResponse,
     updateHardware,
     spriteState,
+    spriteMood,
     hardware?.utilization,
     isClickThrough,
     toggleClickThrough,

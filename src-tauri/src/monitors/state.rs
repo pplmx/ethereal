@@ -22,14 +22,14 @@ pub enum Mood {
     Angry,
 }
 
-pub fn determine_mood(state: &SpriteState, usage: f32) -> Mood {
+pub fn determine_mood(state: &SpriteState, usage: f32, config: &AppConfig) -> Mood {
     match state {
         SpriteState::Overheating => Mood::Angry,
         SpriteState::HighLoad => Mood::Tired,
         SpriteState::Gaming => Mood::Excited,
         SpriteState::Working => Mood::Happy,
         _ => {
-            if usage < 5.0 {
+            if usage < config.mood.boredom_threshold_cpu {
                 Mood::Bored
             } else {
                 Mood::Happy

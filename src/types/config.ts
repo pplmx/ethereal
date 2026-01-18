@@ -29,9 +29,14 @@ export interface SoundConfig {
   volume: number;
 }
 
+export interface MoodConfig {
+  boredom_threshold_cpu: number;
+}
+
 export interface AppConfig {
   window: WindowConfig;
   hardware: HardwareConfig;
   ai: AiConfig;
   sound: SoundConfig;
+  mood: MoodConfig;
 }

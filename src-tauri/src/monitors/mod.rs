@@ -58,7 +58,7 @@ pub fn spawn_monitor_thread(app: AppHandle) {
 
                 let state =
                     determine_state(monitor.as_ref(), rx, tx, read, write, category, &config);
-                let mood = determine_mood(&state, monitor.get_utilization());
+                let mood = determine_mood(&state, monitor.get_utilization(), &config);
 
                 let stats = GpuStats {
                     temperature: monitor.get_temperature(),

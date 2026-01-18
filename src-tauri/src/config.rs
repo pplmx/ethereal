@@ -13,6 +13,48 @@ pub struct AppConfig {
     pub hardware: HardwareConfig,
     pub ai: AiConfig,
     pub sound: SoundConfig,
+    pub mood: MoodConfig,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct MoodConfig {
+    #[serde(default = "default_boredom_threshold")]
+    pub boredom_threshold_cpu: f32,
+}
+
+fn default_boredom_threshold() -> f32 {
+    5.0
+}
+
+impl Default for AppConfig {
+    fn default() -> Self {
+        Self {
+            window: WindowConfig {
+                default_x: default_x(),
+                default_y: default_y(),
+                always_on_top: default_on_top(),
+                target_monitor: None,
+            },
+            hardware: HardwareConfig {
+                monitor_source: default_monitor_source(),
+                polling_interval_ms: default_polling_interval(),
+                thresholds: ThresholdsConfig::default(),
+            },
+            ai: AiConfig {
+                model_name: default_model(),
+                api_endpoint: default_api_endpoint(),
+                max_response_length: default_max_length(),
+                cooldown_seconds: default_cooldown(),
+            },
+            sound: SoundConfig {
+                enabled: default_sound_enabled(),
+                volume: default_volume(),
+            },
+            mood: MoodConfig {
+                boredom_threshold_cpu: default_boredom_threshold(),
+            },
+        }
+    }
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -112,34 +154,6 @@ impl Default for ThresholdsConfig {
             nvidia_temp: default_gpu_temp(),
             amd_temp: default_gpu_temp(),
             cpu_temp: default_cpu_temp(),
-        }
-    }
-}
-
-impl Default for AppConfig {
-    fn default() -> Self {
-        Self {
-            window: WindowConfig {
-                default_x: default_x(),
-                default_y: default_y(),
-                always_on_top: default_on_top(),
-                target_monitor: None,
-            },
-            hardware: HardwareConfig {
-                monitor_source: default_monitor_source(),
-                polling_interval_ms: default_polling_interval(),
-                thresholds: ThresholdsConfig::default(),
-            },
-            ai: AiConfig {
-                model_name: default_model(),
-                api_endpoint: default_api_endpoint(),
-                max_response_length: default_max_length(),
-                cooldown_seconds: default_cooldown(),
-            },
-            sound: SoundConfig {
-                enabled: default_sound_enabled(),
-                volume: default_volume(),
-            },
         }
     }
 }

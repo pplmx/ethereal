@@ -49,6 +49,9 @@ mod tests {
             [sound]
             enabled = false
             volume = 0.8
+
+            [mood]
+            boredom_threshold_cpu = 10.0
         "#;
 
         let config: AppConfig = toml::from_str(toml_input).unwrap();
@@ -59,6 +62,7 @@ mod tests {
         assert_eq!(config.ai.model_name, "test-model");
         assert!(!config.sound.enabled);
         assert_eq!(config.sound.volume, 0.8);
+        assert_eq!(config.mood.boredom_threshold_cpu, 10.0);
 
         assert_eq!(config.hardware.thresholds.cpu_temp, 85.0);
     }

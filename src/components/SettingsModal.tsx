@@ -322,24 +322,45 @@ export const SettingsModal = () => {
                       />
                     </label>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Cooldown (seconds)
-                      <input
-                        type="number"
-                        value={formData.ai.cooldown_seconds}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            ai: {
-                              ...formData.ai,
-                              cooldown_seconds: parseInt(e.target.value, 10) || 0,
-                            },
-                          })
-                        }
-                        className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
-                      />
-                    </label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Cooldown (s)
+                        <input
+                          type="number"
+                          value={formData.ai.cooldown_seconds}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              ai: {
+                                ...formData.ai,
+                                cooldown_seconds: parseInt(e.target.value, 10) || 0,
+                              },
+                            })
+                          }
+                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                        />
+                      </label>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Boredom Threshold (%)
+                        <input
+                          type="number"
+                          value={formData.mood.boredom_threshold_cpu}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              mood: {
+                                ...formData.mood,
+                                boredom_threshold_cpu: parseFloat(e.target.value) || 0,
+                              },
+                            })
+                          }
+                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                        />
+                      </label>
+                    </div>
                   </div>
                 </div>
               )}
