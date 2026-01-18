@@ -42,6 +42,24 @@ describe('Settings Flow Integration', () => {
     mood: {
       boredom_threshold_cpu: 5.0,
     },
+    hotkeys: {
+      toggle_click_through: 'Ctrl+Shift+E',
+      quit: 'Ctrl+Shift+Q',
+    },
+    notifications: {
+      enabled: true,
+      notify_on_overheating: true,
+      notify_on_angry: true,
+    },
+    sleep: {
+      enabled: false,
+      start_time: '23:00',
+      end_time: '07:00',
+    },
+    interaction: {
+      double_click_action: 'chat',
+      enable_hover_effects: true,
+    },
   };
 
   beforeEach(() => {

@@ -1,10 +1,13 @@
 import { invoke } from '@tauri-apps/api/core';
-import { listen } from '@tauri-apps/api/event';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import App from '../../App';
+import { useChatStore } from '../../stores/chatStore';
 import { useSettingsStore } from '../../stores/settingsStore';
-import { useSpriteStore } from '../../stores/spriteStore';
+
+vi.mock('@components/DevTools', () => ({
+  DevTools: () => <div data-testid="devtools" />,
+}));
 
 vi.mock('@components/SpriteAnimator', () => ({
   SpriteAnimator: () => <div data-testid="sprite-animator" />,
@@ -31,10 +34,10 @@ vi.mock('@tauri-apps/api/core', () => ({
 }));
 
 vi.mock('@tauri-apps/api/event', () => ({
-  listen: vi.fn(),
+  listen: vi.fn().mockResolvedValue(() => {}),
 }));
 
-describe('Hardware Dashboard Integration', () => {
+describe('Character Interaction Integration', () => {
   const mockConfig = {
     window: { default_x: 100, default_y: 100, always_on_top: true },
     hardware: {
@@ -58,72 +61,49 @@ describe('Hardware Dashboard Integration', () => {
   };
 
   beforeEach(() => {
+    vi.useFakeTimers();
     vi.clearAllMocks();
     useSettingsStore.setState({ config: mockConfig as any });
 
-    (invoke as Mock).mockImplementation(async (cmd) => {
+    (invoke as Mock).mockImplementation(async (cmd: string) => {
       if (cmd === 'get_config') return mockConfig;
       return null;
     });
 
-    useSpriteStore.setState({
-      state: 'idle',
-      hardware: null,
-    });
-    (vi.stubEnv as any)('DEV', 'true');
-    (global.performance as any).memory = { usedJSHeapSize: 100 * 1024 * 1024 };
+    useChatStore.setState({ message: null, isVisible: false, isThinking: false });
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     vi.restoreAllMocks();
-    vi.unstubAllEnvs();
   });
 
-  it('displays real-time hardware and network data in DevTools', async () => {
-    let hardwareCallback: ((event: any) => void) | undefined;
-
-    (listen as Mock).mockImplementation(async (event, callback) => {
-      if (event === 'gpu-update') {
-        hardwareCallback = callback;
-        return () => {};
-      }
-      return () => {};
-    });
-
+  it('triggers AI chat on double click when configured', async () => {
     render(<App />);
 
-    await waitFor(() => {
-      expect(listen).toHaveBeenCalledWith('gpu-update', expect.any(Function));
-    });
-
-    expect(hardwareCallback).toBeDefined();
+    const main = screen.getByRole('main');
 
     await act(async () => {
-      if (hardwareCallback) {
-        await hardwareCallback({
-          payload: {
-            temperature: 55,
-            utilization: 42.5,
-            memory_used: 4000,
-            memory_total: 8000,
-            network_rx: 123,
-            network_tx: 45,
-            disk_read: 10,
-            disk_write: 5,
-            battery_level: 80,
-            battery_state: 'Discharging',
-            state: 'Working',
-            mood: 'Happy',
-          },
-        });
-      }
+      fireEvent.doubleClick(main);
     });
 
-    expect(screen.getByText(/CPU: 42.5%/)).toBeInTheDocument();
-    expect(screen.getByText(/Net ↓: 123 KB\/s/)).toBeInTheDocument();
-    expect(screen.getByText(/Net ↑: 45 KB\/s/)).toBeInTheDocument();
-    expect(screen.getByText(/Disk R: 10 KB\/s/)).toBeInTheDocument();
-    expect(screen.getByText(/Bat: 80%/)).toBeInTheDocument();
-    expect(screen.getByText(/State: Working/)).toBeInTheDocument();
+    expect(useChatStore.getState().isThinking).toBe(true);
+
+    act(() => {
+      vi.advanceTimersByTime(1100);
+    });
+
+    const state = useChatStore.getState();
+    expect(state.message).toBe('You called? I was just daydreaming about binary trees.');
+    expect(state.isVisible).toBe(true);
+  });
+
+  it('shows native context menu on right click', () => {
+    render(<App />);
+
+    const main = screen.getByRole('main');
+    fireEvent.contextMenu(main);
+
+    expect(invoke).toHaveBeenCalledWith('show_context_menu');
   });
 });

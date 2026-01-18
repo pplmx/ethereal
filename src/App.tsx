@@ -7,6 +7,7 @@ import { useWindowPosition } from '@hooks/useWindowPosition';
 import { logger } from '@lib/logger';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
+import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useSoundEffects } from './hooks/useSoundEffects';
 import { useChatStore } from './stores/chatStore';
@@ -19,7 +20,7 @@ function App() {
   useWindowPosition();
   useSoundEffects();
   const { setThinking, showResponse, setVisible } = useChatStore();
-  const { initialize: initSettings, config } = useSettingsStore();
+  const { initialize: initSettings, config, setIsOpen } = useSettingsStore();
   const {
     updateHardware,
     getAnimationFrames,
@@ -37,8 +38,29 @@ function App() {
     logger.info('App mounted');
     initSettings();
 
-    const handleContextMenu = (e: MouseEvent) => e.preventDefault();
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+      invoke('show_context_menu');
+    };
     document.addEventListener('contextmenu', handleContextMenu);
+
+    const setupMenuListeners = async () => {
+      try {
+        const unlistenSettings = await listen('open-settings', () => {
+          setIsOpen(true);
+        });
+        const unlistenAbout = await listen('open-about', () => {
+          alert('Ethereal v0.1.0\nA digital spirit living in your code.');
+        });
+        return () => {
+          unlistenSettings();
+          unlistenAbout();
+        };
+      } catch (e) {
+        logger.error('Failed to setup menu listeners', e);
+        return () => {};
+      }
+    };
 
     const setupShortcutListener = async () => {
       try {
@@ -103,12 +125,14 @@ function App() {
       }
     };
 
+    const menuUnlistenPromise = setupMenuListeners();
     const shortcutUnlistenPromise = setupShortcutListener();
     const clipboardUnlistenPromise = setupClipboardListener();
     const hardwareUnlistenPromise = setupHardwareListener();
 
     return () => {
       document.removeEventListener('contextmenu', handleContextMenu);
+      menuUnlistenPromise.then((unlisten) => unlisten?.());
       shortcutUnlistenPromise.then((unlisten) => unlisten?.());
       clipboardUnlistenPromise.then((unlisten) => unlisten?.());
       hardwareUnlistenPromise.then((unlisten) => unlisten?.());
@@ -129,24 +153,39 @@ function App() {
     hardware?.battery_state,
     isClickThrough,
     toggleClickThrough,
+    setIsOpen,
   ]);
 
-  // Sync sound config
   useEffect(() => {
     if (config?.sound) {
       syncWithConfig(config.sound);
     }
   }, [config, syncWithConfig]);
 
+  const handleDoubleClick = () => {
+    if (config?.interaction?.double_click_action === 'chat') {
+      setThinking(true);
+      setVisible(true);
+      setTimeout(() => {
+        showResponse('You called? I was just daydreaming about binary trees.');
+      }, 1000);
+    }
+  };
+
   return (
     <main
       className="w-screen h-screen overflow-hidden bg-transparent flex items-center justify-center select-none"
       onMouseDown={startDragging}
+      onDoubleClick={handleDoubleClick}
     >
       <DevTools />
       <SettingsModal />
 
-      <div className="relative w-full h-full flex items-center justify-center">
+      <motion.div
+        className="relative w-full h-full flex items-center justify-center"
+        whileHover={config?.interaction?.enable_hover_effects ? { scale: 1.05 } : {}}
+        transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+      >
         <SpeechBubble />
 
         <SpriteAnimator
@@ -161,7 +200,7 @@ function App() {
             No Sprites
           </div>
         )}
-      </div>
+      </motion.div>
     </main>
   );
 }

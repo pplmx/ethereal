@@ -1,4 +1,6 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
+use tauri::Emitter;
+
 pub mod ai;
 pub mod config;
 pub mod monitors;
@@ -34,6 +36,18 @@ fn greet(name: &str) -> String {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_notification::init())
+        .on_menu_event(|app, event| match event.id().as_ref() {
+            "settings" => {
+                let _ = app.emit("open-settings", ());
+            }
+            "about" => {
+                let _ = app.emit("open-about", ());
+            }
+            "quit" => {
+                app.exit(0);
+            }
+            _ => {}
+        })
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
                 .with_handler(|app, shortcut, event| {
@@ -54,6 +68,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             greet,
             utils::window::set_click_through,
+            utils::window::show_context_menu,
             utils::display::get_monitors,
             utils::display::move_to_monitor,
             config::save_window_position,

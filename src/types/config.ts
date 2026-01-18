@@ -51,6 +51,11 @@ export interface SleepConfig {
   end_time: string;
 }
 
+export interface InteractionConfig {
+  double_click_action: string;
+  enable_hover_effects: boolean;
+}
+
 export interface AppConfig {
   window: WindowConfig;
   hardware: HardwareConfig;
@@ -60,4 +65,5 @@ export interface AppConfig {
   hotkeys: HotkeyConfig;
   notifications: NotificationConfig;
   sleep: SleepConfig;
+  interaction: InteractionConfig;
 }

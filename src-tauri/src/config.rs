@@ -17,6 +17,19 @@ pub struct AppConfig {
     pub hotkeys: HotkeyConfig,
     pub notifications: NotificationConfig,
     pub sleep: SleepConfig,
+    pub interaction: InteractionConfig,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct InteractionConfig {
+    #[serde(default = "default_double_click_action")]
+    pub double_click_action: String,
+    #[serde(default = "default_true")]
+    pub enable_hover_effects: bool,
+}
+
+fn default_double_click_action() -> String {
+    "chat".to_string()
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -119,6 +132,10 @@ impl Default for AppConfig {
                 enabled: default_false(),
                 start_time: default_sleep_start(),
                 end_time: default_sleep_end(),
+            },
+            interaction: InteractionConfig {
+                double_click_action: default_double_click_action(),
+                enable_hover_effects: default_true(),
             },
         }
     }

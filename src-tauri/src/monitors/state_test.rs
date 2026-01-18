@@ -159,6 +159,37 @@ mod tests {
     }
 
     #[test]
+    fn test_sleep_mode_active() {
+        let monitor = MockMonitor {
+            temp: 40.0,
+            util: 5.0,
+        };
+        let mut config = AppConfig::default();
+        config.sleep.enabled = true;
+        config.sleep.start_time = "00:00".to_string();
+        config.sleep.end_time = "23:59".to_string();
+
+        let state = determine_state(&monitor, 0, 0, 0, 0, AppCategory::Idle, &config);
+        assert_eq!(state, SpriteState::Sleeping);
+    }
+
+    #[test]
+    fn test_overheating_overrides_sleep() {
+        let monitor = MockMonitor {
+            temp: 90.0,
+            util: 5.0,
+        };
+        let mut config = AppConfig::default();
+        config.sleep.enabled = true;
+        config.sleep.start_time = "00:00".to_string();
+        config.sleep.end_time = "23:59".to_string();
+        config.hardware.thresholds.nvidia_temp = 80.0;
+
+        let state = determine_state(&monitor, 0, 0, 0, 0, AppCategory::Idle, &config);
+        assert_eq!(state, SpriteState::Overheating);
+    }
+
+    #[test]
     fn test_determine_mood() {
         let config = AppConfig::default();
 

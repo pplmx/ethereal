@@ -9,6 +9,8 @@ use windows::Win32::UI::WindowsAndMessaging::{
     GetWindowLongPtrW, SetWindowLongPtrW, GWL_EXSTYLE, WS_EX_TRANSPARENT,
 };
 
+use tauri::menu::{Menu, MenuItem};
+
 #[tauri::command]
 pub fn set_click_through<R: Runtime>(window: Window<R>, enabled: bool) -> Result<(), String> {
     #[cfg(target_os = "windows")]
@@ -36,5 +38,23 @@ pub fn set_click_through<R: Runtime>(window: Window<R>, enabled: bool) -> Result
             }
         }
     }
+    Ok(())
+}
+
+#[tauri::command]
+pub fn show_context_menu<R: Runtime>(
+    app: tauri::AppHandle<R>,
+    window: tauri::Window<R>,
+) -> Result<(), String> {
+    let settings = MenuItem::with_id(&app, "settings", "Settings", true, None::<&str>)
+        .map_err(|e| e.to_string())?;
+    let about =
+        MenuItem::with_id(&app, "about", "About", true, None::<&str>).map_err(|e| e.to_string())?;
+    let quit =
+        MenuItem::with_id(&app, "quit", "Quit", true, None::<&str>).map_err(|e| e.to_string())?;
+
+    let menu = Menu::with_items(&app, &[&settings, &about, &quit]).map_err(|e| e.to_string())?;
+
+    window.popup_menu(&menu).map_err(|e| e.to_string())?;
     Ok(())
 }

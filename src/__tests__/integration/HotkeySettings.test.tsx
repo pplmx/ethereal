@@ -32,12 +32,16 @@ describe('Hotkey Settings Integration', () => {
     ai: {
       model_name: 'llama3.2',
       api_endpoint: '',
+      system_prompt: '',
       max_response_length: 100,
       cooldown_seconds: 30,
     },
     sound: { enabled: true, volume: 0.5 },
     mood: { boredom_threshold_cpu: 5.0 },
     hotkeys: { toggle_click_through: 'Ctrl+Shift+E', quit: 'Ctrl+Shift+Q' },
+    notifications: { enabled: true, notify_on_overheating: true, notify_on_angry: true },
+    sleep: { enabled: false, start_time: '23:00', end_time: '07:00' },
+    interaction: { double_click_action: 'chat', enable_hover_effects: true },
   };
 
   beforeEach(() => {
@@ -45,10 +49,10 @@ describe('Hotkey Settings Integration', () => {
     useSettingsStore.setState({ config: null, isOpen: true, isLoading: false });
     useMonitorStore.setState({ monitors: [], isLoading: false });
 
-    (invoke as Mock).mockImplementation((cmd) => {
-      if (cmd === 'get_config') return Promise.resolve(mockConfig);
-      if (cmd === 'get_monitors') return Promise.resolve([]);
-      return Promise.resolve();
+    (invoke as Mock).mockImplementation(async (cmd) => {
+      if (cmd === 'get_config') return mockConfig;
+      if (cmd === 'get_monitors') return [];
+      return null;
     });
   });
 

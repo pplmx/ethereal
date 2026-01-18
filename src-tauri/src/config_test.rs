@@ -56,6 +56,16 @@ mod tests {
             [hotkeys]
             toggle_click_through = "Ctrl+Alt+L"
             quit = "Ctrl+Alt+M"
+
+            [notifications]
+            enabled = true
+            notify_on_overheating = true
+            notify_on_angry = true
+
+            [sleep]
+            enabled = true
+            start_time = "22:00"
+            end_time = "06:00"
         "#;
 
         let config: AppConfig = toml::from_str(toml_input).unwrap();
@@ -68,6 +78,9 @@ mod tests {
         assert_eq!(config.sound.volume, 0.8);
         assert_eq!(config.mood.boredom_threshold_cpu, 10.0);
         assert_eq!(config.hotkeys.toggle_click_through, "Ctrl+Alt+L");
+        assert!(config.notifications.enabled);
+        assert!(config.sleep.enabled);
+        assert_eq!(config.sleep.start_time, "22:00");
 
         assert_eq!(config.hardware.thresholds.cpu_temp, 85.0);
     }

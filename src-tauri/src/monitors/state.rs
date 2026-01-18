@@ -25,8 +25,10 @@ pub enum Mood {
 
 pub fn is_within_sleep_time(start: &str, end: &str) -> bool {
     let now = Local::now().time();
-    let start_time = NaiveTime::parse_from_str(start, "%H:%M").unwrap_or_else(|_| NaiveTime::from_hms_opt(23, 0, 0).unwrap());
-    let end_time = NaiveTime::parse_from_str(end, "%H:%M").unwrap_or_else(|_| NaiveTime::from_hms_opt(7, 0, 0).unwrap());
+    let start_time = NaiveTime::parse_from_str(start, "%H:%M")
+        .unwrap_or_else(|_| NaiveTime::from_hms_opt(23, 0, 0).unwrap());
+    let end_time = NaiveTime::parse_from_str(end, "%H:%M")
+        .unwrap_or_else(|_| NaiveTime::from_hms_opt(7, 0, 0).unwrap());
 
     if start_time < end_time {
         now >= start_time && now <= end_time
@@ -74,7 +76,9 @@ pub fn determine_state(
         return SpriteState::Overheating;
     }
 
-    if config.sleep.enabled && is_within_sleep_time(&config.sleep.start_time, &config.sleep.end_time) {
+    if config.sleep.enabled
+        && is_within_sleep_time(&config.sleep.start_time, &config.sleep.end_time)
+    {
         return SpriteState::Sleeping;
     }
 
