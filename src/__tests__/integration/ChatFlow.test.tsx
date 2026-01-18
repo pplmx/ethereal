@@ -17,6 +17,10 @@ vi.mock('@components/SpeechBubble', () => ({
   SpeechBubble: () => <div data-testid="speech-bubble" />,
 }));
 
+vi.mock('@components/SettingsModal', () => ({
+  SettingsModal: () => <div data-testid="settings-modal" />,
+}));
+
 vi.mock('@hooks/useDraggable', () => ({
   useDraggable: () => ({ startDragging: vi.fn() }),
 }));
@@ -55,7 +59,7 @@ describe('Chat Flow Integration', () => {
     vi.restoreAllMocks();
   });
 
-  it('updates chat store when clipboard changes', async () => {
+  it('updates chat store when clipboard changes and includes system context', async () => {
     let clipboardCallback: ((event: any) => void) | undefined;
 
     (listen as Mock).mockImplementation(async (event, callback) => {
@@ -86,7 +90,7 @@ describe('Chat Flow Integration', () => {
       'chat_with_ethereal',
       expect.objectContaining({
         message: 'User copied text',
-        systemContext: expect.any(String),
+        systemContext: expect.stringContaining('Mood:'),
       }),
     );
 

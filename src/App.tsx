@@ -69,7 +69,11 @@ function App() {
           setVisible(true);
 
           try {
-            const system_context = `Current State: ${spriteState}, Mood: ${spriteMood}, CPU: ${hardware?.utilization}%`;
+            const system_context = `Current State: ${spriteState}, Mood: ${spriteMood}, CPU: ${
+              hardware?.utilization
+            }%, Mem: ${hardware?.memory_used}/${hardware?.memory_total}MB, Net: ${
+              hardware?.network_rx
+            }KB/s down, Bat: ${hardware?.battery_level}% (${hardware?.battery_state})`;
             const response = await invoke<string>('chat_with_ethereal', {
               message: content,
               systemContext: system_context,
@@ -118,6 +122,11 @@ function App() {
     spriteState,
     spriteMood,
     hardware?.utilization,
+    hardware?.memory_used,
+    hardware?.memory_total,
+    hardware?.network_rx,
+    hardware?.battery_level,
+    hardware?.battery_state,
     isClickThrough,
     toggleClickThrough,
   ]);

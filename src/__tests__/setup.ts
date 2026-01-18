@@ -2,15 +2,12 @@ import * as matchers from '@testing-library/jest-dom/matchers';
 import { cleanup } from '@testing-library/react';
 import { afterEach, expect, vi } from 'vitest';
 
-// 扩展 Vitest 的 expect 方法
 expect.extend(matchers);
 
-// 每个测试后自动清理 DOM
 afterEach(() => {
   cleanup();
 });
 
-// Mock Tauri APIs globally
 vi.mock('@tauri-apps/api/core', () => ({
   invoke: vi.fn(),
 }));
@@ -36,7 +33,6 @@ vi.mock('@tauri-apps/api/window', () => ({
   },
 }));
 
-// Mock window.matchMedia (Framer Motion 需要)
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation((query) => ({
@@ -51,38 +47,18 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-// Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
   disconnect() {}
   observe() {}
   unobserve() {}
 } as any;
 
-// Mock Globals
 global.ResizeObserver = class ResizeObserver {
   disconnect() {}
   observe() {}
   unobserve() {}
 } as any;
 
-// Mock Globals
-global.ResizeObserver = class ResizeObserver {
-  disconnect() {}
-  observe() {}
-  unobserve() {}
-} as any;
-
-// Remove duplicate mocks at the bottom if they exist
-
-// Mock Globals
-global.ResizeObserver = class ResizeObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
-  unobserve() {}
-} as any;
-
-// Mock LocalStorage
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
@@ -103,5 +79,4 @@ Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
 });
 
-// 全局测试超时设置
 vi.setConfig({ testTimeout: 10000 });

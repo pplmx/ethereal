@@ -146,8 +146,21 @@ export const useSpriteStore = create<SpriteStore>()(
         },
 
         getCurrentFps: () => {
-          const { state, spriteConfig } = get();
-          return spriteConfig[state]?.fps ?? 8;
+          const { state, mood, spriteConfig } = get();
+          const baseFps = spriteConfig[state]?.fps ?? 8;
+
+          switch (mood) {
+            case 'excited':
+              return baseFps * 1.5;
+            case 'tired':
+              return baseFps * 0.7;
+            case 'bored':
+              return baseFps * 0.5;
+            case 'angry':
+              return baseFps * 2.0;
+            default:
+              return baseFps;
+          }
         },
 
         shouldLoop: () => {
