@@ -38,6 +38,7 @@ struct GpuStats {
     disk_write: u64,
     battery_level: f32,
     battery_state: String,
+    active_window: String,
     state: String,
     mood: String,
 }
@@ -59,6 +60,11 @@ pub fn spawn_monitor_thread(app: AppHandle) {
                 let (read, write) = monitor.get_disk_usage();
                 let (bat_lvl, bat_state) = monitor.get_battery_status();
                 let category = window_monitor.get_active_app_category();
+                let window_title = if config.privacy.share_window_title {
+                    window_monitor.get_active_window_title()
+                } else {
+                    "Hidden (Privacy)".to_string()
+                };
 
                 let state =
                     determine_state(monitor.as_ref(), rx, tx, read, write, category, &config);
@@ -113,6 +119,7 @@ pub fn spawn_monitor_thread(app: AppHandle) {
                     disk_write: write,
                     battery_level: bat_lvl,
                     battery_state: bat_state,
+                    active_window: window_title,
                     state: format!("{:?}", state),
                     mood: format!("{:?}", mood),
                 };

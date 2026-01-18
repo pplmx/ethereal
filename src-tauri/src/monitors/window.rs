@@ -29,6 +29,13 @@ impl WindowMonitor {
         }
     }
 
+    pub fn get_active_window_title(&self) -> String {
+        match get_active_window() {
+            Ok(window) => window.title,
+            Err(_) => "Unknown".to_string(),
+        }
+    }
+
     pub fn categorize_app(process_name: &str) -> AppCategory {
         let name = process_name.to_lowercase();
 

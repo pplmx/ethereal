@@ -77,6 +77,9 @@ mod tests {
 
             [autostart]
             enabled = true
+
+            [privacy]
+            share_window_title = true
         "#;
 
         let config: AppConfig = toml::from_str(toml_input).unwrap();
@@ -95,6 +98,7 @@ mod tests {
         assert_eq!(config.interaction.double_click_action, "settings");
         assert_eq!(config.battery.low_battery_threshold, 15.0);
         assert!(config.autostart.enabled);
+        assert!(config.privacy.share_window_title);
 
         assert_eq!(config.hardware.thresholds.cpu_temp, 85.0);
     }

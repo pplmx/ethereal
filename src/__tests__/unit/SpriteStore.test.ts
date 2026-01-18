@@ -36,6 +36,7 @@ describe('Sprite Logic', () => {
         disk_write: 0,
         battery_level: 100,
         battery_state: 'Full',
+        active_window: 'Some Game',
       });
     });
 
@@ -66,6 +67,7 @@ describe('Sprite Logic', () => {
         disk_write: 0,
         battery_level: 50,
         battery_state: 'Discharging',
+        active_window: 'VS Code',
       });
     });
 

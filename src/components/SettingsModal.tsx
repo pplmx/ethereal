@@ -10,7 +10,15 @@ export const SettingsModal = () => {
   const { monitors, fetchMonitors, moveToMonitor } = useMonitorStore();
   const [formData, setFormData] = useState<AppConfig | null>(null);
   const [activeTab, setActiveTab] = useState<
-    'window' | 'hardware' | 'ai' | 'sound' | 'sprite' | 'hotkeys' | 'notifications' | 'sleep'
+    | 'window'
+    | 'hardware'
+    | 'ai'
+    | 'sound'
+    | 'sprite'
+    | 'hotkeys'
+    | 'notifications'
+    | 'sleep'
+    | 'privacy'
   >('window');
 
   useEffect(() => {
@@ -84,6 +92,7 @@ export const SettingsModal = () => {
                   'hotkeys',
                   'notifications',
                   'sleep',
+                  'privacy',
                 ] as const
               ).map((tab) => (
                 <button
@@ -453,7 +462,7 @@ export const SettingsModal = () => {
               )}
 
               {activeTab === 'sprite' && (
-                <div className="flex justify-center h-full">
+                <div className="flex justify-center h-full text-slate-800">
                   <AnimationPreview />
                 </div>
               )}
@@ -701,8 +710,31 @@ export const SettingsModal = () => {
                       />
                     </label>
                   </div>
-                  <p className="text-xs text-slate-500 mt-2">
-                    Note: During sleep mode or low battery, Sprite activity is minimized.
+                </div>
+              )}
+
+              {activeTab === 'privacy' && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium flex items-center gap-2 cursor-pointer">
+                      Share Active Window Title with AI
+                      <input
+                        type="checkbox"
+                        checked={formData.privacy.share_window_title}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            privacy: { ...formData.privacy, share_window_title: e.target.checked },
+                          })
+                        }
+                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </label>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-2 italic">
+                    When enabled, the title of your currently active window will be sent to the AI
+                    context. This helps the spirit provide more relevant responses based on what you
+                    are doing.
                   </p>
                 </div>
               )}

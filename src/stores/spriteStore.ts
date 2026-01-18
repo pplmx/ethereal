@@ -21,6 +21,7 @@ export interface HardwareData {
   disk_write: number;
   battery_level: number;
   battery_state: string;
+  active_window: string;
   state: string;
   mood: string;
 }

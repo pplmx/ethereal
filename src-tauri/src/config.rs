@@ -20,6 +20,13 @@ pub struct AppConfig {
     pub interaction: InteractionConfig,
     pub battery: BatteryConfig,
     pub autostart: AutostartConfig,
+    pub privacy: PrivacyConfig,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct PrivacyConfig {
+    #[serde(default = "default_false")]
+    pub share_window_title: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -163,6 +170,9 @@ impl Default for AppConfig {
             },
             autostart: AutostartConfig {
                 enabled: default_false(),
+            },
+            privacy: PrivacyConfig {
+                share_window_title: default_false(),
             },
         }
     }

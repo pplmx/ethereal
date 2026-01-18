@@ -65,6 +65,10 @@ export interface AutostartConfig {
   enabled: boolean;
 }
 
+export interface PrivacyConfig {
+  share_window_title: boolean;
+}
+
 export interface AppConfig {
   window: WindowConfig;
   hardware: HardwareConfig;
@@ -77,4 +81,5 @@ export interface AppConfig {
   interaction: InteractionConfig;
   battery: BatteryConfig;
   autostart: AutostartConfig;
+  privacy: PrivacyConfig;
 }
