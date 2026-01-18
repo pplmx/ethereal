@@ -14,6 +14,7 @@ mod tests {
         assert_eq!(config.hardware.thresholds.nvidia_temp, 80.0);
 
         assert_eq!(config.ai.model_name, "llama3.2");
+        assert!(config.sound.enabled);
     }
 
     #[test]
@@ -23,6 +24,7 @@ mod tests {
 
         assert!(toml_string.contains("default_x = 100"));
         assert!(toml_string.contains("model_name = \"llama3.2\""));
+        assert!(toml_string.contains("enabled = true"));
     }
 
     #[test]
@@ -43,6 +45,10 @@ mod tests {
             [ai]
             model_name = "test-model"
             api_endpoint = "http://test:1234"
+
+            [sound]
+            enabled = false
+            volume = 0.8
         "#;
 
         let config: AppConfig = toml::from_str(toml_input).unwrap();
@@ -51,6 +57,8 @@ mod tests {
         assert_eq!(config.hardware.monitor_source, "nvidia");
         assert_eq!(config.hardware.thresholds.nvidia_temp, 75.0);
         assert_eq!(config.ai.model_name, "test-model");
+        assert!(!config.sound.enabled);
+        assert_eq!(config.sound.volume, 0.8);
 
         assert_eq!(config.hardware.thresholds.cpu_temp, 85.0);
     }

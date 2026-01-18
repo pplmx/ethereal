@@ -2,6 +2,7 @@ pub mod clipboard;
 pub mod cpu;
 pub mod factory;
 pub mod mock;
+pub mod network;
 pub mod state;
 pub mod window;
 
@@ -9,6 +10,7 @@ pub trait HardwareMonitor: Send + Sync {
     fn get_temperature(&self) -> f32;
     fn get_utilization(&self) -> f32;
     fn get_memory_usage(&self) -> (u64, u64);
+    fn get_network_usage(&self) -> (u64, u64);
     fn is_available(&self) -> bool;
 }
 
@@ -26,6 +28,8 @@ struct GpuStats {
     utilization: f32,
     memory_used: u64,
     memory_total: u64,
+    network_rx: u64,
+    network_tx: u64,
     state: String,
 }
 
@@ -36,16 +40,23 @@ pub fn spawn_monitor_thread(app: AppHandle) {
 
         loop {
             if monitor.is_available() {
-                let config = AppConfig::load(&app).unwrap_or_default();
+                let config = match AppConfig::load(&app) {
+                    Ok(c) => c,
+                    Err(_) => AppConfig::default(),
+                };
 
                 let (used, total) = monitor.get_memory_usage();
-                let state = determine_state(monitor.as_ref(), &window_monitor, &config);
+                let (rx, tx) = monitor.get_network_usage();
+                let category = window_monitor.get_active_app_category();
+                let state = determine_state(monitor.as_ref(), rx, tx, category, &config);
 
                 let stats = GpuStats {
                     temperature: monitor.get_temperature(),
                     utilization: monitor.get_utilization(),
                     memory_used: used,
                     memory_total: total,
+                    network_rx: rx,
+                    network_tx: tx,
                     state: format!("{:?}", state),
                 };
 

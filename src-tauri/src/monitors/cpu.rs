@@ -1,9 +1,11 @@
+use crate::monitors::network::NetworkMonitor;
 use crate::monitors::HardwareMonitor;
 use std::sync::{Arc, Mutex};
 use sysinfo::{Components, CpuRefreshKind, MemoryRefreshKind, RefreshKind, System};
 
 pub struct CpuMonitor {
     sys: Arc<Mutex<System>>,
+    net: NetworkMonitor,
 }
 
 impl Default for CpuMonitor {
@@ -24,6 +26,7 @@ impl CpuMonitor {
 
         Self {
             sys: Arc::new(Mutex::new(sys)),
+            net: NetworkMonitor::new(),
         }
     }
 }
@@ -63,6 +66,10 @@ impl HardwareMonitor for CpuMonitor {
             sys.used_memory() / 1024 / 1024,
             sys.total_memory() / 1024 / 1024,
         )
+    }
+
+    fn get_network_usage(&self) -> (u64, u64) {
+        self.net.get_usage()
     }
 
     fn is_available(&self) -> bool {

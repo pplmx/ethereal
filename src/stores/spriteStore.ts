@@ -15,6 +15,8 @@ export interface HardwareData {
   utilization: number;
   memory_used: number;
   memory_total: number;
+  network_rx: number;
+  network_tx: number;
   state: string;
 }
 

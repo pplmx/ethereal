@@ -1,6 +1,6 @@
 use crate::config::AppConfig;
 use crate::monitors::{
-    window::{AppCategory, WindowMonitor},
+    window::{AppCategory},
     HardwareMonitor,
 };
 
@@ -16,7 +16,9 @@ pub enum SpriteState {
 
 pub fn determine_state(
     monitor: &dyn HardwareMonitor,
-    window_monitor: &WindowMonitor,
+    network_rx: u64,
+    network_tx: u64,
+    app_category: AppCategory,
     config: &AppConfig,
 ) -> SpriteState {
     let temp = monitor.get_temperature();
@@ -30,10 +32,18 @@ pub fn determine_state(
         return SpriteState::HighLoad;
     }
 
-    match window_monitor.get_active_app_category() {
+    if network_rx + network_tx > 2048 {
+        return SpriteState::HighLoad;
+    }
+
+    match app_category {
         AppCategory::Coding => SpriteState::Working,
         AppCategory::Gaming => SpriteState::Gaming,
         AppCategory::Browsing => SpriteState::Browsing,
         _ => SpriteState::Idle,
     }
 }
+
+#[cfg(test)]
+#[path = "state_test.rs"]
+mod state_test;
