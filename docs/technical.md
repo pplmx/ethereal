@@ -1,153 +1,85 @@
-# Technical Documentation
+# 🛠️ Ethereal Technical Documentation
 
-This document provides detailed technical information about the Desktop Ethereal implementation.
+This document provides an in-depth look at the architecture, state management, and implementation details of the Ethereal desktop companion.
 
-## Architecture Overview
+## 🏗️ Architecture Overview
 
-Desktop Ethereal follows a frontend-backend architecture using Tauri:
+Ethereal is built on the **Tauri 2.0** framework, leveraging a hybrid architecture:
 
-- **Frontend**: React 19 with TypeScript, Zustand for state management, and Framer Motion for animations.
-- **Backend**: Rust using the Tauri 2.0 framework for system-level operations and background monitoring.
-- **Communication**: Tauri's IPC (Inter-Process Communication) system via Commands and Events.
+- **Backend (Rust)**: High-performance system monitoring, global hotkeys, file watching, and local AI orchestration.
+- **Frontend (React 19)**: High-fidelity visual rendering, emotional state machine visualization, and user configuration.
+- **Communication**: Asynchronous events (e.g., `gpu-update`) for one-way streaming and `invoke` commands for request-response cycles.
 
-### Component Diagram
+---
 
-```text
-┌─────────────────────────────────────────────────────────────┐
-│                        Frontend (React)                     │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌──────────────┐  ┌────────────────────┐ │
-│  │   Sprite    │  │ spriteStore  │  │   settingsStore    │ │
-│  │ Animator    │  │    Store     │  │      Store         │ │
-│  └─────────────┘  └──────────────┘  └────────────────────┘ │
-│                                                             │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │                   Event Listeners                       ││
-│  │  GPU/HW Updates ◄──┐ Config Change ◄──┐ Clipboard ◄──┐  ││
-│  └────────────────────┼───────────────────┼─────────────────┘│
-└───────────────────────┼───────────────────┼──────────────────┘
-                        ▼                   ▼                ▼
-┌─────────────────────────────────────────────────────────────┐
-│                         Backend (Rust)                      │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌──────────────┐  ┌────────────────────┐ │
-│  │ HW Monitors │  │ Window Watch │  │ Clipboard Monitor  │ │
-│  │ (CPU/Net/..)│  │    Thread    │  │      Thread        │ │
-│  └─────────────┘  └──────────────┘  └────────────────────┘ │
-│                                                             │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │                    Command Handlers                     ││
-│  │  get_config   update_config   show_context_menu         ││
-│  │  get_monitors move_to_monitor chat_with_ethereal        ││
-│  └─────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────┘
-```
+## 🖥️ Backend Implementation
 
-## Backend Implementation (Rust)
+### 1. Configuration Engine (`config.rs`)
 
-### Core Modules
+- **Persistence**: Settings are stored in `ethereal.toml` within the OS-standard app configuration directory.
+- **Hot-Reloading**: Uses `notify-debouncer-mini` to watch for manual edits to the TOML file, automatically refreshing the spirit's behavior without restart.
+- **Validation**: Strongly typed structures with `serde` ensure configuration integrity.
 
-#### 1. Configuration Management (`config.rs`)
+### 2. System Perception Layer (`monitors/`)
 
-- Uses `serde` for serialization.
-- Persists data to `ethereal.toml` in the app's config directory.
-- Features: Automatic reloading on file change via `notify-debouncer-mini` and dynamic hotkey re-registration.
+- **Hardware**: Uses `sysinfo` for CPU/RAM and `battery` for power states.
+- **Activity**: Leverages `active-win-pos-rs` to categorize user behavior based on focused window metadata.
+- **Clipboard**: A dedicated polling thread via `arboard` monitors for code snippets or log traces.
 
-#### 2. System Perception (`monitors/`)
+### 3. Intelligence Layer (`ai/`)
 
-- **Hardware Monitoring**: Uses `sysinfo` to track CPU usage, memory pressure, and per-process disk I/O.
-- **Network Monitoring**: Custom calculation of global RX/TX rates.
-- **Battery Status**: Uses `battery` crate for laptop battery level and state.
-- **Window Monitoring**: Uses `active-win-pos-rs` to categorize the active application (CODING, GAMING, etc.).
-- **Clipboard Monitoring**: Polling via `arboard` with content filtering.
+- **Ollama Client**: A custom async client for the Ollama chat API.
+- **Memory Management**: Implements a sliding window history (10 messages) that is passed to the LLM to provide conversational continuity.
+- **Context Injection**: Every user message is prepended with a "System Context" string containing current hardware stats and mood, allowing the AI to be "self-aware".
 
-#### 3. Intelligence Layer (`ai/`)
+---
 
-- Simple Ollama API client for local LLM inference.
-- Dynamically injected system context based on current hardware/emotional state.
-- Supports user-defined system prompts and mood-specific personality modifiers.
+## 🎨 Frontend implementation
 
-#### 4. UI Utilities (`utils/`)
+### 1. Visual Rendering
 
-- **Display**: Enumeration and window placement across multiple monitors.
-- **Global Hotkeys**: Dynamic registration of user-defined shortcuts (Toggle Click-through, Quit).
-- **Notifications**: Integrated system tray and desktop notifications for critical states (Overheating, Low Battery).
+- **`SpriteAnimator`**: A custom loop utilizing `requestAnimationFrame` for stutter-free frame transitions. It calculates dynamic FPS based on the spirit's mood (e.g., faster when Excited, lethargic when Tired).
+- **Glassmorphism**: Uses Tailwind CSS with backdrop-blur filters and high-opacity indigo/purple gradients for a "Digital Spirit" look.
 
-### Data Structures
+### 2. State Management (Zustand)
 
-#### GpuStats (Backend -> Frontend Event)
+- **`useSpriteStore`**: Centralizes the emotional state. Maps raw backend data into semantic states (`Overheating`, `HighLoad`, etc.) and moods.
+- **`useResourceStore`**: Manages the lifecycle of external assets (sprites/sounds). Implements preloading to prevent "visual popping" during state transitions.
 
-```rust
-struct GpuStats {
-    temperature: f32,
-    utilization: f32,
-    memory_used: u64,
-    memory_total: u64,
-    network_rx: u64,
-    network_tx: u64,
-    disk_read: u64,
-    disk_write: u64,
-    battery_level: f32,
-    battery_state: String,
-    state: String,
-    mood: String,
-}
-```
+### 3. Error Recovery
 
-## Frontend Implementation (React)
+- **Global Error Boundary**: A high-level React component that catches rendering crashes and provides a graceful "Re-materialize" button to reset the UI state.
 
-### State Management (Zustand)
+---
 
-- **`useSpriteStore`**: Tracks character state, mood, and hardware stats history. Handles dynamic FPS calculation based on mood.
-- **`useSettingsStore`**: Manages the configuration lifecycle and UI visibility.
-- **`useChatStore`**: Controls the speech bubble and thinking states.
-- **`useResourceStore`**: Handles asynchronous asset preloading for sprites and sounds.
+## 🎭 State Machine Logic
 
-### Key Components
+The spirit's behavior is governed by a priority queue:
 
-- **`SpriteAnimator`**: Performance-optimized loop using `requestAnimationFrame`.
-- **`StateOverlay`**: Minimalist UI displaying current character state and mood emoji.
-- **`SpeechBubble`**: Interactive AI response UI with `AnimatePresence`.
-- **`SettingsModal`**: Multi-tab configuration interface for full control (Window, HW, AI, Sound, Sprite, Hotkeys, Notifications, Sleep).
+1. **Overheating**: (Critical) Triggered by GPU/CPU temp > thresholds.
+2. **Low Battery**: (High) Triggered when laptop power is critical.
+3. **High Load**: (Medium) Triggered by extreme resource utilization.
+4. **Activity Based**: (Low) `Working`, `Gaming`, or `Browsing` based on the active app.
+5. **Idle**: (Default) Fallback when no other conditions are met.
 
-## Character Logic
+---
 
-### State Machine
+## 🧪 Quality Assurance
 
-The Sprite's state is determined by a priority-based logic:
+### 1. Testing Suite
 
-1. `Overheating`: High hardware temperature.
-2. `Sleeping`: Scheduled time-based inactivity.
-3. `LowBattery`: Critical power state (< 20%).
-4. `HighLoad`: High CPU (> 80%), Memory (> 90%), or Disk (> 10MB/s) activity.
-5. Activity based: `Gaming`, `Working` (Coding), or `Browsing`.
-6. `Idle`: Default fallback.
+- **Frontend**: 70+ Vitest tests covering store logic and complex integration flows (e.g., the "Chat Loop").
+- **Backend**: Rust unit tests for the state machine and configuration parser.
+- **Visual**: Playwright E2E tests capture screenshots to prevent regression in the spirit's aesthetic.
 
-### Mood System
+### 2. The "Golden Loop"
 
-Derived from current state and historical activity:
+All contributions must follow the strict cycle defined in `AGENTS.md`:
+`Implement -> Type Check -> Lint -> Test -> Build -> Visual Check -> Commit`.
 
-- `Angry`: Triggered by `Overheating` or extreme `HighLoad`.
-- `Sad`: Triggered by `LowBattery` state.
-- `Tired`: Extended `HighLoad` periods.
-- `Excited`: High activity in `Gaming`/`Working` states.
-- `Bored`: Long periods in `Idle` or `Sleeping`.
-- `Happy`: Standard healthy operation.
+---
 
-## Testing Strategy
+## 🚀 Deployment & Distribution
 
-### Integration Tests
-
-We emphasize end-to-end feature verification:
-
-- `ChatFlow`: Clipboard -> Backend AI -> Frontend UI.
-- `SettingsFlow`: UI Interaction -> Persistence -> Backend Reaction.
-- `SystemMonitor`: Backend Event -> Store Sync -> UI Dashboard.
-- `CharacterInteraction`: Click events -> AI/Menu triggers.
-
-### Rust Unit Tests
-
-- State machine logic (`state_test.rs`).
-- Configuration parsing (`config_test.rs`).
-- Window categorization (`window.rs`).
-- Mock data generation (`mock_test.rs`).
+- **CI/CD**: GitHub Actions automates the build process for Windows, generating signed installers.
+- **Bundle**: Uses Tauri's native bundler to create minimal-footprint installers (< 10MB excluding assets).

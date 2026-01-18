@@ -1,253 +1,88 @@
-# Contributing to Desktop Ethereal
+# 🤝 Contributing to Ethereal
 
-Thank you for your interest in contributing to Desktop Ethereal! This document provides guidelines and information to help you contribute effectively.
+Thank you for your interest in contributing to **Ethereal**! We are building a high-fidelity digital companion, and we value your help in making it more intelligent, beautiful, and robust.
 
-## Code of Conduct
+## 🚀 Getting Started
 
-By participating in this project, you agree to abide by our Code of Conduct:
+1. **Fork & Clone**: Fork the repository and clone it to your local machine.
+2. **Environment Setup**:
+    - Install [Rust](https://www.rust-lang.org/tools/install) (latest stable).
+    - Install [Node.js](https://nodejs.org/) (LTS) and [pnpm](https://pnpm.io/installation).
+    - Install [Ollama](https://ollama.com/) for AI feature development.
+3. **Install Dependencies**:
 
-- Be respectful and inclusive
-- Welcome newcomers and mentor them
-- Focus on constructive feedback
-- Separate personal beliefs from technical discussions
-- Take responsibility for your actions
+    ```bash
+    pnpm install
+    ```
 
-## How to Contribute
+4. **Verify Setup**:
 
-### Reporting Bugs
+    ```bash
+    pnpm test:run
+    ```
 
-Before submitting a bug report:
+---
 
-1. Check existing issues to avoid duplicates
-2. Try reproducing on the latest version
-3. Gather relevant information (OS, GPU, steps to reproduce)
+## 🔄 The Golden Loop (Development Standards)
 
-When submitting a bug report:
+Every contribution MUST follow the **Implement -> Verify -> Commit** cycle. A task is NOT complete until all verification steps pass.
 
-- Use a clear and descriptive title
-- Describe the exact steps to reproduce
-- Explain the expected vs. actual behavior
-- Include screenshots if applicable
-- Provide system information (OS version, GPU model, etc.)
+### 1. Implementation
 
-### Suggesting Enhancements
+- **Aesthetic First**: Focus on creating high-fidelity "Digital Spirit" visuals (glassmorphism, glows, fluid animations).
+- **Self-Documentation**: Write clear, naming-focused code. Use comments only for truly complex logic.
 
-Feature requests are welcome! Before submitting:
+### 2. Mandatory Verification
 
-1. Check if the feature already exists or is planned
-2. Consider if it aligns with the project's goals
-3. Think about implementation complexity
+Before submitting a PR or creating a commit, execute these commands in order:
 
-When suggesting enhancements:
+| Step | Command | Purpose |
+| :--- | :--- | :--- |
+| 1 | `pnpm type-check` | Ensure no TypeScript errors. |
+| 2 | `pnpm lint:fix` | Check and fix code quality/formatting (Biome). |
+| 3 | `pnpm lint:rs` | Format and check Rust code (Clippy). |
+| 4 | `pnpm test:run` | Ensure no regressions in UI/Logic. |
+| 5 | `pnpm test:rust` | Verify Rust logic and state machine. |
+| 6 | `pnpm build` | Verify production build of React app. |
 
-- Use a clear and descriptive title
-- Provide a detailed description of the proposed feature
-- Explain the benefits and use cases
-- Consider potential drawbacks or trade-offs
-- Include examples or mockups if helpful
+### 3. Commitment
 
-### Code Contributions
+- Follow **Conventional Commits**: `feat(ai): add history support`.
+- One commit = One logical change.
 
-#### Getting Started
+---
 
-1. Fork the repository
-2. Create a new branch for your feature or bug fix
-3. Follow the development setup in `docs/development.md`
-4. Make your changes
-5. Test thoroughly
-6. Submit a pull request
+## 🛠️ Project Structure
 
-#### Development Process
+- `src/`: React frontend.
+    - `components/`: UI elements (using Tailwind + Framer Motion).
+    - `stores/`: Zustand state management.
+    - `hooks/`: Reusable React logic.
+- `src-tauri/`: Rust backend.
+    - `src/monitors/`: Hardware and activity sensing.
+    - `src/ai/`: Ollama integration logic.
+    - `src/config.rs`: Central source of truth for settings.
+- `public/sprites/`: Default animation frames.
 
-1. **Branch Naming**: Use descriptive names like `feature/new-animation` or `bugfix/window-drag-issue`
-2. **Commit Messages**: Follow conventional commit format:
+---
 
-   ```text
-   feat: Add new animation system
-   fix: Resolve window dragging issue
-   docs: Update contribution guidelines
-   ```
+## 🎨 Design Principles
 
-3. **Code Style**: Follow existing code conventions
-4. **Testing**: Add tests for new functionality
-5. **Documentation**: Update relevant documentation
+- **Glassmorphism**: High transparency, backdrop blurs, and thin borders.
+- **Fluidity**: All visual changes should be animated using `framer-motion` or `requestAnimationFrame`.
+- **Non-Intrusive**: The spirit should feel like a companion, not an interruption. Use "Ghost Mode" (click-through) by default.
 
-#### Pull Request Process
+## 🧪 Testing Guidelines
 
-1. Ensure your PR addresses a single issue or implements one feature
-2. Include a clear description of changes
-3. Reference related issues using keywords like "Fixes #123"
-4. Request review from maintainers
-5. Address feedback promptly
-6. Merge after approval (maintainers will handle merging)
+- **Frontend**: Use Vitest + React Testing Library. Mock Tauri APIs in `src/__tests__/setup.ts`.
+- **Rust**: Use standard `#[cfg(test)]` modules.
+- **Visual**: Use Playwright for visual regression testing (screenshots in `e2e-screenshots/`).
 
-## Development Guidelines
+## 📬 Submitting a Pull Request
 
-### Code Quality
+1. Create a branch from `main`: `git checkout -b feature/cool-new-thing`.
+2. Ensure the "Golden Loop" passes completely.
+3. Write a clear PR description summarizing the **Why** and **How**.
+4. Wait for review from maintainers.
 
-- Write clean, readable code
-- Follow language-specific style guides
-- Include comments for complex logic
-- Use meaningful variable and function names
-- Avoid code duplication
-
-### Testing
-
-- Write unit tests for new functionality
-- Ensure existing tests pass
-- Test on multiple platforms when possible
-- Include edge case testing
-
-### Documentation
-
-- Update README.md for user-facing changes
-- Add API documentation for new functions
-- Include usage examples
-- Keep documentation up to date with code changes
-
-### Performance
-
-- Optimize for resource efficiency
-- Minimize memory allocations
-- Use appropriate data structures
-- Profile performance-critical code
-
-## Project Structure
-
-Understanding the project structure is important for effective contributions:
-
-```text
-ethereal/
-├── src/                 # Frontend (React/TypeScript)
-├── src-tauri/           # Backend (Rust)
-├── public/              # Static assets
-├── docs/                # Documentation
-└── tests/               # Test files (when added)
-```
-
-### Frontend (src/)
-
-- Components: Reusable UI elements
-- Hooks: Custom React hooks
-- Config: Configuration files
-- Utils: Utility functions
-
-### Backend (src-tauri/)
-
-- Main: Application entry point and setup
-- Modules: System-specific implementations
-- Utils: Backend utility functions
-
-## Communication
-
-### Getting Help
-
-- Check existing documentation and issues
-- Join our community discussions (link to be added)
-- Ask questions in issues tagged "question"
-- Reach out to maintainers directly for complex topics
-
-### Discussions
-
-We encourage:
-
-- Technical discussions in issues
-- Feature proposals in dedicated proposal issues
-- Community interaction in discussions
-- Knowledge sharing through documentation
-
-## Recognition
-
-Contributors will be recognized in:
-
-- Commit history
-- Release notes
-- Contributor list (when established)
-- Project documentation
-
-## Legal Considerations
-
-### Licensing
-
-By contributing, you agree that your contributions will be licensed under the project's MIT License.
-
-### Copyright
-
-- Assign copyright to the project maintainers
-- Ensure you have rights to contribute the code
-- Do not contribute code from other projects without permission
-
-### Patents
-
-- Grant patent rights for your contributions
-- Do not contribute patented code without proper licensing
-
-## Review Process
-
-### Code Review
-
-All submissions require review:
-
-1. **Automated Checks**: CI tests must pass
-2. **Peer Review**: At least one maintainer review
-3. **Quality Check**: Code quality and style adherence
-4. **Documentation**: Adequate documentation updates
-5. **Testing**: Sufficient test coverage
-
-### Review Criteria
-
-Reviewers will consider:
-
-- Correctness and reliability
-- Performance impact
-- Security implications
-- Maintainability
-- Consistency with project goals
-- Documentation quality
-
-## Community
-
-### Maintainers
-
-Current maintainers:
-
-- [Your Name] - Project creator and lead maintainer
-
-### Contributors
-
-We welcome contributors of all skill levels. Whether you're fixing typos or implementing complex features, your contributions are valued.
-
-### Events
-
-We plan to participate in:
-
-- Hacktoberfest
-- Google Summer of Code (when eligible)
-- Local hackathons and meetups
-
-## Resources
-
-### Learning Materials
-
-- Tauri documentation
-- Rust programming language book
-- React documentation
-- TypeScript handbook
-
-### Tools
-
-- Rust analyzer for IDE support
-- Tauri CLI for development
-- Vite for frontend tooling
-- Testing frameworks (to be determined)
-
-## Questions?
-
-If you have any questions about contributing, feel free to:
-
-1. Open an issue with your question
-2. Check existing documentation
-3. Contact the maintainers directly
-4. Join community discussions (when available)
-
-Thank you for contributing to Desktop Ethereal!
+**Thank you for making Ethereal magical!** ✨

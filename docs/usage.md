@@ -1,232 +1,99 @@
-# Desktop Ethereal Usage Guide
+# ✨ Desktop Ethereal Usage Guide
 
-This guide provides detailed instructions on how to use Desktop Ethereal and customize its behavior.
+Welcome to the world of Ethereal! This guide will help you interact with, customize, and master your digital companion.
 
-## Getting Started
+## 🚀 Getting Started
 
-### Initial Setup
+### Installation
 
-1. **Prerequisites**:
-   - Ensure you have Windows 10/11 installed
-   - Install [Rust](https://www.rust-lang.org/tools/install) and [Node.js](https://nodejs.org/)
-   - Install [pnpm](https://pnpm.io/installation) as the package manager
+1. Download the latest installer from the [Releases](https://github.com/pplmx/ethereal/releases) page.
+2. Run the installer and follow the prompts.
+3. Ensure **Ollama** is installed and running on your system for AI features. We recommend pulling the `llama3.2` model:
 
-2. **First Run**:
+    ```bash
+    ollama pull llama3.2
+    ```
 
-   ```bash
-   pnpm install
-   pnpm tauri dev
-   ```
+### First Awakening
 
-   On first run, the ethereal window will appear on your desktop.
+Upon the first launch, you'll be greeted by the **Welcome Modal**. This guide explains the core nature of your spirit. Click "Awaken the Spirit" to begin.
 
-## Basic Operations
+---
 
-### Window Controls
+## 🎮 Controls & Interaction
 
-**Moving the Window**:
+### Window Management
 
-- Click and drag anywhere on the ethereal window to move it
-- The entire window acts as a drag handle
+- **Moving**: Click and drag anywhere on the spirit to move it.
+- **Ghost Mode**: Press `Ctrl+Shift+E` to toggle click-through mode. When enabled, the spirit will ignore mouse clicks, allowing you to work "through" it.
+- **Context Menu**: Right-click on the spirit (when not in ghost mode) to access settings, move the spirit to different monitors, or quit.
 
-**Toggling Modes**:
-The current implementation is a basic template with limited functionality. Future versions will include:
+### AI Interaction
 
-- **Interactive Mode**: Full control, window can be moved and buttons are visible
-- **Ghost Mode**: Click-through, window ignores mouse input
+- **Clipboard Trigger**: Copy a code snippet or an error message to your clipboard. If the content is significant, the spirit will process it and offer advice or commentary via a speech bubble.
+- **Double-Click**: By default, double-clicking the spirit will trigger a friendly greeting or a contextual chat response.
+- **Memory**: The spirit remembers the last 10 exchanges, allowing for multi-turn conversations.
 
-Toggle between modes using:
+---
 
-1. **Hotkey**: Future implementation will support `Ctrl+Shift+D` (works even in ghost mode)
-2. **UI Buttons**: Future implementation will include "Enable Click-Through" or "Disable Click-Through" buttons
+## 🎭 State & Mood System
 
-### Monitoring Features
+The spirit's appearance and behavior change based on your system's "pulse":
 
-The current implementation is a basic template with limited functionality. Future versions will include:
+| State | Trigger | Spirit Behavior |
+| :--- | :--- | :--- |
+| **IDLE** | System is relaxed | Soft floating, indigo aura. |
+| **WORKING** | Coding apps in focus | Focus animation, purple aura. |
+| **GAMING** | Games in focus | Energetic movement, cyan aura. |
+| **OVERHEATING** | Hardware > 80°C | Rapid flickering, rose aura, irritable. |
+| **HIGH_LOAD** | CPU/RAM pressure | Strained movement, amber aura. |
+| **THINKING** | Processing AI request | Thinking animation, pulse effect. |
 
-**GPU Temperature Monitoring**:
+---
 
-- Automatically monitors your NVIDIA GPU temperature
-- Switches to OVERHEATING state when temperature exceeds 80°C
-- Displays current temperature in the status bar (bottom left)
+## 🛠️ Customization
 
-**Activity Detection**:
+### Changing the Look (Drag-and-Drop)
 
-- Automatically detects when you're:
-    - Coding (VS Code, Vim, Sublime, etc.)
-    - Browsing (Chrome, Firefox, Edge)
-    - Gaming (Steam, Epic Games, game executables)
-- Switches between CODING, BROWSING, GAMING, and IDLE states accordingly
+You can completely change how the spirit looks:
 
-**Clipboard Monitoring**:
+1. Prepare a folder containing SVG or PNG files named following the pattern: `idle-1.svg`, `idle-2.svg`, `working-1.svg`, etc.
+2. Drag and drop the **folder** (or any file within it) onto the spirit window.
+3. The spirit will instantly update its "clothes" and thank you!
 
-- Monitors clipboard content changes
-- Ignores content shorter than 10 characters or longer than 1000 characters
-- Can be used for contextual responses (future feature)
+### Settings Panel
 
-## Interacting with Your Ethereal
+Access the settings via the right-click menu or by double-clicking (if configured):
 
-### Chat Feature
+- **Window**: Toggle "Always on Top", "Autostart", and manage multi-monitor placement.
+- **Hardware**: View real-time stats and adjust temperature thresholds.
+- **AI**: Change model names, API endpoints, or the spirit's base personality.
+- **Sound**: Enable/disable interaction sound effects.
+- **Sprite**: Preview all animation states for the current skin.
+- **Hotkeys**: Remap global shortcuts.
 
-The current implementation is a basic template with limited functionality. Future versions will include:
+---
 
-Talk to your ethereal companion:
-
-1. Ensure Ollama is running
-2. Pull a model: `ollama pull llama3.2:3b`
-3. Use the chat functionality (accessible through future UI expansion)
-
-The ethereal responds with Ultraman Tiga personality, using phrases like "Transform!" or "Light energy!"
-
-## Customization
-
-The current implementation is a basic template with limited functionality. Future versions will include:
-
-### Adding Sprites
-
-1. Create or obtain PNG sprite images (recommended 256x256 with transparent background)
-2. Name them according to the pattern:
-   - IDLE: `idle_01.png`, `idle_02.png`, etc.
-   - CODING: `typing_01.png`, `typing_02.png`, etc.
-   - OVERHEATING: `overheat_01.png`, `overheat_02.png`, etc.
-   - GAMING: `gaming_01.png`, `gaming_02.png`, etc.
-3. Place them in the `public/sprites/` directory
-
-### Adjusting Animation Speed
-
-Modify animation speeds in `src/config/animations.ts`:
-
-```typescript
-export const ANIMATIONS = {
-  IDLE: {
-    frames: ['/sprites/idle_01.png', '/sprites/idle_02.png'],
-    fps: 4, // Change this value to adjust speed
-  },
-  // ... other states
-}
-```
-
-### Customizing State Transitions
-
-Modify the state machine in `src/hooks/useEtherealState.ts`:
-
-- Adjust temperature thresholds
-- Add new activity categories
-- Modify transition logic
-
-## Advanced Configuration
-
-### Window Properties
-
-Adjust window behavior in `src-tauri/tauri.conf.json`:
-
-```json
-{
-  "windows": [
-    {
-      "title": "ethereal",
-      "width": 800,
-      "height": 600
-    }
-  ]
-}
-```
-
-### Hotkey Modification
-
-Future implementations will support hotkey modification in `src-tauri/src/main.rs`:
-
-```rust
-let shortcut = Shortcut::new("Ctrl+Shift+D"); // Modify this string
-```
-
-Refer to Tauri's global shortcut documentation for syntax.
-
-## Troubleshooting
-
-### Common Issues and Solutions
-
-1. **Ethereal window doesn't appear**:
-   - Check if the application started successfully
-   - Look for error messages in the terminal
-   - Verify system requirements are met
-
-### Log Access
-
-During development:
-
-- View console output in the terminal where you ran `pnpm tauri dev`
-- Check browser DevTools (Ctrl+Shift+I) for frontend errors
-
-In production builds:
-
-- Logs are typically found in system event logs
-- Application-specific logs may be in user directories
-
-## Performance Considerations
+## 🔋 Performance & Privacy
 
 ### Resource Usage
 
-Desktop Ethereal is designed to be lightweight:
+Ethereal is designed to be a "zero-impact" companion:
 
-- CPU usage: Typically < 5% when idle
-- Memory usage: ~50-100MB depending on system
+- **Idle**: < 1% CPU, ~60MB RAM.
+- **Animations**: Uses GPU-accelerated CSS and `requestAnimationFrame`.
 
-## Privacy and Security
+### Privacy
 
-### Data Collection
+- **Local AI**: All chat processing happens locally via Ollama. No data is sent to external clouds.
+- **Window Titles**: You can disable "Share Window Title" in **Settings -> Privacy** if you prefer the spirit not to know which specific files you're editing.
 
-Desktop Ethereal collects minimal system information locally:
+---
 
-- Active window titles and process names (future implementation)
-- GPU temperature and utilization data (future implementation)
-- Clipboard content (filtered and processed locally) (future implementation)
+## ❓ Troubleshooting
 
-No data is transmitted to external servers by default.
+- **Spirit is "Invisible"**: Check if it's moved to a disconnected monitor. Use the system tray icon to "Reset Position".
+- **AI Not Responding**: Ensure Ollama is running and the `llama3.2` model is available. Check the API endpoint in settings (default: `http://localhost:11434`).
+- **No Sound**: Verify that your system volume is up and "Enable Sound" is checked in settings.
 
-### Permissions
-
-The application requires:
-
-- Window management permissions (for overlay functionality) (future implementation)
-- GPU monitoring permissions (for NVIDIA libraries) (future implementation)
-- Clipboard access (for contextual awareness) (future implementation)
-
-These permissions are used solely for the application's core functionality.
-
-## Frequently Asked Questions
-
-**Q: Can I run this on macOS or Linux?**
-A: Primary support is for Windows, but the underlying Tauri framework supports cross-platform development. Some Windows-specific features may need adaptation.
-
-**Q: What happens if I don't have an NVIDIA GPU?**
-A: GPU monitoring will show default values (0). All other features will work normally. (Future implementation)
-
-**Q: Can I customize the ethereal's personality?**
-A: Yes, you can modify the system prompt in the Ollama integration in `src-tauri/src/main.rs`. (Future implementation)
-
-**Q: How do I uninstall the application?**
-A: Simply delete the application folder. No system changes are made outside the application directory.
-
-**Q: Can I have multiple ethereal?**
-A: Currently, the application supports one ethereal per instance. You can run multiple instances with different configurations. (Future implementation)
-
-## Support
-
-For issues, feature requests, or questions:
-
-1. Check the project's GitHub issues
-2. Submit a new issue with detailed information
-3. Contact the development team through the project's communication channels
-
-## Changelog
-
-### v0.1.0
-
-- Initial release
-- Basic ghost window functionality
-- System monitoring (GPU, active windows, clipboard)
-- Dynamic state transitions
-- Sprite animations
-- Ollama LLM integration
-- Global hotkey support
+**Enjoy your new digital companion!** ✨
