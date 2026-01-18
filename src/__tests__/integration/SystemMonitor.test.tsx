@@ -41,6 +41,7 @@ vi.mock('@lib/logger', () => ({
     info: vi.fn(),
     error: vi.fn(),
     debug: vi.fn(),
+    warn: vi.fn(),
   },
 }));
 
@@ -49,6 +50,7 @@ describe('System Monitoring Integration', () => {
     vi.clearAllMocks();
     useSpriteStore.setState({
       state: 'idle',
+      mood: 'happy',
       hardware: null,
     });
   });
@@ -57,7 +59,7 @@ describe('System Monitoring Integration', () => {
     vi.restoreAllMocks();
   });
 
-  it('updates sprite state on gpu-update event', async () => {
+  it('updates sprite state and mood on gpu-update event', async () => {
     let hardwareCallback: ((event: any) => void) | undefined;
 
     (listen as Mock).mockImplementation(async (event, callback) => {
@@ -76,7 +78,6 @@ describe('System Monitoring Integration', () => {
 
     expect(hardwareCallback).toBeDefined();
 
-    // Simulate High Load
     await act(async () => {
       if (hardwareCallback) {
         await hardwareCallback({
@@ -85,7 +86,14 @@ describe('System Monitoring Integration', () => {
             utilization: 90,
             memory_used: 4000,
             memory_total: 8000,
-            state: 'HighLoad', // Backend string
+            network_rx: 0,
+            network_tx: 0,
+            disk_read: 0,
+            disk_write: 0,
+            battery_level: 80,
+            battery_state: 'Discharging',
+            state: 'HighLoad',
+            mood: 'Tired',
           },
         });
       }
@@ -94,10 +102,11 @@ describe('System Monitoring Integration', () => {
     await waitFor(() => {
       const state = useSpriteStore.getState();
       expect(state.state).toBe('high_load');
+      expect(state.mood).toBe('tired');
       expect(state.hardware?.utilization).toBe(90);
+      expect(state.hardware?.battery_level).toBe(80);
     });
 
-    // Simulate Gaming
     await act(async () => {
       if (hardwareCallback) {
         await hardwareCallback({
@@ -106,7 +115,14 @@ describe('System Monitoring Integration', () => {
             utilization: 50,
             memory_used: 4000,
             memory_total: 8000,
+            network_rx: 0,
+            network_tx: 0,
+            disk_read: 0,
+            disk_write: 0,
+            battery_level: 100,
+            battery_state: 'Full',
             state: 'Gaming',
+            mood: 'Excited',
           },
         });
       }
@@ -115,6 +131,7 @@ describe('System Monitoring Integration', () => {
     await waitFor(() => {
       const state = useSpriteStore.getState();
       expect(state.state).toBe('gaming');
+      expect(state.mood).toBe('excited');
     });
   });
 });

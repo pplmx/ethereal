@@ -43,6 +43,11 @@ export const DevTools = () => {
           <div>Net ↑: {hardware.network_tx} KB/s</div>
           <div>Disk R: {hardware.disk_read} KB/s</div>
           <div>Disk W: {hardware.disk_write} KB/s</div>
+          {hardware.battery_state !== 'N/A' && (
+            <div>
+              Bat: {hardware.battery_level.toFixed(0)}% ({hardware.battery_state})
+            </div>
+          )}
           <div className="text-blue-400">State: {hardware.state}</div>
         </>
       )}

@@ -86,6 +86,11 @@ impl HardwareMonitor for MockDataGenerator {
         }
     }
 
+    fn get_battery_status(&self) -> (f32, String) {
+        let mut rng = rand::thread_rng();
+        (rng.gen_range(20.0..100.0), "Discharging".to_string())
+    }
+
     fn is_available(&self) -> bool {
         true
     }

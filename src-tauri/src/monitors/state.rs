@@ -1,7 +1,9 @@
 use crate::config::AppConfig;
 use crate::monitors::{window::AppCategory, HardwareMonitor};
 
-#[derive(Debug, Clone, PartialEq)]
+use serde::Serialize;
+
+#[derive(Debug, Clone, PartialEq, Serialize)]
 pub enum SpriteState {
     Overheating,
     HighLoad,
@@ -9,6 +11,31 @@ pub enum SpriteState {
     Gaming,
     Browsing,
     Idle,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub enum Mood {
+    Happy,
+    Excited,
+    Tired,
+    Bored,
+    Angry,
+}
+
+pub fn determine_mood(state: &SpriteState, usage: f32) -> Mood {
+    match state {
+        SpriteState::Overheating => Mood::Angry,
+        SpriteState::HighLoad => Mood::Tired,
+        SpriteState::Gaming => Mood::Excited,
+        SpriteState::Working => Mood::Happy,
+        _ => {
+            if usage < 5.0 {
+                Mood::Bored
+            } else {
+                Mood::Happy
+            }
+        }
+    }
 }
 
 pub fn determine_state(

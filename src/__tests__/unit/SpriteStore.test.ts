@@ -7,6 +7,7 @@ describe('Sprite Logic', () => {
     vi.clearAllMocks();
     useSpriteStore.setState({
       state: 'idle',
+      mood: 'happy',
       hardware: null,
       aiMessage: null,
       isClickThrough: false,
@@ -18,20 +19,28 @@ describe('Sprite Logic', () => {
     expect(state).toBe('idle');
   });
 
-  it('updates state based on hardware data', () => {
+  it('updates state and mood based on hardware data', () => {
     const { updateHardware } = useSpriteStore.getState();
 
     act(() => {
       updateHardware({
         state: 'Gaming',
+        mood: 'Excited',
         temperature: 60,
         utilization: 50,
         memory_used: 100,
         memory_total: 1000,
+        network_rx: 0,
+        network_tx: 0,
+        disk_read: 0,
+        disk_write: 0,
+        battery_level: 100,
+        battery_state: 'Full',
       });
     });
 
     expect(useSpriteStore.getState().state).toBe('gaming');
+    expect(useSpriteStore.getState().mood).toBe('excited');
   });
 
   it('prioritizes thinking state over hardware updates', () => {
@@ -46,10 +55,17 @@ describe('Sprite Logic', () => {
     act(() => {
       updateHardware({
         state: 'Overheating',
+        mood: 'Angry',
         temperature: 90,
         utilization: 100,
         memory_used: 100,
         memory_total: 1000,
+        network_rx: 0,
+        network_tx: 0,
+        disk_read: 0,
+        disk_write: 0,
+        battery_level: 50,
+        battery_state: 'Discharging',
       });
     });
 

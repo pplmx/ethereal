@@ -77,7 +77,12 @@ describe('Hardware Dashboard Integration', () => {
             memory_total: 8000,
             network_rx: 123,
             network_tx: 45,
+            disk_read: 10,
+            disk_write: 5,
+            battery_level: 80,
+            battery_state: 'Discharging',
             state: 'Working',
+            mood: 'Happy',
           },
         });
       }
@@ -86,6 +91,8 @@ describe('Hardware Dashboard Integration', () => {
     expect(screen.getByText(/CPU: 42.5%/)).toBeInTheDocument();
     expect(screen.getByText(/Net ↓: 123 KB\/s/)).toBeInTheDocument();
     expect(screen.getByText(/Net ↑: 45 KB\/s/)).toBeInTheDocument();
+    expect(screen.getByText(/Disk R: 10 KB\/s/)).toBeInTheDocument();
+    expect(screen.getByText(/Bat: 80%/)).toBeInTheDocument();
     expect(screen.getByText(/State: Working/)).toBeInTheDocument();
   });
 });

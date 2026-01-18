@@ -77,6 +77,7 @@ chrono = { version = "0.4", features = ["serde"] }
 rand = "0.8"
 tauri-plugin-opener = "2"
 raw-window-handle = "0.6.2"
+battery = "0.7.8"
 
 # ============ Windows 特定 ============
 [target.'cfg(windows)'.dependencies]

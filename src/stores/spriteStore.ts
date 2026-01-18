@@ -19,8 +19,13 @@ export interface HardwareData {
   network_tx: number;
   disk_read: number;
   disk_write: number;
+  battery_level: number;
+  battery_state: string;
   state: string;
+  mood: string;
 }
+
+export type MoodState = 'happy' | 'excited' | 'tired' | 'bored' | 'angry';
 
 interface SpriteConfig {
   [key: string]: {
@@ -30,14 +35,26 @@ interface SpriteConfig {
   };
 }
 
+const DEFAULT_SPRITE_CONFIG: SpriteConfig = {
+  idle: { frameCount: 4, fps: 8, loop: true },
+  working: { frameCount: 4, fps: 12, loop: true },
+  gaming: { frameCount: 4, fps: 12, loop: true },
+  browsing: { frameCount: 4, fps: 8, loop: true },
+  overheating: { frameCount: 4, fps: 24, loop: true },
+  high_load: { frameCount: 4, fps: 16, loop: true },
+  thinking: { frameCount: 4, fps: 12, loop: true },
+};
+
 interface SpriteStore {
   state: SpriteState;
+  mood: MoodState;
   isClickThrough: boolean;
   hardware: HardwareData | null;
   aiMessage: string | null;
   spriteConfig: SpriteConfig;
 
   setState: (state: SpriteState) => void;
+  setMood: (mood: MoodState) => void;
   toggleClickThrough: () => void;
   updateHardware: (data: HardwareData) => void;
   setAiMessage: (message: string | null) => void;
@@ -64,14 +81,19 @@ const mapBackendStateToFrontend = (backendState: string): SpriteState => {
   }
 };
 
-const DEFAULT_SPRITE_CONFIG: SpriteConfig = {
-  idle: { frameCount: 4, fps: 8, loop: true },
-  working: { frameCount: 4, fps: 12, loop: true },
-  gaming: { frameCount: 4, fps: 12, loop: true },
-  browsing: { frameCount: 4, fps: 8, loop: true },
-  overheating: { frameCount: 4, fps: 24, loop: true },
-  high_load: { frameCount: 4, fps: 16, loop: true },
-  thinking: { frameCount: 4, fps: 12, loop: true },
+const mapBackendMoodToFrontend = (backendMood: string): MoodState => {
+  switch (backendMood) {
+    case 'Excited':
+      return 'excited';
+    case 'Tired':
+      return 'tired';
+    case 'Bored':
+      return 'bored';
+    case 'Angry':
+      return 'angry';
+    default:
+      return 'happy';
+  }
 };
 
 export const useSpriteStore = create<SpriteStore>()(
@@ -79,12 +101,14 @@ export const useSpriteStore = create<SpriteStore>()(
     persist(
       (set, get) => ({
         state: 'idle',
+        mood: 'happy',
         isClickThrough: false,
         hardware: null,
         aiMessage: null,
         spriteConfig: DEFAULT_SPRITE_CONFIG,
 
         setState: (state) => set({ state }),
+        setMood: (mood) => set({ mood }),
 
         toggleClickThrough: () => set((state) => ({ isClickThrough: !state.isClickThrough })),
 
@@ -96,7 +120,8 @@ export const useSpriteStore = create<SpriteStore>()(
           }
 
           const newState = mapBackendStateToFrontend(hardware.state);
-          set({ hardware, state: newState });
+          const newMood = mapBackendMoodToFrontend(hardware.mood);
+          set({ hardware, state: newState, mood: newMood });
         },
 
         setAiMessage: (aiMessage) => {
@@ -108,14 +133,10 @@ export const useSpriteStore = create<SpriteStore>()(
 
         getAnimationFrames: () => {
           const { state, spriteConfig } = get();
-          // Safe fallback to idle if config missing
           const config = spriteConfig[state] ?? spriteConfig.idle;
-
-          // Ensure config is not undefined (TS check)
           if (!config) return [];
 
           const baseUrl = '/sprites';
-
           const prefix = state;
 
           return Array.from(

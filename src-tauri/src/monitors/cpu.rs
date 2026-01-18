@@ -1,11 +1,15 @@
+use crate::monitors::battery::BatteryMonitor;
 use crate::monitors::network::NetworkMonitor;
 use crate::monitors::HardwareMonitor;
 use std::sync::{Arc, Mutex};
-use sysinfo::{Components, CpuRefreshKind, MemoryRefreshKind, RefreshKind, System, ProcessRefreshKind};
+use sysinfo::{
+    Components, CpuRefreshKind, MemoryRefreshKind, ProcessRefreshKind, RefreshKind, System,
+};
 
 pub struct CpuMonitor {
     sys: Arc<Mutex<System>>,
     net: NetworkMonitor,
+    bat: Option<BatteryMonitor>,
 }
 
 impl Default for CpuMonitor {
@@ -20,7 +24,7 @@ impl CpuMonitor {
             RefreshKind::new()
                 .with_cpu(CpuRefreshKind::everything())
                 .with_memory(MemoryRefreshKind::everything())
-                .with_processes(ProcessRefreshKind::everything().with_disk_usage())
+                .with_processes(ProcessRefreshKind::everything().with_disk_usage()),
         );
         sys.refresh_cpu_usage();
         sys.refresh_memory();
@@ -28,6 +32,7 @@ impl CpuMonitor {
         Self {
             sys: Arc::new(Mutex::new(sys)),
             net: NetworkMonitor::new(),
+            bat: BatteryMonitor::new().ok(),
         }
     }
 }
@@ -83,14 +88,22 @@ impl HardwareMonitor for CpuMonitor {
 
         let mut total_read = 0;
         let mut total_written = 0;
-        
+
         for process in sys.processes().values() {
             let usage = process.disk_usage();
             total_read += usage.read_bytes;
             total_written += usage.written_bytes;
         }
-        
+
         (total_read / 1024, total_written / 1024)
+    }
+
+    fn get_battery_status(&self) -> (f32, String) {
+        if let Some(ref bat) = self.bat {
+            bat.get_status()
+        } else {
+            (0.0, "N/A".to_string())
+        }
     }
 
     fn is_available(&self) -> bool {
