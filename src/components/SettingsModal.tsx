@@ -326,6 +326,21 @@ export const SettingsModal = () => {
                       />
                     </label>
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      System Prompt
+                      <textarea
+                        value={formData.ai.system_prompt}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            ai: { ...formData.ai, system_prompt: e.target.value },
+                          })
+                        }
+                        className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1 h-24 resize-none"
+                      />
+                    </label>
+                  </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-1">

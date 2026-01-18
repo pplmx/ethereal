@@ -60,6 +60,7 @@ impl Default for AppConfig {
             ai: AiConfig {
                 model_name: default_model(),
                 api_endpoint: default_api_endpoint(),
+                system_prompt: default_system_prompt(),
                 max_response_length: default_max_length(),
                 cooldown_seconds: default_cooldown(),
             },
@@ -115,6 +116,8 @@ pub struct AiConfig {
     pub model_name: String,
     #[serde(default = "default_api_endpoint")]
     pub api_endpoint: String,
+    #[serde(default = "default_system_prompt")]
+    pub system_prompt: String,
     #[serde(default = "default_max_length")]
     pub max_response_length: usize,
     #[serde(default = "default_cooldown")]
@@ -155,6 +158,15 @@ fn default_model() -> String {
 }
 fn default_api_endpoint() -> String {
     "http://localhost:11434".to_string()
+}
+fn default_system_prompt() -> String {
+    "You are Ethereal, a digital spirit living in the code. \
+     Reply concisely (under 30 words). \
+     Be witty and slightly mysterious. \
+     Your current mood and system status are provided in the context. \
+     Incorporate your mood into your personality (e.g., if Tired, be lethargic; \
+     if Excited, be energetic). If asked about code, be professional but keep the persona."
+        .to_string()
 }
 fn default_max_length() -> usize {
     100

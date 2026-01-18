@@ -20,6 +20,7 @@ export interface HardwareConfig {
 export interface AiConfig {
   model_name: string;
   api_endpoint: string;
+  system_prompt: string;
   max_response_length: number;
   cooldown_seconds: number;
 }

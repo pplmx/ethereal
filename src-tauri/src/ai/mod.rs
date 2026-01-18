@@ -29,18 +29,11 @@ impl OllamaClient {
     }
 
     pub async fn chat(&self, prompt: &str) -> anyhow::Result<String> {
-        let system_prompt = "You are Ethereal, a digital spirit living in the code. \
-            Reply concisely (under 30 words). \
-            Be witty and slightly mysterious. \
-            Your current mood and system status are provided in the context. \
-            Incorporate your mood into your personality (e.g., if Tired, be lethargic; \
-            if Excited, be energetic). If asked about code, be professional but keep the persona.";
-
         let request = GenerateRequest {
             model: self.config.model_name.clone(),
             prompt: prompt.to_string(),
             stream: false,
-            system: Some(system_prompt.to_string()),
+            system: Some(self.config.system_prompt.clone()),
         };
 
         let url = format!("{}/api/generate", self.config.api_endpoint);

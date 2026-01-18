@@ -1,7 +1,7 @@
+use crate::config::AppConfig;
 use std::str::FromStr;
 use tauri::{AppHandle, Emitter};
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutEvent, ShortcutState};
-use crate::config::AppConfig;
 
 pub fn setup_global_hotkeys(app: &AppHandle) -> anyhow::Result<()> {
     refresh_hotkeys(app)
@@ -9,7 +9,7 @@ pub fn setup_global_hotkeys(app: &AppHandle) -> anyhow::Result<()> {
 
 pub fn refresh_hotkeys(app: &AppHandle) -> anyhow::Result<()> {
     let config = AppConfig::load(app).unwrap_or_default();
-    
+
     let _ = app.global_shortcut().unregister_all();
 
     let toggle_click_through = Shortcut::from_str(&config.hotkeys.toggle_click_through)?;
@@ -23,7 +23,7 @@ pub fn refresh_hotkeys(app: &AppHandle) -> anyhow::Result<()> {
 
 pub fn handle_global_shortcut(app: &AppHandle, shortcut: &Shortcut, event: ShortcutEvent) {
     let config = AppConfig::load(app).unwrap_or_default();
-    
+
     let toggle_click_through = Shortcut::from_str(&config.hotkeys.toggle_click_through).ok();
     let quit_shortcut = Shortcut::from_str(&config.hotkeys.quit).ok();
 
