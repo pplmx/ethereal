@@ -17,6 +17,8 @@ export interface HardwareData {
   memory_total: number;
   network_rx: number;
   network_tx: number;
+  disk_read: number;
+  disk_write: number;
   state: string;
 }
 

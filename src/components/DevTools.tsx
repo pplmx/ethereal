@@ -41,6 +41,8 @@ export const DevTools = () => {
           <div>CPU: {hardware.utilization.toFixed(1)}%</div>
           <div>Net ↓: {hardware.network_rx} KB/s</div>
           <div>Net ↑: {hardware.network_tx} KB/s</div>
+          <div>Disk R: {hardware.disk_read} KB/s</div>
+          <div>Disk W: {hardware.disk_write} KB/s</div>
           <div className="text-blue-400">State: {hardware.state}</div>
         </>
       )}

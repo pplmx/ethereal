@@ -25,6 +25,9 @@ mod tests {
         fn get_network_usage(&self) -> (u64, u64) {
             (0, 0)
         }
+        fn get_disk_usage(&self) -> (u64, u64) {
+            (0, 0)
+        }
         fn is_available(&self) -> bool {
             true
         }
@@ -43,7 +46,7 @@ mod tests {
             util: 10.0,
         };
         let config = create_config(80.0);
-        let state = determine_state(&monitor, 0, 0, AppCategory::Idle, &config);
+        let state = determine_state(&monitor, 0, 0, 0, 0, AppCategory::Idle, &config);
         assert_eq!(state, SpriteState::Overheating);
     }
 
@@ -54,7 +57,7 @@ mod tests {
             util: 90.0,
         };
         let config = create_config(80.0);
-        let state = determine_state(&monitor, 0, 0, AppCategory::Idle, &config);
+        let state = determine_state(&monitor, 0, 0, 0, 0, AppCategory::Idle, &config);
         assert_eq!(state, SpriteState::HighLoad);
     }
 
@@ -77,6 +80,9 @@ mod tests {
             fn get_network_usage(&self) -> (u64, u64) {
                 (0, 0)
             }
+            fn get_disk_usage(&self) -> (u64, u64) {
+                (0, 0)
+            }
             fn is_available(&self) -> bool {
                 true
             }
@@ -87,7 +93,7 @@ mod tests {
             total: 1000,
         };
         let config = create_config(80.0);
-        let state = determine_state(&monitor, 0, 0, AppCategory::Idle, &config);
+        let state = determine_state(&monitor, 0, 0, 0, 0, AppCategory::Idle, &config);
         assert_eq!(state, SpriteState::HighLoad);
     }
 
@@ -98,7 +104,18 @@ mod tests {
             util: 10.0,
         };
         let config = create_config(80.0);
-        let state = determine_state(&monitor, 3000, 0, AppCategory::Idle, &config);
+        let state = determine_state(&monitor, 3000, 0, 0, 0, AppCategory::Idle, &config);
+        assert_eq!(state, SpriteState::HighLoad);
+    }
+
+    #[test]
+    fn test_high_disk_load() {
+        let monitor = MockMonitor {
+            temp: 60.0,
+            util: 10.0,
+        };
+        let config = create_config(80.0);
+        let state = determine_state(&monitor, 0, 0, 20000, 0, AppCategory::Idle, &config);
         assert_eq!(state, SpriteState::HighLoad);
     }
 
@@ -109,7 +126,7 @@ mod tests {
             util: 10.0,
         };
         let config = create_config(80.0);
-        let state = determine_state(&monitor, 0, 0, AppCategory::Coding, &config);
+        let state = determine_state(&monitor, 0, 0, 0, 0, AppCategory::Coding, &config);
         assert_eq!(state, SpriteState::Working);
     }
 
@@ -120,7 +137,7 @@ mod tests {
             util: 10.0,
         };
         let config = create_config(80.0);
-        let state = determine_state(&monitor, 0, 0, AppCategory::Gaming, &config);
+        let state = determine_state(&monitor, 0, 0, 0, 0, AppCategory::Gaming, &config);
         assert_eq!(state, SpriteState::Gaming);
     }
 
@@ -131,7 +148,7 @@ mod tests {
             util: 10.0,
         };
         let config = create_config(80.0);
-        let state = determine_state(&monitor, 0, 0, AppCategory::Unknown, &config);
+        let state = determine_state(&monitor, 0, 0, 0, 0, AppCategory::Unknown, &config);
         assert_eq!(state, SpriteState::Idle);
     }
 }

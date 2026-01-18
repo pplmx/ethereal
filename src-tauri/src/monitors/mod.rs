@@ -11,6 +11,7 @@ pub trait HardwareMonitor: Send + Sync {
     fn get_utilization(&self) -> f32;
     fn get_memory_usage(&self) -> (u64, u64);
     fn get_network_usage(&self) -> (u64, u64);
+    fn get_disk_usage(&self) -> (u64, u64);
     fn is_available(&self) -> bool;
 }
 
@@ -30,6 +31,8 @@ struct GpuStats {
     memory_total: u64,
     network_rx: u64,
     network_tx: u64,
+    disk_read: u64,
+    disk_write: u64,
     state: String,
 }
 
@@ -40,15 +43,13 @@ pub fn spawn_monitor_thread(app: AppHandle) {
 
         loop {
             if monitor.is_available() {
-                let config = match AppConfig::load(&app) {
-                    Ok(c) => c,
-                    Err(_) => AppConfig::default(),
-                };
+                let config = AppConfig::load(&app).unwrap_or_default();
 
                 let (used, total) = monitor.get_memory_usage();
                 let (rx, tx) = monitor.get_network_usage();
+                let (read, write) = monitor.get_disk_usage();
                 let category = window_monitor.get_active_app_category();
-                let state = determine_state(monitor.as_ref(), rx, tx, category, &config);
+                let state = determine_state(monitor.as_ref(), rx, tx, read, write, category, &config);
 
                 let stats = GpuStats {
                     temperature: monitor.get_temperature(),
@@ -57,6 +58,8 @@ pub fn spawn_monitor_thread(app: AppHandle) {
                     memory_total: total,
                     network_rx: rx,
                     network_tx: tx,
+                    disk_read: read,
+                    disk_write: write,
                     state: format!("{:?}", state),
                 };
 

@@ -77,6 +77,15 @@ impl HardwareMonitor for MockDataGenerator {
         }
     }
 
+    fn get_disk_usage(&self) -> (u64, u64) {
+        let mut rng = rand::thread_rng();
+        match self.pattern {
+            ActivityPattern::Idle => (rng.gen_range(0..50), rng.gen_range(0..20)),
+            ActivityPattern::HighLoad => (rng.gen_range(10000..50000), rng.gen_range(5000..20000)),
+            ActivityPattern::Fluctuating => (rng.gen_range(100..5000), rng.gen_range(50..2000)),
+        }
+    }
+
     fn is_available(&self) -> bool {
         true
     }

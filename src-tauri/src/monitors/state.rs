@@ -15,6 +15,8 @@ pub fn determine_state(
     monitor: &dyn HardwareMonitor,
     network_rx: u64,
     network_tx: u64,
+    disk_read: u64,
+    disk_write: u64,
     app_category: AppCategory,
     config: &AppConfig,
 ) -> SpriteState {
@@ -35,7 +37,7 @@ pub fn determine_state(
         return SpriteState::HighLoad;
     }
 
-    if network_rx + network_tx > 2048 {
+    if network_rx + network_tx > 2048 || disk_read + disk_write > 10240 {
         return SpriteState::HighLoad;
     }
 

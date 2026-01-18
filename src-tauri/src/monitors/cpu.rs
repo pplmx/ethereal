@@ -1,7 +1,7 @@
 use crate::monitors::network::NetworkMonitor;
 use crate::monitors::HardwareMonitor;
 use std::sync::{Arc, Mutex};
-use sysinfo::{Components, CpuRefreshKind, MemoryRefreshKind, RefreshKind, System};
+use sysinfo::{Components, CpuRefreshKind, MemoryRefreshKind, RefreshKind, System, ProcessRefreshKind};
 
 pub struct CpuMonitor {
     sys: Arc<Mutex<System>>,
@@ -19,7 +19,8 @@ impl CpuMonitor {
         let mut sys = System::new_with_specifics(
             RefreshKind::new()
                 .with_cpu(CpuRefreshKind::everything())
-                .with_memory(MemoryRefreshKind::everything()),
+                .with_memory(MemoryRefreshKind::everything())
+                .with_processes(ProcessRefreshKind::everything().with_disk_usage())
         );
         sys.refresh_cpu_usage();
         sys.refresh_memory();
@@ -70,6 +71,26 @@ impl HardwareMonitor for CpuMonitor {
 
     fn get_network_usage(&self) -> (u64, u64) {
         self.net.get_usage()
+    }
+
+    fn get_disk_usage(&self) -> (u64, u64) {
+        let mut sys = self.sys.lock().unwrap();
+        sys.refresh_processes_specifics(
+            sysinfo::ProcessesToUpdate::All,
+            true,
+            ProcessRefreshKind::new().with_disk_usage(),
+        );
+
+        let mut total_read = 0;
+        let mut total_written = 0;
+        
+        for process in sys.processes().values() {
+            let usage = process.disk_usage();
+            total_read += usage.read_bytes;
+            total_written += usage.written_bytes;
+        }
+        
+        (total_read / 1024, total_written / 1024)
     }
 
     fn is_available(&self) -> bool {
