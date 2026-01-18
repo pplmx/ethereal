@@ -9,13 +9,15 @@ export const SettingsModal = () => {
   const { isOpen, setIsOpen, config, updateConfig, loadConfig } = useSettingsStore();
   const { monitors, fetchMonitors, moveToMonitor } = useMonitorStore();
   const [formData, setFormData] = useState<AppConfig | null>(null);
-  const [activeTab, setActiveTab] = useState<'window' | 'hardware' | 'ai' | 'sound' | 'sprite'>(
-    'window',
-  );
+  const [activeTab, setActiveTab] = useState<
+    'window' | 'hardware' | 'ai' | 'sound' | 'sprite' | 'hotkeys'
+  >('window');
 
   useEffect(() => {
     if (isOpen) {
-      if (!config) loadConfig();
+      if (!config) {
+        loadConfig();
+      }
       fetchMonitors();
     }
   }, [isOpen, config, loadConfig, fetchMonitors]);
@@ -35,7 +37,9 @@ export const SettingsModal = () => {
 
   const handleCancel = () => {
     setIsOpen(false);
-    if (config) setFormData(config);
+    if (config) {
+      setFormData(config);
+    }
   };
 
   if (!isOpen || !formData) return null;
@@ -70,7 +74,7 @@ export const SettingsModal = () => {
             </div>
 
             <div className="flex border-b overflow-x-auto">
-              {(['window', 'hardware', 'ai', 'sound', 'sprite'] as const).map((tab) => (
+              {(['window', 'hardware', 'ai', 'sound', 'sprite', 'hotkeys'] as const).map((tab) => (
                 <button
                   type="button"
                   key={tab}
@@ -408,6 +412,48 @@ export const SettingsModal = () => {
               {activeTab === 'sprite' && (
                 <div className="flex justify-center h-full">
                   <AnimationPreview />
+                </div>
+              )}
+
+              {activeTab === 'hotkeys' && (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Toggle Click-through
+                      <input
+                        type="text"
+                        value={formData.hotkeys.toggle_click_through}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            hotkeys: { ...formData.hotkeys, toggle_click_through: e.target.value },
+                          })
+                        }
+                        className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                        placeholder="Ctrl+Shift+E"
+                      />
+                    </label>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Quit Application
+                      <input
+                        type="text"
+                        value={formData.hotkeys.quit}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            hotkeys: { ...formData.hotkeys, quit: e.target.value },
+                          })
+                        }
+                        className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                        placeholder="Ctrl+Shift+Q"
+                      />
+                    </label>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-4">
+                    Note: Use standard accelerator format (e.g., Ctrl+Shift+Alt+K).
+                  </p>
                 </div>
               )}
             </div>

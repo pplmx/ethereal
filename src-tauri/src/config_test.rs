@@ -52,6 +52,10 @@ mod tests {
 
             [mood]
             boredom_threshold_cpu = 10.0
+
+            [hotkeys]
+            toggle_click_through = "Ctrl+Alt+L"
+            quit = "Ctrl+Alt+M"
         "#;
 
         let config: AppConfig = toml::from_str(toml_input).unwrap();
@@ -63,6 +67,7 @@ mod tests {
         assert!(!config.sound.enabled);
         assert_eq!(config.sound.volume, 0.8);
         assert_eq!(config.mood.boredom_threshold_cpu, 10.0);
+        assert_eq!(config.hotkeys.toggle_click_through, "Ctrl+Alt+L");
 
         assert_eq!(config.hardware.thresholds.cpu_temp, 85.0);
     }

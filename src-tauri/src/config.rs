@@ -14,6 +14,23 @@ pub struct AppConfig {
     pub ai: AiConfig,
     pub sound: SoundConfig,
     pub mood: MoodConfig,
+    pub hotkeys: HotkeyConfig,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct HotkeyConfig {
+    #[serde(default = "default_toggle_click_through")]
+    pub toggle_click_through: String,
+    #[serde(default = "default_quit")]
+    pub quit: String,
+}
+
+fn default_toggle_click_through() -> String {
+    "Ctrl+Shift+E".to_string()
+}
+
+fn default_quit() -> String {
+    "Ctrl+Shift+Q".to_string()
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -52,6 +69,10 @@ impl Default for AppConfig {
             },
             mood: MoodConfig {
                 boredom_threshold_cpu: default_boredom_threshold(),
+            },
+            hotkeys: HotkeyConfig {
+                toggle_click_through: default_toggle_click_through(),
+                quit: default_quit(),
             },
         }
     }
@@ -197,6 +218,8 @@ pub fn get_config(app: AppHandle) -> Result<AppConfig, String> {
 pub fn update_config(app: AppHandle, config: AppConfig) -> Result<(), String> {
     config.save(&app).map_err(|e| e.to_string())?;
 
+    let _ = crate::utils::hotkeys::refresh_hotkeys(&app);
+
     app.emit("config-updated", config)
         .map_err(|e| e.to_string())?;
     Ok(())
@@ -238,6 +261,7 @@ pub fn watch_config(app: AppHandle) {
                 Ok(_events) => {
                     if let Ok(new_config) = AppConfig::load(&app_handle) {
                         tracing::info!("Config reloaded");
+                        let _ = crate::utils::hotkeys::refresh_hotkeys(&app_handle);
                         app_handle.emit("config-updated", new_config).ok();
                     }
                 }

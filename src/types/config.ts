@@ -33,10 +33,16 @@ export interface MoodConfig {
   boredom_threshold_cpu: number;
 }
 
+export interface HotkeyConfig {
+  toggle_click_through: string;
+  quit: string;
+}
+
 export interface AppConfig {
   window: WindowConfig;
   hardware: HardwareConfig;
   ai: AiConfig;
   sound: SoundConfig;
   mood: MoodConfig;
+  hotkeys: HotkeyConfig;
 }
