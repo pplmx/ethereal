@@ -21,9 +21,14 @@ jobs:
         with:
           node-version: 24
           cache: 'pnpm'
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+            components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
-      - run: pnpm format:check
+      - run: pnpm lint:md
+      - run: pnpm lint:rs
 
   # Test frontend
   test:
@@ -37,8 +42,13 @@ jobs:
         with:
           node-version: 24
           cache: 'pnpm'
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+            components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
       - run: pnpm install --frozen-lockfile
       - run: pnpm test:run
+      - run: pnpm test:rust
 
   # Build for all platforms
   build:

@@ -42,7 +42,7 @@ impl OllamaClient {
 
     pub async fn chat(&self, prompt: &str, mood: Option<&str>) -> anyhow::Result<String> {
         let mut system_prompt = self.config.system_prompt.clone();
-        
+
         if let Some(m) = mood {
             let modifier = Self::get_mood_modifier(m);
             if !modifier.is_empty() {
