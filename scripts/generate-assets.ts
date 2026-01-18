@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PUBLIC_DIR = path.resolve(__dirname, '../../public');
+const PUBLIC_DIR = path.resolve(__dirname, '../public');
 
 const ensureDir = (dir: string) => {
   if (!fs.existsSync(dir)) {

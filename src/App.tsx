@@ -30,7 +30,6 @@ function App() {
     state: spriteState,
     mood: spriteMood,
     hardware,
-    isClickThrough,
     toggleClickThrough,
   } = useSpriteStore();
   const { syncWithConfig } = useSoundStore();
@@ -41,32 +40,29 @@ function App() {
 
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
-      invoke('show_context_menu');
+      invoke('show_context_menu').catch((err) => {
+        logger.debug('Context menu not available:', err);
+      });
     };
     document.addEventListener('contextmenu', handleContextMenu);
 
-    const setupMenuListeners = async () => {
+    const unlisteners: (() => void)[] = [];
+
+    const setupListeners = async () => {
       try {
         const unlistenSettings = await listen('open-settings', () => {
           setIsOpen(true);
         });
+        unlisteners.push(unlistenSettings);
+
         const unlistenAbout = await listen('open-about', () => {
           alert('Ethereal v0.1.0\nA digital spirit living in your code.');
         });
-        return () => {
-          unlistenSettings();
-          unlistenAbout();
-        };
-      } catch (e) {
-        logger.error('Failed to setup menu listeners', e);
-        return () => {};
-      }
-    };
+        unlisteners.push(unlistenAbout);
 
-    const setupShortcutListener = async () => {
-      try {
-        const unlisten = await listen('toggle-click-through-request', async () => {
-          const newState = !isClickThrough;
+        const unlistenShortcut = await listen('toggle-click-through-request', async () => {
+          const currentIsClickThrough = useSpriteStore.getState().isClickThrough;
+          const newState = !currentIsClickThrough;
           logger.info('Click-through toggle requested:', newState);
           try {
             await invoke('set_click_through', { enabled: newState });
@@ -75,32 +71,27 @@ function App() {
             logger.error('Failed to set click-through:', e);
           }
         });
-        return unlisten;
-      } catch (e) {
-        logger.error('Failed to setup shortcut listener', e);
-        return undefined;
-      }
-    };
+        unlisteners.push(unlistenShortcut);
 
-    const setupClipboardListener = async () => {
-      try {
-        const unlisten = await listen<string>('clipboard-changed', async (event) => {
+        const unlistenClipboard = await listen<string>('clipboard-changed', async (event) => {
           const content = event.payload;
-          logger.info('Clipboard changed detected');
+          const { state, mood, hardware: hw } = useSpriteStore.getState();
 
+          logger.info('Clipboard changed detected');
           setThinking(true);
           setVisible(true);
 
           try {
-            const system_context = `Current State: ${spriteState}, Mood: ${spriteMood}, CPU: ${
-              hardware?.utilization
-            }%, Mem: ${hardware?.memory_used}/${hardware?.memory_total}MB, Net: ${
-              hardware?.network_rx
-            }KB/s down, Bat: ${hardware?.battery_level}% (${hardware?.battery_state})`;
+            const system_context = `Current State: ${state}, Mood: ${mood}, CPU: ${
+              hw?.utilization
+            }%, Mem: ${hw?.memory_used}/${hw?.memory_total}MB, Net: ${
+              hw?.network_rx
+            }KB/s down, Bat: ${hw?.battery_level}% (${hw?.battery_state})`;
+
             const response = await invoke<string>('chat_with_ethereal', {
               message: content,
               systemContext: system_context,
-              mood: spriteMood,
+              mood: mood,
             });
             showResponse(response);
           } catch (e) {
@@ -108,54 +99,33 @@ function App() {
             showResponse("I'm having trouble connecting to my brain...");
           }
         });
-        return unlisten;
-      } catch (e) {
-        logger.error('Failed to setup clipboard listener', e);
-        return undefined;
-      }
-    };
+        unlisteners.push(unlistenClipboard);
 
-    const setupHardwareListener = async () => {
-      try {
-        const unlisten = await listen<HardwareData>('gpu-update', (event) => {
+        const unlistenHardware = await listen<HardwareData>('gpu-update', (event) => {
           updateHardware(event.payload);
         });
-        return unlisten;
+        unlisteners.push(unlistenHardware);
       } catch (e) {
-        logger.error('Failed to setup hardware listener', e);
-        return undefined;
+        logger.error('Failed to setup listeners', e);
       }
     };
 
-    const menuUnlistenPromise = setupMenuListeners();
-    const shortcutUnlistenPromise = setupShortcutListener();
-    const clipboardUnlistenPromise = setupClipboardListener();
-    const hardwareUnlistenPromise = setupHardwareListener();
+    setupListeners();
 
     return () => {
       document.removeEventListener('contextmenu', handleContextMenu);
-      menuUnlistenPromise.then((unlisten) => unlisten?.());
-      shortcutUnlistenPromise.then((unlisten) => unlisten?.());
-      clipboardUnlistenPromise.then((unlisten) => unlisten?.());
-      hardwareUnlistenPromise.then((unlisten) => unlisten?.());
+      for (const unlisten of unlisteners) {
+        unlisten();
+      }
     };
   }, [
     initSettings,
+    setIsOpen,
+    toggleClickThrough,
     setThinking,
     setVisible,
     showResponse,
     updateHardware,
-    spriteState,
-    spriteMood,
-    hardware?.utilization,
-    hardware?.memory_used,
-    hardware?.memory_total,
-    hardware?.network_rx,
-    hardware?.battery_level,
-    hardware?.battery_state,
-    isClickThrough,
-    toggleClickThrough,
-    setIsOpen,
   ]);
 
   useEffect(() => {
@@ -185,39 +155,48 @@ function App() {
         logger.error('AI Chat failed on double click:', e);
         showResponse('You tickle! But my brain is currently offline.');
       }
+    } else if (config?.interaction?.double_click_action === 'settings') {
+      setIsOpen(true);
     }
   };
 
   return (
     <main
-      className="w-screen h-screen overflow-hidden bg-transparent flex items-center justify-center select-none"
+      className="w-screen h-screen overflow-hidden bg-transparent flex flex-col items-center justify-center select-none p-4"
       onMouseDown={startDragging}
       onDoubleClick={handleDoubleClick}
     >
       <DevTools />
       <SettingsModal />
 
-      <motion.div
-        className="relative w-full h-full flex items-center justify-center"
-        whileHover={config?.interaction?.enable_hover_effects ? { scale: 1.05 } : {}}
-        transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-      >
-        <SpeechBubble />
-        <StateOverlay />
+      <div className="relative flex flex-col items-center justify-center min-h-[300px] w-full">
+        <div className="absolute top-0 w-full flex justify-center h-24">
+          <SpeechBubble />
+        </div>
 
-        <SpriteAnimator
-          frames={getAnimationFrames()}
-          fps={getCurrentFps()}
-          loop={shouldLoop()}
-          className="w-48 h-48 object-contain pointer-events-none drop-shadow-xl"
-        />
+        <motion.div
+          className="relative mt-8"
+          whileHover={config?.interaction?.enable_hover_effects ? { scale: 1.05 } : {}}
+          transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+        >
+          <SpriteAnimator
+            frames={getAnimationFrames()}
+            fps={getCurrentFps()}
+            loop={shouldLoop()}
+            className="w-32 h-32 object-contain pointer-events-none drop-shadow-xl"
+          />
 
-        {getAnimationFrames().length === 0 && (
-          <div className="w-32 h-32 bg-white/20 backdrop-blur-md rounded-full animate-pulse border border-white/30 flex items-center justify-center text-white/50 text-xs">
-            No Sprites
-          </div>
-        )}
-      </motion.div>
+          {getAnimationFrames().length === 0 && (
+            <div className="w-32 h-32 bg-white/20 backdrop-blur-md rounded-full animate-pulse border border-white/30 flex items-center justify-center text-white/50 text-xs">
+              No Sprites
+            </div>
+          )}
+        </motion.div>
+
+        <div className="absolute bottom-0 w-full flex justify-center h-12">
+          <StateOverlay />
+        </div>
+      </div>
     </main>
   );
 }
