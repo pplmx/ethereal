@@ -67,6 +67,7 @@ pub fn run() {
             monitors::clipboard::ClipboardMonitor::new().start_polling(app.handle().clone());
             utils::hotkeys::setup_global_hotkeys(app.handle())?;
             utils::startup::apply_config(app.handle());
+            utils::tray::setup_tray(app.handle())?;
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
