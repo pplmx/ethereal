@@ -6,9 +6,9 @@ This document provides detailed technical information about the Desktop Ethereal
 
 Desktop Ethereal follows a frontend-backend architecture using Tauri:
 
-- **Frontend**: React with TypeScript for UI and user interactions
-- **Backend**: Rust for system-level operations and performance-critical tasks
-- **Communication**: Tauri's IPC (Inter-Process Communication) system
+- **Frontend**: React 19 with TypeScript, Zustand for state management, and Framer Motion for animations.
+- **Backend**: Rust using the Tauri 2.0 framework for system-level operations and background monitoring.
+- **Communication**: Tauri's IPC (Inter-Process Communication) system via Commands and Events.
 
 ### Component Diagram
 
@@ -17,362 +17,131 @@ Desktop Ethereal follows a frontend-backend architecture using Tauri:
 │                        Frontend (React)                     │
 ├─────────────────────────────────────────────────────────────┤
 │  ┌─────────────┐  ┌──────────────┐  ┌────────────────────┐ │
-│  │   Sprite    │  │ spriteStore  │  │   Animations       │ │
-│  │ Component   │  │    Store     │  │   Config           │ │
+│  │   Sprite    │  │ spriteStore  │  │   settingsStore    │ │
+│  │ Animator    │  │    Store     │  │      Store         │ │
 │  └─────────────┘  └──────────────┘  └────────────────────┘ │
 │                                                             │
 │  ┌─────────────────────────────────────────────────────────┐│
 │  │                   Event Listeners                       ││
-│  │  GPU Updates ◄──┐  Window Updates ◄──┐  Clipboard ◄──┐ ││
-│  └─────────────────┼────────────────────┼────────────────┼─┘│
-└────────────────────┼────────────────────┼────────────────┼──┘
-                     ▼                    ▼                ▼
+│  │  GPU/HW Updates ◄──┐ Config Change ◄──┐ Clipboard ◄──┐  ││
+│  └────────────────────┼───────────────────┼─────────────────┘│
+└───────────────────────┼───────────────────┼──────────────────┘
+                        ▼                   ▼                ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                         Backend (Rust)                      │
 ├─────────────────────────────────────────────────────────────┤
 │  ┌─────────────┐  ┌──────────────┐  ┌────────────────────┐ │
-│  │ GPU Monitor │  │ Window Watch │  │ Clipboard Monitor  │ │
-│  │   Thread    │  │    Thread    │  │      Thread        │ │
+│  │ HW Monitors │  │ Window Watch │  │ Clipboard Monitor  │ │
+│  │ (CPU/Net/..)│  │    Thread    │  │      Thread        │ │
 │  └─────────────┘  └──────────────┘  └────────────────────┘ │
 │                                                             │
 │  ┌─────────────────────────────────────────────────────────┐│
 │  │                    Command Handlers                     ││
-│  │       greet       set_click_through  get_gpu_stats        ││
-│  │                     chat_with_ethereal                  ││
+│  │  get_config   update_config   show_context_menu         ││
+│  │  get_monitors move_to_monitor chat_with_ethereal        ││
 │  └─────────────────────────────────────────────────────────┘│
 └─────────────────────────────────────────────────────────────┘
 ```
 
-*Note: Some components are planned for future implementation and are not yet available in the current version.*
-
 ## Backend Implementation (Rust)
 
-### Main Components
+### Core Modules
 
-#### 1. State Management
+#### 1. Configuration Management (`config.rs`)
 
-The current implementation is a basic template with limited functionality. Future versions will include:
+- Uses `serde` for serialization.
+- Persists data to `ethereal.toml` in the app's config directory.
+- Features: Automatic reloading on file change via `notify-debouncer-mini`.
 
-Three state objects are managed by Tauri:
+#### 2. System Perception (`monitors/`)
 
-```rust
-struct ClickThroughState(Mutex<bool>);
-struct GpuMonitorState {
-  last_stats: Mutex<Option<GpuStats>>,
-}
-struct WindowMonitorState {
-  last_window: Mutex<Option<WindowInfo>>,
-}
-struct ClipboardMonitorState {
-  last_content: Mutex<Option<String>>,
-}
-```
+- **Hardware Monitoring**: Uses `sysinfo` to track CPU usage, memory pressure, and per-process disk I/O.
+- **Network Monitoring**: Custom calculation of global RX/TX rates.
+- **Battery Status**: Uses `battery` crate for laptop battery level and state.
+- **Window Monitoring**: Uses `active-win-pos-rs` to categorize the active application (CODING, GAMING, etc.).
+- **Clipboard Monitoring**: Polling via `arboard` with content filtering.
 
-#### 2. GPU Monitoring
+#### 3. Intelligence Layer (`ai/`)
 
-Uses `nvml-wrapper` crate for NVIDIA GPU monitoring: (Future implementation)
+- Simple Ollama API client for local LLM inference.
+- Dynamically injected system context based on current hardware/emotional state.
 
-- Temperature monitoring
-- Memory utilization tracking
-- GPU utilization rates
-- Background polling every 2 seconds
+#### 4. UI Utilities (`utils/`)
 
-#### 3. Window Monitoring
-
-Uses `active-win-pos-rs` crate for active window detection: (Future implementation)
-
-- Window title extraction
-- Process name identification
-- Activity categorization (CODING, GAMING, BROWSING, OTHER)
-- Background polling every 1 second
-
-#### 4. Clipboard Monitoring
-
-Uses `arboard` crate: (Future implementation)
-
-- Event-driven clipboard monitoring
-- Content filtering (10-1000 characters)
-- Duplicate content detection
-
-#### 5. Global Hotkey Handler
-
-Uses `tauri-plugin-global-shortcut`: (Future implementation)
-
-- Registers Ctrl+Shift+D hotkey
-- Toggles click-through state
-- Works even when window is in click-through mode
+- **Display**: Enumeration and window placement across multiple monitors.
+- **Global Hotkeys**: Dynamic registration of user-defined shortcuts.
+- **Notifications**: Integrated system tray and desktop notifications.
 
 ### Data Structures
 
-#### GpuStats
+#### GpuStats (Backend -> Frontend Event)
 
 ```rust
-#[derive(Serialize, Deserialize, Clone)]
 struct GpuStats {
-  temperature: u32,
-  memory_used: u64,
-  memory_total: u64,
-  utilization: u32,
+    temperature: f32,
+    utilization: f32,
+    memory_used: u64,
+    memory_total: u64,
+    network_rx: u64,
+    network_tx: u64,
+    disk_read: u64,
+    disk_write: u64,
+    battery_level: f32,
+    battery_state: String,
+    state: String,
+    mood: String,
 }
 ```
 
-*Future implementation*
+## Frontend Implementation (React)
 
-#### WindowInfo
+### State Management (Zustand)
 
-```rust
-#[derive(Serialize, Deserialize, Clone)]
-struct WindowInfo {
-  title: String,
-  process_name: String,
-  category: String,
-}
-```
+- **`useSpriteStore`**: Tracks character state, mood, and hardware stats history.
+- **`useSettingsStore`**: Manages the configuration lifecycle and UI visibility.
+- **`useChatStore`**: Controls the speech bubble and thinking states.
+- **`useResourceStore`**: Handles asynchronous asset preloading.
 
-*Future implementation*
+### Key Components
 
-#### Ollama Integration
+- **`SpriteAnimator`**: Performance-optimized loop using `requestAnimationFrame`.
+- **`SpeechBubble`**: Interactive AI response UI with `AnimatePresence`.
+- **`SettingsModal`**: Seven-tab configuration interface for full control.
 
-```rust
-#[derive(Serialize, Deserialize)]
-struct OllamaRequest {
-  model: String,
-  prompt: String,
-  system: String,
-  stream: bool,
-}
-```
+## Character Logic
 
-*Future implementation*
+### State Machine
 
-## Frontend Implementation (React/TypeScript)
+The Sprite's state is determined by a priority-based logic:
 
-### Component Structure
+1. `Overheating`: High hardware temperature.
+2. `Sleeping`: Scheduled time-based inactivity.
+3. `LowBattery`: Critical power state.
+4. `HighLoad`: High CPU, Memory, or Disk activity.
+5. Activity based: `Gaming`, `Working`, or `Browsing`.
+6. `Idle`: Default fallback.
 
-#### App Component
+### Mood System
 
-Main application component that:
+Derived from current state and historical activity:
 
-- Integrates all sub-components
-- Handles basic UI interactions
-- Displays a greeting message
-
-#### SpriteAnimator Component
-
-Responsible for:
-
-- Cycling through animation frames
-- Managing frame rates
-- Rendering images with proper styling
-
-#### spriteStore Store
-
-Zustand store that:
-
-- Manages ethereal state
-- Handles state persistence
-- Provides state update functions
-
-### State Management
-
-Uses Zustand for state management:
-
-```typescript
-type EtherealState = 'IDLE' | 'CODING' | 'OVERHEATING' | 'GAMING';
-
-interface State {
-  state: EtherealState;
-  temperature: number;
-  position: { x: number; y: number };
-  
-  setState: (state: EtherealState) => void;
-  updateTemp: (temp: number) => void;
-}
-```
-
-### Animation Configuration
-
-Defined in `src/config/animations.ts`: (Future implementation)
-
-```typescript
-export const ANIMATIONS = {
-  IDLE: {
-    frames: ['/sprites/idle_01.png', '/sprites/idle_02.png'],
-    fps: 4,
-  },
-  // ... other states
-}
-```
-
-## Communication Layer
-
-### Backend Commands
-
-Exposed through Tauri's IPC system:
-
-1. `greet(name: string) -> String`
-2. `set_click_through(window: Window, enabled: bool) -> Result<(), String>` (Future implementation)
-3. `get_gpu_stats() -> Result<GpuStats, String>` (Future implementation)
-4. `chat_with_ethereal(message: String) -> Result<String, String>` (Future implementation)
-
-### Event System
-
-Backend emits events that frontend listens to: (Future implementation)
-
-1. `gpu-update`: GPU statistics updates
-2. `window-update`: Active window changes
-3. `clipboard-changed`: Clipboard content changes
-
-## Performance Considerations
-
-### Threading Model
-
-- Main thread: UI and event handling
-- Background threads: (Future implementation)
-    - GPU monitoring (2-second intervals)
-    - Window monitoring (1-second intervals)
-    - Clipboard monitoring (event-driven)
-
-### Memory Management
-
-- Uses Rust's ownership system for safe memory management
-- Mutex guards for shared state
-- Cloning minimized through careful design
-
-### Resource Usage
-
-- Polling intervals optimized for balance between responsiveness and resource usage (Future implementation)
-- Event-driven clipboard monitoring reduces overhead (Future implementation)
-- Lazy initialization of expensive resources
-
-## Security Considerations
-
-### Permissions
-
-The application requires several permissions: (Future implementation)
-
-- Window management (for overlay functionality)
-- GPU monitoring (for NVIDIA libraries)
-- Clipboard access (for contextual awareness)
-- Network access (for Ollama integration)
-
-### Data Handling
-
-- All data processing happens locally
-- No data transmission to external servers by default
-- Clipboard content filtering to prevent processing sensitive data (Future implementation)
-
-## Extensibility Points
-
-### Adding New States
-
-1. Extend `EtherealState` type
-2. Add animation configuration (Future implementation)
-3. Update state machine logic
-4. Add categorization logic if needed (Future implementation)
-
-### Adding New Monitors
-
-1. Create new background thread in setup function (Future implementation)
-2. Add new state management structure
-3. Implement event emission (Future implementation)
-4. Add frontend listeners
-
-### Customizing LLM Integration
-
-1. Modify system prompt in `chat_with_ethereal` command (Future implementation)
-2. Add new parameters to request structure
-3. Implement new response handling
+- `Angry`: Prolonged overheating.
+- `Tired`: Extended HighLoad or low battery.
+- `Excited`: High activity in Gaming/Working states.
+- `Happy`: Standard healthy operation.
 
 ## Testing Strategy
 
-### Unit Testing
+### Integration Tests
 
-- Rust unit tests for backend logic
-- Vitest tests for frontend components
-- Mocked IPC calls for integration testing
+We emphasize end-to-end feature verification:
 
-### Integration Testing
+- `ChatFlow`: Clipboard -> Backend AI -> Frontend UI.
+- `SettingsFlow`: UI Interaction -> Persistence -> Backend Reaction.
+- `SystemMonitor`: Backend Event -> Store Sync -> UI Dashboard.
 
-- End-to-end tests for core workflows (Future implementation)
-- Cross-platform compatibility testing
-- Performance benchmarking
+### Rust Unit Tests
 
-### Manual Testing
-
-- Visual verification of animations (Future implementation)
-- Hotkey responsiveness testing (Future implementation)
-- State transition validation (Future implementation)
-
-## Build and Deployment
-
-### Build Process
-
-1. Frontend transpilation with Vite
-2. Rust compilation with Cargo
-3. Tauri bundling for target platforms
-
-### Dependencies
-
-#### Rust Dependencies
-
-- `serde`: Serialization/deserialization
-- `tauri`: Core framework
-- `tokio`: Async runtime
-- `tracing`: Logging framework
-- `tauri-plugin-opener`: Tauri plugin for opening URLs
-
-#### Node.js Dependencies
-
-- `react`: UI library
-- `@tauri-apps/api`: Tauri frontend API
-- `@tauri-apps/cli`: Build tools
-- `typescript`: Type checking
-- `zustand`: State management
-- `framer-motion`: Animation library
-
-## Troubleshooting Guide
-
-### Debugging Backend Issues
-
-1. Check Rust compiler errors
-2. Verify system library availability
-3. Examine Tauri logs
-4. Test individual components in isolation
-
-### Debugging Frontend Issues
-
-1. Use browser DevTools
-2. Check console for JavaScript errors
-3. Verify IPC communication
-4. Test component rendering independently
-
-### Performance Profiling
-
-1. Use system monitoring tools
-2. Profile Rust threads
-3. Monitor memory usage patterns
-4. Optimize polling intervals if needed (Future implementation)
-
-## Future Enhancements
-
-### Planned Features
-
-1. Enhanced LLM integration with context awareness
-2. Additional monitoring capabilities (CPU, disk, network)
-3. Plugin system for extending functionality
-4. Cross-platform support improvements
-5. Configuration UI for customization
-6. Animation editor for creating custom sprites
-7. Sound effects synchronized with animations
-8. Multi-monitor support
-9. User-defined hotkeys
-10. Export/import of configurations
-
-### Potential Optimizations
-
-1. WebGPU acceleration for animations
-2. More efficient polling algorithms
-3. Better resource caching
-4. Reduced memory footprint
-5. Improved battery usage on laptops
+- State machine logic (`state_test.rs`).
+- Configuration parsing (`config_test.rs`).
+- Window categorization (`window.rs`).

@@ -2,6 +2,7 @@ import { DevTools } from '@components/DevTools';
 import { SettingsModal } from '@components/SettingsModal';
 import { SpeechBubble } from '@components/SpeechBubble';
 import { SpriteAnimator } from '@components/SpriteAnimator';
+import { StateOverlay } from '@components/StateOverlay';
 import { useDraggable } from '@hooks/useDraggable';
 import { useWindowPosition } from '@hooks/useWindowPosition';
 import { logger } from '@lib/logger';
@@ -187,6 +188,7 @@ function App() {
         transition={{ type: 'spring', stiffness: 400, damping: 10 }}
       >
         <SpeechBubble />
+        <StateOverlay />
 
         <SpriteAnimator
           frames={getAnimationFrames()}
