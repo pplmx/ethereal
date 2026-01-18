@@ -29,6 +29,7 @@ Before declaring a task done or creating a commit, execute commands in the follo
 | 9 | **Visual Check** | `playwright` | Capture screenshot of `pnpm dev` to verify UI | ❌ (UI changes) |
 
 **Failure Handling:**
+
 - If any step fails, **STOP** and fix the issue before proceeding.
 - **Never commit failing code** with the intention to "fix later".
 
@@ -95,6 +96,7 @@ When implementing AI features:
 #### 5.2.1 Commitment Scenarios
 
 Commit **immediately** when:
+
 - ✅ A standalone function/trait/struct is implemented and tested
 - ✅ A frontend component or hook logic is completed and verified
 - ✅ A bug is fixed **and** a regression test is added
