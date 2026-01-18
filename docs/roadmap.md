@@ -47,7 +47,7 @@ Desktop Ethereal aims to become the ultimate desktop companion that intelligentl
 
 ### Advanced Features
 
-- [ ] Sound effect integration with animations
+- [x] Sound effect integration with animations
 - [ ] Multi-monitor support with positioning options
 - [ ] User-defined hotkeys and gestures
 - [ ] Animation editor for creating custom sprites
