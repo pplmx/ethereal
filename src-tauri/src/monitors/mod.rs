@@ -48,6 +48,7 @@ pub fn spawn_monitor_thread(app: AppHandle) {
         let window_monitor = WindowMonitor::new();
         let mut last_overheat_notif = Instant::now() - Duration::from_secs(300);
         let mut last_angry_notif = Instant::now() - Duration::from_secs(300);
+        let mut last_low_battery_notif = Instant::now() - Duration::from_secs(300);
 
         loop {
             if monitor.is_available() {
@@ -86,6 +87,18 @@ pub fn spawn_monitor_thread(app: AppHandle) {
                             "Stop pushing the system so hard! I need a break.",
                         );
                         last_angry_notif = Instant::now();
+                    }
+
+                    if state == SpriteState::LowBattery
+                        && config.battery.notify_on_low_battery
+                        && last_low_battery_notif.elapsed() > Duration::from_secs(300)
+                    {
+                        send_notification(
+                            &app,
+                            "Ethereal is Fading",
+                            "I'm feeling very weak... please plug in the charger.",
+                        );
+                        last_low_battery_notif = Instant::now();
                     }
                 }
 

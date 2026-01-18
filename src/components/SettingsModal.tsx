@@ -592,6 +592,23 @@ export const SettingsModal = () => {
                       />
                       Notify when Ethereal is Angry
                     </label>
+                    <label className="flex items-center gap-2 text-sm cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.battery.notify_on_low_battery}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            battery: {
+                              ...formData.battery,
+                              notify_on_low_battery: e.target.checked,
+                            },
+                          })
+                        }
+                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      Notify on Low Battery
+                    </label>
                   </div>
                 </div>
               )}
@@ -648,8 +665,27 @@ export const SettingsModal = () => {
                       </label>
                     </div>
                   </div>
+                  <div className="pt-4 border-t">
+                    <label className="block text-sm font-medium mb-1">
+                      Low Battery Threshold (%)
+                      <input
+                        type="number"
+                        value={formData.battery.low_battery_threshold}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            battery: {
+                              ...formData.battery,
+                              low_battery_threshold: parseFloat(e.target.value) || 0,
+                            },
+                          })
+                        }
+                        className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                      />
+                    </label>
+                  </div>
                   <p className="text-xs text-slate-500 mt-2">
-                    Note: During sleep mode, Sprite activity is minimized.
+                    Note: During sleep mode or low battery, Sprite activity is minimized.
                   </p>
                 </div>
               )}

@@ -12,6 +12,7 @@ pub enum SpriteState {
     Browsing,
     Idle,
     Sleeping,
+    LowBattery,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -21,6 +22,7 @@ pub enum Mood {
     Tired,
     Bored,
     Angry,
+    Sad,
 }
 
 pub fn is_within_sleep_time(start: &str, end: &str) -> bool {
@@ -44,6 +46,7 @@ pub fn determine_mood(state: &SpriteState, usage: f32, config: &AppConfig) -> Mo
         SpriteState::Gaming => Mood::Excited,
         SpriteState::Working => Mood::Happy,
         SpriteState::Sleeping => Mood::Bored,
+        SpriteState::LowBattery => Mood::Sad,
         _ => {
             if usage < config.mood.boredom_threshold_cpu {
                 Mood::Bored
@@ -66,6 +69,8 @@ pub fn determine_state(
     let temp = monitor.get_temperature();
     let usage = monitor.get_utilization();
     let (mem_used, mem_total) = monitor.get_memory_usage();
+    let (bat_lvl, _bat_state) = monitor.get_battery_status();
+
     let mem_pressure = if mem_total > 0 {
         (mem_used as f32 / mem_total as f32) * 100.0
     } else {
@@ -80,6 +85,10 @@ pub fn determine_state(
         && is_within_sleep_time(&config.sleep.start_time, &config.sleep.end_time)
     {
         return SpriteState::Sleeping;
+    }
+
+    if bat_lvl > 0.0 && bat_lvl < config.battery.low_battery_threshold && _bat_state != "Charging" {
+        return SpriteState::LowBattery;
     }
 
     if usage > 80.0 || mem_pressure > 90.0 {

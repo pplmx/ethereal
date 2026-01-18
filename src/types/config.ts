@@ -56,6 +56,11 @@ export interface InteractionConfig {
   enable_hover_effects: boolean;
 }
 
+export interface BatteryConfig {
+  low_battery_threshold: number;
+  notify_on_low_battery: boolean;
+}
+
 export interface AppConfig {
   window: WindowConfig;
   hardware: HardwareConfig;
@@ -66,4 +71,5 @@ export interface AppConfig {
   notifications: NotificationConfig;
   sleep: SleepConfig;
   interaction: InteractionConfig;
+  battery: BatteryConfig;
 }

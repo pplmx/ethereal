@@ -18,6 +18,19 @@ pub struct AppConfig {
     pub notifications: NotificationConfig,
     pub sleep: SleepConfig,
     pub interaction: InteractionConfig,
+    pub battery: BatteryConfig,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct BatteryConfig {
+    #[serde(default = "default_low_battery_threshold")]
+    pub low_battery_threshold: f32,
+    #[serde(default = "default_true")]
+    pub notify_on_low_battery: bool,
+}
+
+fn default_low_battery_threshold() -> f32 {
+    20.0
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -136,6 +149,10 @@ impl Default for AppConfig {
             interaction: InteractionConfig {
                 double_click_action: default_double_click_action(),
                 enable_hover_effects: default_true(),
+            },
+            battery: BatteryConfig {
+                low_battery_threshold: default_low_battery_threshold(),
+                notify_on_low_battery: default_true(),
             },
         }
     }

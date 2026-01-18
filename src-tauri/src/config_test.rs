@@ -66,6 +66,14 @@ mod tests {
             enabled = true
             start_time = "22:00"
             end_time = "06:00"
+
+            [interaction]
+            double_click_action = "settings"
+            enable_hover_effects = false
+
+            [battery]
+            low_battery_threshold = 15.0
+            notify_on_low_battery = false
         "#;
 
         let config: AppConfig = toml::from_str(toml_input).unwrap();
@@ -81,6 +89,8 @@ mod tests {
         assert!(config.notifications.enabled);
         assert!(config.sleep.enabled);
         assert_eq!(config.sleep.start_time, "22:00");
+        assert_eq!(config.interaction.double_click_action, "settings");
+        assert_eq!(config.battery.low_battery_threshold, 15.0);
 
         assert_eq!(config.hardware.thresholds.cpu_temp, 85.0);
     }
