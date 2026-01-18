@@ -100,6 +100,7 @@ function App() {
             const response = await invoke<string>('chat_with_ethereal', {
               message: content,
               systemContext: system_context,
+              mood: spriteMood,
             });
             showResponse(response);
           } catch (e) {
@@ -163,13 +164,27 @@ function App() {
     }
   }, [config, syncWithConfig]);
 
-  const handleDoubleClick = () => {
+  const handleDoubleClick = async () => {
     if (config?.interaction?.double_click_action === 'chat') {
       setThinking(true);
       setVisible(true);
-      setTimeout(() => {
-        showResponse('You called? I was just daydreaming about binary trees.');
-      }, 1000);
+      try {
+        const system_context = `Current State: ${spriteState}, Mood: ${spriteMood}, CPU: ${
+          hardware?.utilization
+        }%, Mem: ${hardware?.memory_used}/${hardware?.memory_total}MB, Net: ${
+          hardware?.network_rx
+        }KB/s down, Bat: ${hardware?.battery_level}% (${hardware?.battery_state})`;
+
+        const response = await invoke<string>('chat_with_ethereal', {
+          message: 'Hello! I just double-clicked you.',
+          systemContext: system_context,
+          mood: spriteMood,
+        });
+        showResponse(response);
+      } catch (e) {
+        logger.error('AI Chat failed on double click:', e);
+        showResponse('You tickle! But my brain is currently offline.');
+      }
     }
   };
 

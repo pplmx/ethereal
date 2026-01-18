@@ -28,12 +28,33 @@ impl OllamaClient {
         }
     }
 
-    pub async fn chat(&self, prompt: &str) -> anyhow::Result<String> {
+    fn get_mood_modifier(mood_str: &str) -> &'static str {
+        match mood_str {
+            "Happy" => "You are feeling cheerful and helpful.",
+            "Excited" => "You are very energetic and enthusiastic! Use exclamation marks.",
+            "Tired" => "You are exhausted. Use short sentences and sound sleepy.",
+            "Bored" => "You are uninterested and slightly cynical.",
+            "Angry" => "You are irritable and short-tempered.",
+            "Sad" => "You are melancholic and soft-spoken.",
+            _ => "",
+        }
+    }
+
+    pub async fn chat(&self, prompt: &str, mood: Option<&str>) -> anyhow::Result<String> {
+        let mut system_prompt = self.config.system_prompt.clone();
+        
+        if let Some(m) = mood {
+            let modifier = Self::get_mood_modifier(m);
+            if !modifier.is_empty() {
+                system_prompt = format!("{}\n\nIMPORTANT: {}", system_prompt, modifier);
+            }
+        }
+
         let request = GenerateRequest {
             model: self.config.model_name.clone(),
             prompt: prompt.to_string(),
             stream: false,
-            system: Some(self.config.system_prompt.clone()),
+            system: Some(system_prompt),
         };
 
         let url = format!("{}/api/generate", self.config.api_endpoint);

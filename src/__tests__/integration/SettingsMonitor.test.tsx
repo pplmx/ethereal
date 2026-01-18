@@ -58,6 +58,10 @@ describe('Settings Monitor Integration', () => {
       double_click_action: 'chat',
       enable_hover_effects: true,
     },
+    battery: {
+      low_battery_threshold: 20.0,
+      notify_on_low_battery: true,
+    },
   };
 
   const mockMonitors = [

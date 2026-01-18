@@ -1,5 +1,5 @@
 import { invoke } from '@tauri-apps/api/core';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import App from '../../App';
 import { useChatStore } from '../../stores/chatStore';
@@ -58,15 +58,16 @@ describe('Character Interaction Integration', () => {
     notifications: { enabled: true, notify_on_overheating: true, notify_on_angry: true },
     sleep: { enabled: false, start_time: '23:00', end_time: '07:00' },
     interaction: { double_click_action: 'chat', enable_hover_effects: true },
+    battery: { low_battery_threshold: 20.0, notify_on_low_battery: true },
   };
 
   beforeEach(() => {
-    vi.useFakeTimers();
     vi.clearAllMocks();
     useSettingsStore.setState({ config: mockConfig as any });
 
     (invoke as Mock).mockImplementation(async (cmd: string) => {
       if (cmd === 'get_config') return mockConfig;
+      if (cmd === 'chat_with_ethereal') return 'Ouch! Stop double clicking me!';
       return null;
     });
 
@@ -74,7 +75,6 @@ describe('Character Interaction Integration', () => {
   });
 
   afterEach(() => {
-    vi.useRealTimers();
     vi.restoreAllMocks();
   });
 
@@ -82,23 +82,25 @@ describe('Character Interaction Integration', () => {
     render(<App />);
 
     const main = screen.getByRole('main');
+    fireEvent.doubleClick(main);
 
-    await act(async () => {
-      fireEvent.doubleClick(main);
-    });
+    await waitFor(
+      () => {
+        expect(useChatStore.getState().isThinking).toBe(true);
+      },
+      { timeout: 2000 },
+    );
 
-    expect(useChatStore.getState().isThinking).toBe(true);
-
-    act(() => {
-      vi.advanceTimersByTime(1100);
-    });
-
-    const state = useChatStore.getState();
-    expect(state.message).toBe('You called? I was just daydreaming about binary trees.');
-    expect(state.isVisible).toBe(true);
+    await waitFor(
+      () => {
+        expect(useChatStore.getState().message).toBe('Ouch! Stop double clicking me!');
+        expect(useChatStore.getState().isVisible).toBe(true);
+      },
+      { timeout: 2000 },
+    );
   });
 
-  it('shows native context menu on right click', () => {
+  it('shows native context menu on right click', async () => {
     render(<App />);
 
     const main = screen.getByRole('main');

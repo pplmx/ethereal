@@ -11,6 +11,7 @@ async fn chat_with_ethereal(
     app: tauri::AppHandle,
     message: String,
     system_context: Option<String>,
+    mood: Option<String>,
 ) -> Result<String, String> {
     use crate::config::AppConfig;
 
@@ -24,7 +25,10 @@ async fn chat_with_ethereal(
         message
     };
 
-    client.chat(&prompt).await.map_err(|e| e.to_string())
+    client
+        .chat(&prompt, mood.as_deref())
+        .await
+        .map_err(|e| e.to_string())
 }
 
 #[tauri::command]
