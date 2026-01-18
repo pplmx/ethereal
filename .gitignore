@@ -49,3 +49,5 @@ Desktop.ini
 
 # Husky
 .husky/_
+playwright-report/
+test-results/
