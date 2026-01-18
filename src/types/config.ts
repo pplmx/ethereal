@@ -1,3 +1,7 @@
+export interface GeneralConfig {
+  first_launch: boolean;
+}
+
 export interface WindowConfig {
   default_x: number;
   default_y: number;
@@ -71,6 +75,7 @@ export interface PrivacyConfig {
 }
 
 export interface AppConfig {
+  general: GeneralConfig;
   window: WindowConfig;
   hardware: HardwareConfig;
   ai: AiConfig;

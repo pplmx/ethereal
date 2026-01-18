@@ -9,6 +9,7 @@ mod config_test;
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct AppConfig {
+    pub general: GeneralConfig,
     pub window: WindowConfig,
     pub hardware: HardwareConfig,
     pub ai: AiConfig,
@@ -21,6 +22,12 @@ pub struct AppConfig {
     pub battery: BatteryConfig,
     pub autostart: AutostartConfig,
     pub privacy: PrivacyConfig,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct GeneralConfig {
+    #[serde(default = "default_true")]
+    pub first_launch: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -122,6 +129,7 @@ fn default_boredom_threshold() -> f32 {
 impl Default for AppConfig {
     fn default() -> Self {
         Self {
+            general: GeneralConfig { first_launch: true },
             window: WindowConfig {
                 default_x: default_x(),
                 default_y: default_y(),

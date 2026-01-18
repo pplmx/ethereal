@@ -2,12 +2,14 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useMonitorStore } from '../stores/monitorStore';
 import { useSettingsStore } from '../stores/settingsStore';
+import { useSpriteStore } from '../stores/spriteStore';
 import type { AppConfig } from '../types/config';
 import { AnimationPreview } from './AnimationPreview';
 
 export const SettingsModal = () => {
   const { isOpen, setIsOpen, config, updateConfig, loadConfig } = useSettingsStore();
   const { monitors, fetchMonitors, moveToMonitor } = useMonitorStore();
+  const { hardware } = useSpriteStore();
   const [formData, setFormData] = useState<AppConfig | null>(null);
   const [activeTab, setActiveTab] = useState<
     | 'window'
@@ -257,71 +259,108 @@ export const SettingsModal = () => {
               )}
 
               {activeTab === 'hardware' && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Monitor Source
-                      <select
-                        value={formData.hardware.monitor_source}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            hardware: { ...formData.hardware, monitor_source: e.target.value },
-                          })
-                        }
-                        className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
-                      >
-                        <option value="auto">Auto</option>
-                        <option value="nvidia">NVIDIA</option>
-                        <option value="amd">AMD</option>
-                        <option value="cpu">CPU</option>
-                      </select>
-                    </label>
+                <div className="space-y-6">
+                  <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+                      Current Status
+                    </h3>
+                    <div className="grid grid-cols-2 gap-y-3 gap-x-4">
+                      <div className="flex flex-col">
+                        <span className="text-xs text-slate-500">CPU Usage</span>
+                        <span className="text-sm font-medium">
+                          {hardware?.utilization.toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-xs text-slate-500">Temperature</span>
+                        <span className="text-sm font-medium">
+                          {hardware?.temperature.toFixed(1)}°C
+                        </span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-xs text-slate-500">Memory</span>
+                        <span className="text-sm font-medium">
+                          {hardware?.memory_used} / {hardware?.memory_total} MB
+                        </span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-xs text-slate-500">Network</span>
+                        <span className="text-sm font-medium">
+                          ↓ {hardware?.network_rx.toFixed(1)} KB/s
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Polling Interval (ms)
-                      <input
-                        type="number"
-                        value={formData.hardware.polling_interval_ms}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            hardware: {
-                              ...formData.hardware,
-                              polling_interval_ms: parseInt(e.target.value, 10) || 1000,
-                            },
-                          })
-                        }
-                        className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
-                      />
-                    </label>
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
-                      Thresholds
+
+                  <div className="space-y-4">
+                    <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                      Configuration
                     </h3>
                     <div>
                       <label className="block text-sm font-medium mb-1">
-                        NVIDIA Temp Threshold (°C)
+                        Monitor Source
+                        <select
+                          value={formData.hardware.monitor_source}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              hardware: { ...formData.hardware, monitor_source: e.target.value },
+                            })
+                          }
+                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                        >
+                          <option value="auto">Auto</option>
+                          <option value="nvidia">NVIDIA</option>
+                          <option value="amd">AMD</option>
+                          <option value="cpu">CPU</option>
+                        </select>
+                      </label>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Polling Interval (ms)
                         <input
                           type="number"
-                          value={formData.hardware.thresholds.nvidia_temp}
+                          value={formData.hardware.polling_interval_ms}
                           onChange={(e) =>
                             setFormData({
                               ...formData,
                               hardware: {
                                 ...formData.hardware,
-                                thresholds: {
-                                  ...formData.hardware.thresholds,
-                                  nvidia_temp: parseFloat(e.target.value) || 0,
-                                },
+                                polling_interval_ms: parseInt(e.target.value, 10) || 1000,
                               },
                             })
                           }
                           className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
                         />
                       </label>
+                    </div>
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+                        Thresholds
+                      </h4>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          NVIDIA Temp Threshold (°C)
+                          <input
+                            type="number"
+                            value={formData.hardware.thresholds.nvidia_temp}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                hardware: {
+                                  ...formData.hardware,
+                                  thresholds: {
+                                    ...formData.hardware.thresholds,
+                                    nvidia_temp: parseFloat(e.target.value) || 0,
+                                  },
+                                },
+                              })
+                            }
+                            className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                          />
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>

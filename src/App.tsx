@@ -3,6 +3,7 @@ import { SettingsModal } from '@components/SettingsModal';
 import { SpeechBubble } from '@components/SpeechBubble';
 import { SpriteAnimator } from '@components/SpriteAnimator';
 import { StateOverlay } from '@components/StateOverlay';
+import { WelcomeModal } from '@components/WelcomeModal';
 import { useDraggable } from '@hooks/useDraggable';
 import { useWindowPosition } from '@hooks/useWindowPosition';
 import { logger } from '@lib/logger';
@@ -208,6 +209,7 @@ function App() {
     >
       <DevTools />
       <SettingsModal />
+      <WelcomeModal />
 
       <div className="relative flex flex-col items-center justify-center min-h-[300px] w-full">
         <div className="absolute top-0 w-full flex justify-center h-24">
