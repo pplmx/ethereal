@@ -15,9 +15,7 @@ export const SettingsModal = () => {
 
   useEffect(() => {
     if (isOpen) {
-      if (!config) {
-        loadConfig();
-      }
+      if (!config) loadConfig();
       fetchMonitors();
     }
   }, [isOpen, config, loadConfig, fetchMonitors]);
@@ -37,9 +35,7 @@ export const SettingsModal = () => {
 
   const handleCancel = () => {
     setIsOpen(false);
-    if (config) {
-      setFormData(config);
-    }
+    if (config) setFormData(config);
   };
 
   if (!isOpen || !formData) return null;

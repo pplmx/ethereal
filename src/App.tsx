@@ -85,7 +85,15 @@ function App() {
       clipboardUnlistenPromise.then((unlisten) => unlisten?.());
       hardwareUnlistenPromise.then((unlisten) => unlisten?.());
     };
-  }, [initSettings, setThinking, setVisible, showResponse, updateHardware]);
+  }, [
+    initSettings,
+    setThinking,
+    setVisible,
+    showResponse,
+    updateHardware,
+    spriteState,
+    hardware?.utilization,
+  ]);
 
   // Sync sound config
   useEffect(() => {

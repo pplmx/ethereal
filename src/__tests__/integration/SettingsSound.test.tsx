@@ -44,7 +44,11 @@ describe('Settings Sound Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     useSettingsStore.setState({ config: null, isOpen: true, isLoading: false });
-    (invoke as Mock).mockResolvedValue(mockConfig);
+    (invoke as Mock).mockImplementation((cmd) => {
+      if (cmd === 'get_config') return Promise.resolve(mockConfig);
+      if (cmd === 'get_monitors') return Promise.resolve([]); // Return empty array for monitors
+      return Promise.resolve(null);
+    });
   });
 
   afterEach(() => {
