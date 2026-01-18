@@ -61,7 +61,7 @@ describe('Sprite Logic', () => {
     const { getAnimationFrames } = useSpriteStore.getState();
 
     expect(getAnimationFrames()).toHaveLength(4);
-    expect(getAnimationFrames()[0]).toContain('/sprites/idle-1.png');
+    expect(getAnimationFrames()[0]).toContain('/sprites/idle-1.svg');
   });
 
   it('returns correct FPS for state', () => {

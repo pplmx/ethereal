@@ -59,7 +59,7 @@ describe('useWindowPosition', () => {
       expect(onMovedMock).toHaveBeenCalled();
     });
 
-    if (onMovedMock.mock.calls[0] && onMovedMock.mock.calls[0][0]) {
+    if (onMovedMock.mock.calls[0]?.[0]) {
       const callback = onMovedMock.mock.calls[0][0];
 
       callback({ payload: { x: 100, y: 100 } });

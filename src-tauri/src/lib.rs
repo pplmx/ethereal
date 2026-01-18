@@ -12,10 +12,7 @@ async fn chat_with_ethereal(
 ) -> Result<String, String> {
     use crate::config::AppConfig;
 
-    let config = match AppConfig::load(&app) {
-        Ok(c) => c,
-        Err(_) => AppConfig::default(),
-    };
+    let config = AppConfig::load(&app).unwrap_or_default();
 
     let client = crate::ai::OllamaClient::new(config.ai);
 

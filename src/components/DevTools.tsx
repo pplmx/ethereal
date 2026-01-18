@@ -35,6 +35,7 @@ export const DevTools = () => {
       <div>FPS: {stats.fps}</div>
       <div>Memory: {(performance as any).memory?.usedJSHeapSize >> 20 || 0}MB</div>
       <button
+        type="button"
         onClick={() => setIsOpen(true)}
         className="bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded text-xs font-medium transition-colors"
       >

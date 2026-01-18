@@ -6,8 +6,6 @@
 
 ---
 
-## 📦 包管理器: pnpm 9.x
-
 ### 为什么选择 pnpm 而非 npm/yarn?
 
 | 特性 | pnpm | npm | Yarn Classic | Yarn Berry |
@@ -32,14 +30,15 @@ corepack prepare pnpm@latest --activate
 # 或独立安装
 # https://pnpm.io/installation
 ```
-# 项目配置
+
+### 项目配置
+
+```bash
 pnpm config set store-dir ~/.pnpm-store
 pnpm config set auto-install-peers true
 ```
 
 ---
-
-## 🧪 测试框架: Vitest 2.x
 
 ### 为什么选择 Vitest 而非 Jest?
 
@@ -106,7 +105,7 @@ Vitest:
 
 ---
 
-## 🎨 前端技术栈
+## 前端技术栈
 
 ### 1️⃣ React 19 (最新稳定版)
 
@@ -309,7 +308,7 @@ pnpm biome format --write ./src # 格式化
 
 ---
 
-## 🦀 Rust 生态选择
+## Rust 生态选择
 
 ### 1️⃣ 异步运行时: Tokio 1.x
 
@@ -410,7 +409,7 @@ async fn fetch_gpu_stats(client: &NvmlClient) -> Result<GpuData> {
 
 ---
 
-## 🔧 构建工具
+## 构建工具
 
 ### Vite 6.x
 
@@ -452,7 +451,7 @@ export default defineConfig({
 
 ---
 
-## 📊 完整依赖清单
+## 完整依赖清单
 
 ### Frontend (package.json)
 
@@ -562,7 +561,7 @@ tauri-build = { version = "2.0", features = [] }
 
 ---
 
-## 🎯 迁移指南
+## 迁移指南
 
 ### 从旧技术栈迁移
 
@@ -613,7 +612,7 @@ pnpm install
 
 ---
 
-## 🚦 开发工作流
+## 开发工作流
 
 ```bash
 # 开发模式 (热重载)
@@ -637,7 +636,7 @@ pnpm tauri build
 
 ---
 
-## 📈 性能对比
+## 性能对比
 
 ### 项目启动速度
 
@@ -665,7 +664,7 @@ pnpm tauri build
 
 ---
 
-## ✅ 最终检查清单
+## 最终检查清单
 
 - [ ] 使用 pnpm 9+ 作为包管理器
 - [ ] React 19 + TypeScript 5.6+

@@ -23,6 +23,7 @@ pub struct WindowConfig {
     pub default_y: i32,
     #[serde(default = "default_on_top")]
     pub always_on_top: bool,
+    pub target_monitor: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -122,6 +123,7 @@ impl Default for AppConfig {
                 default_x: default_x(),
                 default_y: default_y(),
                 always_on_top: default_on_top(),
+                target_monitor: None,
             },
             hardware: HardwareConfig {
                 monitor_source: default_monitor_source(),

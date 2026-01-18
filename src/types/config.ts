@@ -2,6 +2,7 @@ export interface WindowConfig {
   default_x: number;
   default_y: number;
   always_on_top: boolean;
+  target_monitor?: string;
 }
 
 export interface ThresholdsConfig {
