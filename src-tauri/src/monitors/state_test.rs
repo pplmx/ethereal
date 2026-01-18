@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    
+
     use crate::config::AppConfig;
     use crate::monitors::{
         state::{determine_mood, determine_state, is_within_sleep_time, Mood, SpriteState},
