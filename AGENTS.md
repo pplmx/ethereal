@@ -84,9 +84,11 @@ When implementing AI features:
 ### 5.2 Git Standards
 
 - **Conventional Commits**: All commits must follow the `type(scope): description` format.
+- **Commit Timing**: Generate a commit IMMEDIATELY after a functional unit or feature is completed.
 - **Commit Body**:
     - Lines in the commit body must not exceed 100 characters to pass linting hooks.
     - Content should accurately reflect the actual changes made.
+    - Use bullet points for multiple changes (e.g., `- add feature X`).
     - Avoid over-redundancy while remaining detailed enough for significant changes.
     - It is not strictly mandatory to follow categories if they don't fit; focus on clarity and accuracy.
 - **Atomic Commits**: Commit each complete feature or fix separately.
