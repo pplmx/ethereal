@@ -1,18 +1,26 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useMonitorStore } from '../stores/monitorStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import type { AppConfig } from '../types/config';
+import { AnimationPreview } from './AnimationPreview';
 
 export const SettingsModal = () => {
   const { isOpen, setIsOpen, config, updateConfig, loadConfig } = useSettingsStore();
+  const { monitors, fetchMonitors, moveToMonitor } = useMonitorStore();
   const [formData, setFormData] = useState<AppConfig | null>(null);
-  const [activeTab, setActiveTab] = useState<'window' | 'hardware' | 'ai' | 'sound'>('window');
+  const [activeTab, setActiveTab] = useState<'window' | 'hardware' | 'ai' | 'sound' | 'sprite'>(
+    'window',
+  );
 
   useEffect(() => {
-    if (isOpen && !config) {
-      loadConfig();
+    if (isOpen) {
+      if (!config) {
+        loadConfig();
+      }
+      fetchMonitors();
     }
-  }, [isOpen, config, loadConfig]);
+  }, [isOpen, config, loadConfig, fetchMonitors]);
 
   useEffect(() => {
     if (config) {
@@ -29,7 +37,9 @@ export const SettingsModal = () => {
 
   const handleCancel = () => {
     setIsOpen(false);
-    if (config) setFormData(config);
+    if (config) {
+      setFormData(config);
+    }
   };
 
   if (!isOpen || !formData) return null;
@@ -63,13 +73,13 @@ export const SettingsModal = () => {
               </button>
             </div>
 
-            <div className="flex border-b">
-              {(['window', 'hardware', 'ai', 'sound'] as const).map((tab) => (
+            <div className="flex border-b overflow-x-auto">
+              {(['window', 'hardware', 'ai', 'sound', 'sprite'] as const).map((tab) => (
                 <button
                   type="button"
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`flex-1 py-3 text-sm font-medium capitalize ${
+                  className={`flex-1 py-3 text-sm font-medium capitalize whitespace-nowrap px-4 ${
                     activeTab === tab
                       ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50/50'
                       : 'text-slate-500 hover:bg-slate-50'
@@ -99,6 +109,73 @@ export const SettingsModal = () => {
                       />
                     </label>
                   </div>
+
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+                      Monitors
+                    </h3>
+                    <div className="grid gap-2">
+                      {monitors.map((m, idx) => (
+                        <div
+                          key={m.name || idx}
+                          className="flex items-center justify-between p-3 border rounded-lg hover:bg-slate-50 transition-colors text-left"
+                        >
+                          <div>
+                            <div className="text-sm font-medium flex items-center gap-2">
+                              Monitor {idx + 1}
+                              {m.is_primary && (
+                                <span className="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded">
+                                  Primary
+                                </span>
+                              )}
+                              {formData.window.target_monitor === m.name && (
+                                <span className="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded">
+                                  Default
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-xs text-slate-500">
+                              {m.size[0]}x{m.size[1]} @ {m.position[0]},{m.position[1]}
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              className="text-xs text-blue-600 font-medium px-2 py-1 hover:bg-blue-100 rounded"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                moveToMonitor(idx);
+                              }}
+                            >
+                              Move Here
+                            </button>
+                            <button
+                              type="button"
+                              className={`text-xs font-medium px-2 py-1 rounded ${
+                                formData.window.target_monitor === m.name
+                                  ? 'text-gray-400 cursor-default'
+                                  : 'text-green-600 hover:bg-green-100'
+                              }`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (m.name) {
+                                  setFormData({
+                                    ...formData,
+                                    window: { ...formData.window, target_monitor: m.name },
+                                  });
+                                }
+                              }}
+                            >
+                              {formData.window.target_monitor === m.name
+                                ? 'Is Default'
+                                : 'Set Default'}
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-1">
@@ -308,6 +385,12 @@ export const SettingsModal = () => {
                       />
                     </label>
                   </div>
+                </div>
+              )}
+
+              {activeTab === 'sprite' && (
+                <div className="flex justify-center h-full">
+                  <AnimationPreview />
                 </div>
               )}
             </div>
