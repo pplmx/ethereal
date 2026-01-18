@@ -5,14 +5,27 @@ pub mod monitors;
 pub mod utils;
 
 #[tauri::command]
-async fn chat_with_ethereal(app: tauri::AppHandle, message: String) -> Result<String, String> {
+async fn chat_with_ethereal(
+    app: tauri::AppHandle,
+    message: String,
+    system_context: Option<String>,
+) -> Result<String, String> {
     use crate::config::AppConfig;
 
-    let config = AppConfig::load(&app).unwrap_or_default();
+    let config = match AppConfig::load(&app) {
+        Ok(c) => c,
+        Err(_) => AppConfig::default(),
+    };
 
     let client = crate::ai::OllamaClient::new(config.ai);
 
-    client.chat(&message).await.map_err(|e| e.to_string())
+    let prompt = if let Some(ctx) = system_context {
+        format!("System Context: {}\n\nUser Message: {}", ctx, message)
+    } else {
+        message
+    };
+
+    client.chat(&prompt).await.map_err(|e| e.to_string())
 }
 
 #[tauri::command]

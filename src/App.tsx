@@ -20,7 +20,14 @@ function App() {
   useSoundEffects();
   const { setThinking, showResponse, setVisible } = useChatStore();
   const { initialize: initSettings, config } = useSettingsStore();
-  const { updateHardware, getAnimationFrames, getCurrentFps, shouldLoop } = useSpriteStore();
+  const {
+    updateHardware,
+    getAnimationFrames,
+    getCurrentFps,
+    shouldLoop,
+    state: spriteState,
+    hardware,
+  } = useSpriteStore();
   const { syncWithConfig } = useSoundStore();
 
   useEffect(() => {
@@ -40,7 +47,11 @@ function App() {
           setVisible(true);
 
           try {
-            const response = await invoke<string>('chat_with_ethereal', { message: content });
+            const system_context = `Current State: ${spriteState}, CPU: ${hardware?.utilization}%`;
+            const response = await invoke<string>('chat_with_ethereal', {
+              message: content,
+              systemContext: system_context,
+            });
             showResponse(response);
           } catch (e) {
             logger.error('AI Chat failed:', e);

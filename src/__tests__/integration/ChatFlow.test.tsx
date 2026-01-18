@@ -82,7 +82,13 @@ describe('Chat Flow Integration', () => {
       }
     });
 
-    expect(invoke).toHaveBeenCalledWith('chat_with_ethereal', { message: 'User copied text' });
+    expect(invoke).toHaveBeenCalledWith(
+      'chat_with_ethereal',
+      expect.objectContaining({
+        message: 'User copied text',
+        systemContext: expect.any(String),
+      }),
+    );
 
     await waitFor(() => {
       const state = useChatStore.getState();
@@ -116,6 +122,14 @@ describe('Chat Flow Integration', () => {
         await clipboardCallback({ payload: 'User copied text' });
       }
     });
+
+    expect(invoke).toHaveBeenCalledWith(
+      'chat_with_ethereal',
+      expect.objectContaining({
+        message: 'User copied text',
+        systemContext: expect.any(String),
+      }),
+    );
 
     await waitFor(() => {
       const state = useChatStore.getState();
