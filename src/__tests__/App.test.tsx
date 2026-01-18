@@ -1,7 +1,7 @@
 import { useDraggable } from '@hooks/useDraggable';
 import { useSettingsStore } from '@stores/settingsStore';
 import { invoke } from '@tauri-apps/api/core';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import App from '../App';
 
@@ -29,6 +29,10 @@ vi.mock('@components/SpeechBubble', () => ({
 
 vi.mock('@components/SettingsModal', () => ({
   SettingsModal: () => <div data-testid="settings-modal" />,
+}));
+
+vi.mock('@components/StateOverlay', () => ({
+  StateOverlay: () => <div data-testid="state-overlay" />,
 }));
 
 vi.mock('@tauri-apps/api/event', () => ({
@@ -60,6 +64,7 @@ describe('App', () => {
     notifications: { enabled: true, notify_on_overheating: true, notify_on_angry: true },
     sleep: { enabled: false, start_time: '23:00', end_time: '07:00' },
     interaction: { double_click_action: 'chat', enable_hover_effects: true },
+    battery: { low_battery_threshold: 20.0, notify_on_low_battery: true },
   };
 
   beforeEach(() => {
@@ -80,20 +85,29 @@ describe('App', () => {
     vi.restoreAllMocks();
   });
 
-  it('renders correctly with components', () => {
-    render(<App />);
-    expect(screen.getByTestId('devtools')).toBeInTheDocument();
-    expect(screen.getByTestId('sprite-animator')).toBeInTheDocument();
-    expect(screen.getByTestId('speech-bubble')).toBeInTheDocument();
+  it('renders correctly with components', async () => {
+    await act(async () => {
+      render(<App />);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('devtools')).toBeInTheDocument();
+      expect(screen.getByTestId('sprite-animator')).toBeInTheDocument();
+      expect(screen.getByTestId('speech-bubble')).toBeInTheDocument();
+      expect(screen.getByTestId('state-overlay')).toBeInTheDocument();
+    });
   });
 
-  it('initiates drag on mouse down', () => {
+  it('initiates drag on mouse down', async () => {
     const startDraggingMock = vi.fn();
     (useDraggable as Mock).mockReturnValue({
       startDragging: startDraggingMock,
     });
 
-    render(<App />);
+    await act(async () => {
+      render(<App />);
+    });
+
     const mainElement = screen.getByRole('main');
     fireEvent.mouseDown(mainElement);
 

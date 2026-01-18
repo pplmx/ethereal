@@ -25,8 +25,7 @@ pub enum Mood {
     Sad,
 }
 
-pub fn is_within_sleep_time(start: &str, end: &str) -> bool {
-    let now = Local::now().time();
+pub fn is_within_sleep_time(start: &str, end: &str, now: NaiveTime) -> bool {
     let start_time = NaiveTime::parse_from_str(start, "%H:%M")
         .unwrap_or_else(|_| NaiveTime::from_hms_opt(23, 0, 0).unwrap());
     let end_time = NaiveTime::parse_from_str(end, "%H:%M")
@@ -82,7 +81,11 @@ pub fn determine_state(
     }
 
     if config.sleep.enabled
-        && is_within_sleep_time(&config.sleep.start_time, &config.sleep.end_time)
+        && is_within_sleep_time(
+            &config.sleep.start_time,
+            &config.sleep.end_time,
+            Local::now().time(),
+        )
     {
         return SpriteState::Sleeping;
     }

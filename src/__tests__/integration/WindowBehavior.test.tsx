@@ -2,11 +2,10 @@ import { useDraggable } from '@hooks/useDraggable';
 import { useWindowPosition } from '@hooks/useWindowPosition';
 import { useSettingsStore } from '@stores/settingsStore';
 import { invoke } from '@tauri-apps/api/core';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import App from '../../App';
 
-// Mock dependencies
 vi.mock('@components/DevTools', () => ({
   DevTools: () => <div data-testid="devtools" />,
 }));
@@ -23,6 +22,10 @@ vi.mock('@components/SettingsModal', () => ({
   SettingsModal: () => <div data-testid="settings-modal" />,
 }));
 
+vi.mock('@components/StateOverlay', () => ({
+  StateOverlay: () => <div data-testid="state-overlay" />,
+}));
+
 vi.mock('@hooks/useDraggable', () => ({
   useDraggable: vi.fn(),
 }));
@@ -31,7 +34,6 @@ vi.mock('@hooks/useWindowPosition', () => ({
   useWindowPosition: vi.fn(),
 }));
 
-// Mock Tauri APIs
 vi.mock('@tauri-apps/api/core', () => ({
   invoke: vi.fn(),
 }));
@@ -91,18 +93,22 @@ describe('Window Behavior Integration', () => {
     vi.restoreAllMocks();
   });
 
-  it('initializes window position hook', () => {
-    render(<App />);
+  it('initializes window position hook', async () => {
+    await act(async () => {
+      render(<App />);
+    });
     expect(useWindowPosition).toHaveBeenCalled();
   });
 
-  it('starts dragging when main area is clicked', () => {
+  it('starts dragging when main area is clicked', async () => {
     const startDraggingMock = vi.fn();
     (useDraggable as Mock).mockReturnValue({
       startDragging: startDraggingMock,
     });
 
-    render(<App />);
+    await act(async () => {
+      render(<App />);
+    });
 
     const main = screen.getByRole('main');
     fireEvent.mouseDown(main);
@@ -110,11 +116,14 @@ describe('Window Behavior Integration', () => {
     expect(startDraggingMock).toHaveBeenCalled();
   });
 
-  it('renders all core components', () => {
-    render(<App />);
+  it('renders all core components', async () => {
+    await act(async () => {
+      render(<App />);
+    });
 
     expect(screen.getByTestId('devtools')).toBeInTheDocument();
     expect(screen.getByTestId('sprite-animator')).toBeInTheDocument();
     expect(screen.getByTestId('speech-bubble')).toBeInTheDocument();
+    expect(screen.getByTestId('state-overlay')).toBeInTheDocument();
   });
 });

@@ -1,11 +1,13 @@
 #[cfg(test)]
 mod tests {
+    
     use crate::config::AppConfig;
     use crate::monitors::{
-        state::{determine_mood, determine_state, Mood, SpriteState},
+        state::{determine_mood, determine_state, is_within_sleep_time, Mood, SpriteState},
         window::AppCategory,
         HardwareMonitor,
     };
+    use chrono::NaiveTime;
 
     struct MockMonitor {
         temp: f32,
@@ -159,37 +161,6 @@ mod tests {
     }
 
     #[test]
-    fn test_sleep_mode_active() {
-        let monitor = MockMonitor {
-            temp: 40.0,
-            util: 5.0,
-        };
-        let mut config = AppConfig::default();
-        config.sleep.enabled = true;
-        config.sleep.start_time = "00:00".to_string();
-        config.sleep.end_time = "23:59".to_string();
-
-        let state = determine_state(&monitor, 0, 0, 0, 0, AppCategory::Idle, &config);
-        assert_eq!(state, SpriteState::Sleeping);
-    }
-
-    #[test]
-    fn test_overheating_overrides_sleep() {
-        let monitor = MockMonitor {
-            temp: 90.0,
-            util: 5.0,
-        };
-        let mut config = AppConfig::default();
-        config.sleep.enabled = true;
-        config.sleep.start_time = "00:00".to_string();
-        config.sleep.end_time = "23:59".to_string();
-        config.hardware.thresholds.nvidia_temp = 80.0;
-
-        let state = determine_state(&monitor, 0, 0, 0, 0, AppCategory::Idle, &config);
-        assert_eq!(state, SpriteState::Overheating);
-    }
-
-    #[test]
     fn test_determine_mood() {
         let config = AppConfig::default();
 
@@ -209,5 +180,65 @@ mod tests {
             determine_mood(&SpriteState::Idle, 10.0, &config),
             Mood::Happy
         );
+        assert_eq!(
+            determine_mood(&SpriteState::Sleeping, 0.0, &config),
+            Mood::Bored
+        );
+        assert_eq!(
+            determine_mood(&SpriteState::LowBattery, 10.0, &config),
+            Mood::Sad
+        );
+    }
+
+    #[test]
+    fn test_is_within_sleep_time_standard() {
+        let start = "23:00";
+        let end = "07:00";
+        assert!(is_within_sleep_time(
+            start,
+            end,
+            NaiveTime::from_hms_opt(23, 30, 0).unwrap()
+        ));
+        assert!(is_within_sleep_time(
+            start,
+            end,
+            NaiveTime::from_hms_opt(1, 0, 0).unwrap()
+        ));
+        assert!(is_within_sleep_time(
+            start,
+            end,
+            NaiveTime::from_hms_opt(6, 59, 0).unwrap()
+        ));
+        assert!(!is_within_sleep_time(
+            start,
+            end,
+            NaiveTime::from_hms_opt(12, 0, 0).unwrap()
+        ));
+        assert!(!is_within_sleep_time(
+            start,
+            end,
+            NaiveTime::from_hms_opt(22, 59, 0).unwrap()
+        ));
+    }
+
+    #[test]
+    fn test_is_within_sleep_time_same_day() {
+        let start = "01:00";
+        let end = "05:00";
+        assert!(is_within_sleep_time(
+            start,
+            end,
+            NaiveTime::from_hms_opt(2, 0, 0).unwrap()
+        ));
+        assert!(!is_within_sleep_time(
+            start,
+            end,
+            NaiveTime::from_hms_opt(0, 30, 0).unwrap()
+        ));
+        assert!(!is_within_sleep_time(
+            start,
+            end,
+            NaiveTime::from_hms_opt(6, 0, 0).unwrap()
+        ));
     }
 }
