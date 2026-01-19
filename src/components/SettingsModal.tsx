@@ -120,7 +120,7 @@ export const SettingsModal = () => {
               ))}
             </div>
 
-            <div className="p-6 overflow-y-auto flex-1 text-slate-800">
+            <div className="p-6 overflow-y-auto flex-1 text-white bg-black/10 custom-scrollbar">
               {activeTab === 'window' && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -158,20 +158,20 @@ export const SettingsModal = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+                    <h3 className="text-white/90 font-bold uppercase tracking-widest text-[10px] opacity-50">
                       Monitors
                     </h3>
                     <div className="grid gap-2">
                       {monitors.map((m, idx) => (
                         <div
                           key={m.name || idx}
-                          className="flex items-center justify-between p-3 border rounded-lg hover:bg-slate-50 transition-colors text-left"
+                          className="border-white/10 hover:bg-white/5 transition-all text-white/90 bg-white/5 backdrop-blur-sm rounded-xl p-4 border flex items-center justify-between"
                         >
                           <div>
                             <div className="text-sm font-medium flex items-center gap-2">
                               Monitor {idx + 1}
                               {m.is_primary && (
-                                <span className="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded">
+                                <span className="bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-tighter">
                                   Primary
                                 </span>
                               )}
@@ -181,14 +181,14 @@ export const SettingsModal = () => {
                                 </span>
                               )}
                             </div>
-                            <div className="text-xs text-slate-500">
+                            <div className="text-white/40 text-[10px] font-mono mt-1">
                               {m.size[0]}x{m.size[1]} @ {m.position[0]},{m.position[1]}
                             </div>
                           </div>
                           <div className="flex gap-2">
                             <button
                               type="button"
-                              className="text-xs text-blue-600 font-medium px-2 py-1 hover:bg-blue-100 rounded"
+                              className="text-indigo-400 hover:text-indigo-300 transition-colors font-bold text-[10px] tracking-wider uppercase"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 moveToMonitor(idx);
@@ -238,7 +238,7 @@ export const SettingsModal = () => {
                               },
                             })
                           }
-                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                          className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
                         />
                       </label>
                     </div>
@@ -257,7 +257,7 @@ export const SettingsModal = () => {
                               },
                             })
                           }
-                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                          className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
                         />
                       </label>
                     </div>
@@ -273,25 +273,25 @@ export const SettingsModal = () => {
                     </h3>
                     <div className="grid grid-cols-2 gap-y-3 gap-x-4">
                       <div className="flex flex-col">
-                        <span className="text-xs text-slate-500">CPU Usage</span>
+                        <span className="text-white/40 text-[10px] font-mono mt-1">CPU Usage</span>
                         <span className="text-sm font-medium">
                           {hardware?.utilization.toFixed(1)}%
                         </span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-xs text-slate-500">Temperature</span>
+                        <span className="text-white/40 text-[10px] font-mono mt-1">Temperature</span>
                         <span className="text-sm font-medium">
                           {hardware?.temperature.toFixed(1)}°C
                         </span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-xs text-slate-500">Memory</span>
+                        <span className="text-white/40 text-[10px] font-mono mt-1">Memory</span>
                         <span className="text-sm font-medium">
                           {hardware?.memory_used} / {hardware?.memory_total} MB
                         </span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-xs text-slate-500">Network</span>
+                        <span className="text-white/40 text-[10px] font-mono mt-1">Network</span>
                         <span className="text-sm font-medium">
                           ↓ {hardware?.network_rx.toFixed(1)} KB/s
                         </span>
@@ -314,7 +314,7 @@ export const SettingsModal = () => {
                               hardware: { ...formData.hardware, monitor_source: e.target.value },
                             })
                           }
-                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                          className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
                         >
                           <option value="auto">Auto</option>
                           <option value="nvidia">NVIDIA</option>
@@ -338,12 +338,12 @@ export const SettingsModal = () => {
                               },
                             })
                           }
-                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                          className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
                         />
                       </label>
                     </div>
                     <div className="space-y-2">
-                      <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+                      <h4 className="text-white/90 font-bold uppercase tracking-widest text-[10px] opacity-50">
                         Thresholds
                       </h4>
                       <div>
@@ -364,7 +364,7 @@ export const SettingsModal = () => {
                                 },
                               })
                             }
-                            className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                            className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
                           />
                         </label>
                       </div>
@@ -387,7 +387,7 @@ export const SettingsModal = () => {
                             ai: { ...formData.ai, model_name: e.target.value },
                           })
                         }
-                        className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                        className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
                         placeholder="llama3.2"
                       />
                     </label>
@@ -404,7 +404,7 @@ export const SettingsModal = () => {
                             ai: { ...formData.ai, api_endpoint: e.target.value },
                           })
                         }
-                        className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                        className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
                         placeholder="http://localhost:11434"
                       />
                     </label>
@@ -420,7 +420,7 @@ export const SettingsModal = () => {
                             ai: { ...formData.ai, system_prompt: e.target.value },
                           })
                         }
-                        className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1 h-24 resize-none"
+                        className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all h-24 resize-none"
                       />
                     </label>
                   </div>
@@ -440,7 +440,7 @@ export const SettingsModal = () => {
                               },
                             })
                           }
-                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                          className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
                         />
                       </label>
                     </div>
@@ -459,7 +459,7 @@ export const SettingsModal = () => {
                               },
                             })
                           }
-                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                          className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
                         />
                       </label>
                     </div>
@@ -516,7 +516,7 @@ export const SettingsModal = () => {
               {activeTab === 'hotkeys' && (
                 <div className="space-y-4">
                   <div className="space-y-4">
-                    <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+                    <h3 className="text-white/90 font-bold uppercase tracking-widest text-[10px] opacity-50">
                       Global Shortcuts
                     </h3>
                     <div>
@@ -534,7 +534,7 @@ export const SettingsModal = () => {
                               },
                             })
                           }
-                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                          className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
                           placeholder="Ctrl+Shift+E"
                         />
                       </label>
@@ -551,7 +551,7 @@ export const SettingsModal = () => {
                               hotkeys: { ...formData.hotkeys, quit: e.target.value },
                             })
                           }
-                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                          className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
                           placeholder="Ctrl+Shift+Q"
                         />
                       </label>
@@ -559,7 +559,7 @@ export const SettingsModal = () => {
                   </div>
 
                   <div className="space-y-4 pt-4 border-t">
-                    <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+                    <h3 className="text-white/90 font-bold uppercase tracking-widest text-[10px] opacity-50">
                       Mouse Interactions
                     </h3>
                     <div>
@@ -576,7 +576,7 @@ export const SettingsModal = () => {
                               },
                             })
                           }
-                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                          className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
                         >
                           <option value="none">None</option>
                           <option value="chat">Trigger AI Chat</option>
@@ -605,7 +605,7 @@ export const SettingsModal = () => {
                     </div>
                   </div>
 
-                  <p className="text-xs text-slate-500 mt-4">
+                  <p className="text-white/40 text-[10px] font-mono mt-1 mt-4">
                     Note: Use standard accelerator format for hotkeys (e.g., Ctrl+Shift+Alt+K).
                   </p>
                 </div>
@@ -716,7 +716,7 @@ export const SettingsModal = () => {
                               sleep: { ...formData.sleep, start_time: e.target.value },
                             })
                           }
-                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                          className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
                         />
                       </label>
                     </div>
@@ -732,7 +732,7 @@ export const SettingsModal = () => {
                               sleep: { ...formData.sleep, end_time: e.target.value },
                             })
                           }
-                          className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                          className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
                         />
                       </label>
                     </div>
@@ -752,7 +752,7 @@ export const SettingsModal = () => {
                             },
                           })
                         }
-                        className="w-full rounded border-slate-300 p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none mt-1"
+                        className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
                       />
                     </label>
                   </div>
