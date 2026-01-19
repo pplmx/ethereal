@@ -1,139 +1,193 @@
-# Agent Guidelines & Development Standards
+# AI Agent Guidelines
 
-This document outlines the strict guidelines, patterns, and protocols that all AI Agents (and human developers) must follow when contributing to the **Ethereal** codebase.
+> Guidelines for AI agents contributing to the Ethereal codebase.
+> For development setup, see [Development Guide](docs/development.md).
 
-## 1. Development Lifecycle: The Golden Loop
+## Philosophy: Vibe Coding
 
-Every feature or fix must follow the **Implement -> Verify -> Commit** cycle. A task is NOT complete until all verification steps pass.
+- **Aesthetic First** - Create high-fidelity "Digital Spirit" visuals (glassmorphism, glows, fluid animations)
+- **Quality Over Speed** - Better to do one thing perfectly than rush through many
+- **Leave Code Better** - Every touch should improve the codebase
 
-### 1.1 Implementation (Vibe Coding)
+---
 
-- **Aesthetic First**: Focus on creating a high-fidelity "Digital Spirit" look (glassmorphism, glows, fluid animations).
-- **Proactive Refinement**: If a component looks "basic" or "programmer art", overhaul it using advanced CSS/Framer Motion.
-- **Self-Documentation**: Write clear, naming-focused code. Use comments only for complex logic (Section 5.2).
+## The Golden Loop
 
-### 1.2 Verification (Mandatory Checklist)
+```
+Implement → Verify → Commit → Repeat
+```
 
-Before declaring a task done or creating a commit, execute commands in the following order (optimized for fast failure):
+A task is NOT complete until all verification passes.
 
-| Order | Scope | Command | Purpose | Skip Allowed? |
-| :---: | :--- | :--- | :--- | :---: |
-| 1 | **Type Check** | `pnpm type-check` | Ensure no TypeScript type errors | ❌ |
-| 2 | **Linting (TS)** | `pnpm lint:fix` | Check and fix code style/quality | ❌ |
-| 3 | **Linting (Rust)** | `pnpm lint:rs` | Format and check Rust code via Clippy | ❌ |
-| 4 | **Linting (MD)** | `pnpm lint:md` | Check Markdown formatting | ✅ (code-only) |
-| 5 | **Frontend Tests** | `pnpm test:run` | Ensure no regressions in UI/Logic | ❌ |
-| 6 | **Backend Tests** | `pnpm test:rust` | Verify Rust logic and state machine | ❌ |
-| 7 | **Frontend Build** | `pnpm build` | Verify production build of React app | ❌ |
-| 8 | **Tauri Build** | `pnpm tauri:build` | Verify full application build (Dry run) | ✅ (pre-release) |
-| 9 | **Visual Check** | `playwright` | Capture screenshot of `pnpm dev` to verify UI | ❌ (UI changes) |
+### Verification Commands
 
-**Failure Handling:**
+```bash
+pnpm type-check   # 1. TypeScript errors
+pnpm lint:fix     # 2. Biome (format + lint)
+pnpm lint:rs      # 3. Rust Clippy
+pnpm test:run     # 4. Frontend tests
+pnpm test:rust    # 5. Backend tests
+pnpm build        # 6. Production build
+```
 
-- If any step fails, **STOP** and fix the issue before proceeding.
-- **Never commit failing code** with the intention to "fix later".
+**If any step fails → STOP → Fix → Restart from step 1**
 
-### 1.3 Commitment
+---
 
-- Generate a commit **IMMEDIATELY** after a functional unit is verified.
-- Follow the **Conventional Commits** standard (Section 5.2).
-- Commit messages must be descriptive and reflect actual changes using bullet points.
-- One commit = One logical change.
+## Commit Discipline
 
-## 2. Testing Protocol (CRITICAL)
+### When to Commit
 
-### 2.1 Coverage Requirements
+✅ **Commit immediately** after:
+- A single component/function is implemented AND verified
+- A bug is fixed AND a regression test is added
+- A refactor is complete with tests passing
+- Documentation is updated
 
-| Code Type | Minimum Coverage | Enforcement |
-| :--- | :---: | :--- |
-| **Core Logic** | 90% | Mandatory |
-| **UI Components** | 70% | Recommended |
-| **Integration Flows** | 100% | Mandatory (critical paths) |
+❌ **Never**:
+- Commit failing code to "fix later"
+- Batch unrelated changes into one commit
+- Skip verification steps
 
-### 2.2 Frontend Testing (Vitest + RTL)
+### Commit Message Format
 
-- **Time-Dependent Tests**:
-    - Always use `vi.useFakeTimers({ shouldAdvanceTime: true })`.
-    - Use `await act(async () => { vi.advanceTimersByTime(ms) })` to flush state updates.
-    - Use `waitFor` for async assertions.
-- **Mocking Globals**:
-    - `window.Audio`: Use `vi.stubGlobal('Audio', ...)` or assign to `window.Audio` in `beforeEach`.
-    - **Important**: Mock the *constructor* to return an object with `play`, `pause`, etc.
-    - `ResizeObserver` & `IntersectionObserver`: Mock in `setup.ts`.
+```
+<type>(<scope>): <description>
 
-### 2.3 Backend Testing (Rust)
+[optional body]
 
-- Use standard `#[cfg(test)]` modules.
-- **Thread Safety**: Some crates (like `battery`) are not `Send/Sync` on Windows. Do not store them in long-lived state; create fresh instances or use platform-specific guards.
+[optional footer]
+```
 
-## 3. Architecture Standards
-
-### 3.1 State Management (Hybrid)
-
-- **Source of Truth**: The Backend (Rust) `AppConfig` is the single source of truth for persistent settings.
-- **Frontend State**: Zustand stores mirror the backend state via IPC Events.
-
-### 3.2 Performance
-
-- **Animations**: **MUST** use `requestAnimationFrame` for visual updates. **NEVER** use `setInterval`.
-- **Preloading**: Heavy assets must be preloaded via `useResourceStore`.
-
-## 4. AI Agent Persona ("Ethereal")
-
-When implementing AI features:
-
-- **Tone**: Witty, concise (< 30 words), slightly mysterious.
-- **Context**: Inject system context: `Current State: X, Mood: Y, CPU: Z%, Mem: A/B MB, Net: C KB/s, Bat: D% (State)`.
-
-## 5. Engineering Standards
-
-### 5.1 Package Management
-
-- **PNPM Only**: Strictly enforced via `preinstall` hooks.
-
-### 5.2 Git Standards
-
-#### 5.2.1 Commitment Scenarios
-
-Commit **immediately** when:
-
-- ✅ A standalone function/trait/struct is implemented and tested
-- ✅ A frontend component or hook logic is completed and verified
-- ✅ A bug is fixed **and** a regression test is added
-- ✅ Documentation or configuration is updated
-
-#### 5.2.2 Conventional Commits
-
-**Format:** `<type>(<scope>): <description>`
-
-| Type | Usage |
-| :--- | :--- |
+**Types:**
+| Type | When |
+|------|------|
 | `feat` | New feature |
 | `fix` | Bug fix |
 | `refactor` | Code restructure (no behavior change) |
 | `perf` | Performance improvement |
-| `test` | Add/update tests |
+| `test` | Add/update tests only |
 | `docs` | Documentation only |
-| `style` | Code style (formatting, no logic change) |
+| `style` | Formatting (no logic change) |
 | `build` | Build system or dependencies |
 
-#### 5.2.3 Commit Body Requirements
+**Examples:**
 
-- Max 72 chars subject.
-- Lines < 100 characters in body.
-- Explain **WHAT** and **WHY**.
-- Use bullet points for multiple changes.
+```bash
+# Good ✅
+feat(ai): add conversation history support
+fix(monitor): handle GPU disconnect gracefully
+refactor(store): extract state machine to separate module
+test(sprite): add animation frame cycling tests
 
-## 6. Troubleshooting Common Issues
+# Bad ❌
+update code
+fix stuff
+wip
+```
 
-### "Test timed out" in Vitest
+### Commit Body (for complex changes)
 
-- **Fix**: Wrap async effects in `act` or use `vi.advanceTimersByTime`.
+- Explain **WHAT** changed and **WHY**
+- Use bullet points for multiple changes
+- Max 72 chars for subject, 100 chars for body lines
 
-### "window.Audio is not a constructor"
+```
+fix(monitor): handle GPU disconnect gracefully
 
-- **Fix**: `window.Audio = vi.fn().mockImplementation(() => ({ play: vi.fn(), ... })) as any;`
+- Add fallback to CPU monitoring when GPU unavailable
+- Emit warning notification instead of crashing
+- Add retry logic with exponential backoff
 
-### "Zustand persist not working in tests"
+Closes #42
+```
 
-- **Fix**: Mock `localStorage` in `setup.ts`.
+---
+
+## Testing Patterns
+
+### Time-Dependent Tests
+
+```typescript
+vi.useFakeTimers({ shouldAdvanceTime: true });
+
+await act(async () => {
+  vi.advanceTimersByTime(100);
+});
+
+// Always restore
+afterEach(() => {
+  vi.useRealTimers();
+});
+```
+
+### Mocking Audio
+
+```typescript
+beforeEach(() => {
+  window.Audio = vi.fn().mockImplementation(() => ({
+    play: vi.fn().mockResolvedValue(undefined),
+    pause: vi.fn(),
+    volume: 1,
+  })) as any;
+});
+```
+
+### Mocking Observers
+
+```typescript
+// In setup.ts
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+```
+
+---
+
+## AI Persona ("Ethereal")
+
+When implementing AI responses:
+
+- **Tone**: Witty, concise (<30 words), slightly mysterious
+- **Context**: Include system state:
+  ```
+  State: Working, Mood: Happy, CPU: 45%, Mem: 8/16GB
+  ```
+- **Personality**: The spirit is aware of its environment
+
+---
+
+## Architecture Rules
+
+| Rule | Reason |
+|------|--------|
+| Backend is source of truth | `AppConfig` (TOML) owns settings |
+| Use `requestAnimationFrame` | Never `setInterval` for animations |
+| Preload assets | Use `useResourceStore` to avoid popping |
+| Error boundaries | Wrap major components |
+
+---
+
+## Troubleshooting
+
+| Error | Fix |
+|-------|-----|
+| Test timed out | Wrap in `act()` or `vi.advanceTimersByTime` |
+| Audio not a constructor | Mock `window.Audio` in `beforeEach` |
+| Zustand persist fails | Mock `localStorage` in `setup.ts` |
+| Battery crate not Send | Create fresh instances per call |
+| Component not updating | Check if using `shallow` selector |
+
+---
+
+## File Naming Conventions
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| Component | PascalCase | `SpriteAnimator.tsx` |
+| Hook | camelCase, `use` prefix | `useSpriteStore.ts` |
+| Store | camelCase, `Store` suffix | `spriteStore.ts` |
+| Test | same name + `.test` | `SpriteAnimator.test.tsx` |
+| Rust module | snake_case | `sprite_state.rs` |

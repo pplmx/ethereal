@@ -339,12 +339,12 @@ Follow semantic versioning (SemVer):
 #### 1. Dependencies Not Installing
 
 ```bash
-# Clear npm cache
-npm cache clean --force
+# Clear pnpm store cache
+pnpm store prune
 
 # Remove node_modules and reinstall
-rm -rf node_modules package-lock.json
-npm install
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
 ```
 
 #### 2. Rust Compilation Errors

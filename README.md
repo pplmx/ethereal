@@ -68,8 +68,9 @@ The spirit evolves based on your activity:
 
 - [User Guide](docs/usage.md) - How to interact and customize.
 - [Technical Docs](docs/technical.md) - Architecture and implementation details.
-- [Roadmap](docs/roadmap.md) - Project status and future goals.
-- [Contributing](docs/contributing.md) - Join the development.
+- [Roadmap](docs/roadmap.md) - Project vision and future goals.
+- [Development Plan](ROADMAP.md) - Detailed technical implementation roadmap.
+- [Contributing](CONTRIBUTING.md) - Guidelines for contributors.
 
 ## 📜 License
 
