@@ -1,12 +1,25 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useChatStore } from '../stores/chatStore';
+import { useSpriteStore } from '../stores/spriteStore';
 
 export const SpeechBubble = () => {
   const { message, isThinking, isVisible } = useChatStore();
+  const { mood } = useSpriteStore();
   const [displayedText, setDisplayedText] = useState('');
 
-  // Typewriter effect
+  const getMoodColor = (m: string) => {
+    switch (m) {
+      case 'excited': return 'rgba(6, 182, 212, 0.4)';
+      case 'angry': return 'rgba(244, 63, 94, 0.4)';
+      case 'happy': return 'rgba(99, 102, 241, 0.4)';
+      case 'tired': return 'rgba(245, 158, 11, 0.3)';
+      default: return 'rgba(99, 102, 241, 0.3)';
+    }
+  };
+
+  const moodColor = getMoodColor(mood);
+
   useEffect(() => {
     if (!message || isThinking) {
       setDisplayedText('');
@@ -32,74 +45,60 @@ export const SpeechBubble = () => {
     <AnimatePresence>
       {(isVisible || isThinking) && (
         <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.85, filter: 'blur(10px)' }}
-          animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, y: 20, scale: 0.85, filter: 'blur(10px)' }}
-          transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-          className="w-full max-w-[260px] pointer-events-none"
+          initial={{ opacity: 0, scale: 0.9, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9, y: 10 }}
+          className="relative max-w-[280px] pointer-events-none"
         >
-          <div className="relative glass-effect p-4 rounded-2xl overflow-hidden">
-            {/* Animated gradient border */}
-            <motion.div
-              className="absolute inset-0 rounded-2xl opacity-50"
-              style={{
-                background:
-                  'linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.3), transparent)',
-                backgroundSize: '200% 100%',
-              }}
-              animate={{
-                backgroundPosition: ['200% 0', '-200% 0'],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: 'linear',
-              }}
+          {/* Main Bubble */}
+          <div
+            className="glass-effect rounded-2xl px-5 py-4 relative z-10 overflow-hidden"
+            style={{
+              boxShadow: `0 8px 32px rgba(0, 0, 0, 0.4), 0 0 15px ${moodColor}`
+            }}
+          >
+            {/* Top accent line */}
+            <div
+              className="absolute top-0 left-0 right-0 h-px"
+              style={{ background: `linear-gradient(90deg, transparent, ${moodColor}, transparent)` }}
             />
 
             {isThinking ? (
-              <div className="flex space-x-2.5 items-center justify-center py-3 relative z-10">
+              <div className="flex space-x-2 items-center justify-center py-2">
                 {[0, 1, 2].map((i) => (
                   <motion.div
                     key={i}
-                    animate={{
-                      scale: [1, 1.4, 1],
-                      opacity: [0.4, 1, 0.4],
-                    }}
-                    transition={{
-                      duration: 0.8,
-                      repeat: Infinity,
-                      delay: i * 0.15,
-                      ease: 'easeInOut',
-                    }}
-                    className="w-2.5 h-2.5 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full"
-                    style={{
-                      boxShadow: '0 0 12px rgba(34, 211, 238, 0.6)',
-                    }}
+                    animate={{ scale: [1, 1.3, 1], opacity: [0.4, 1, 0.4] }}
+                    transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.15 }}
+                    className="w-2 h-2 rounded-full"
+                    style={{ background: moodColor.replace('0.4', '1').replace('0.3', '1') }}
                   />
                 ))}
               </div>
             ) : (
-              <div className="relative z-10">
-                <p className="text-white text-sm font-medium leading-relaxed text-center min-h-[1.5em]">
-                  {displayedText}
-                  {displayedText.length < (message?.length || 0) && (
-                    <motion.span
-                      animate={{ opacity: [1, 0] }}
-                      transition={{ duration: 0.5, repeat: Infinity }}
-                      className="inline-block w-0.5 h-4 bg-cyan-400 ml-0.5 align-middle"
-                    />
-                  )}
-                </p>
-              </div>
+              <p className="text-white/90 text-[13px] font-medium leading-relaxed tracking-tight text-center">
+                {displayedText}
+                {displayedText.length < (message?.length || 0) && (
+                  <motion.span
+                    animate={{ opacity: [1, 0] }}
+                    transition={{ duration: 0.6, repeat: Infinity }}
+                    className="inline-block w-[1.5px] h-3 ml-0.5 align-middle"
+                    style={{ background: moodColor.replace('0.4', '1').replace('0.3', '1') }}
+                  />
+                )}
+              </p>
             )}
+          </div>
 
-            {/* Speech bubble tail with gradient */}
+          {/* Tail */}
+          <div className="flex justify-center -mt-px relative z-0">
             <div
-              className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 rotate-45 glass-effect border-t-0 border-l-0"
+              className="w-4 h-3"
               style={{
-                background:
-                  'linear-gradient(135deg, transparent 50%, rgba(15, 23, 42, 0.8) 50%)',
+                clipPath: 'polygon(0 0, 100% 0, 50% 100%)',
+                background: 'rgba(15, 23, 42, 0.7)',
+                backdropFilter: 'blur(16px)',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.12)'
               }}
             />
           </div>

@@ -16,65 +16,54 @@ export const WelcomeModal = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-indigo-950/40 backdrop-blur-md">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden text-slate-800"
+        initial={{ opacity: 0, scale: 0.9, y: 30 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="glass-effect rounded-3xl shadow-2xl max-w-md w-full overflow-hidden text-white relative"
       >
-        <div className="h-32 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center border border-white/30 backdrop-blur-sm animate-pulse">
-            <span className="text-3xl text-white">✨</span>
-          </div>
+        <div className="h-40 bg-gradient-to-br from-indigo-500/30 to-purple-600/30 flex flex-col items-center justify-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.2),transparent_70%)]" />
+          <motion.div
+            animate={{ y: [0, -10, 0], scale: [1, 1.05, 1] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-20 h-20 bg-indigo-500/20 rounded-full flex items-center justify-center border border-indigo-500/40 backdrop-blur-md shadow-[0_0_30px_rgba(99,102,241,0.3)] relative z-10"
+          >
+            <span className="text-4xl">🔮</span>
+          </motion.div>
         </div>
 
-        <div className="p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4 text-slate-900">Welcome, Summoner!</h2>
-          <p className="text-slate-600 mb-6 leading-relaxed text-sm">
-            I am your <strong>Digital Spirit</strong>. I'll live on your desktop and react to your
-            system's pulse.
+        <div className="p-8 text-center relative z-10">
+          <h2 className="text-xl font-bold mb-3 tracking-widest uppercase text-indigo-300">Awaken the Spirit</h2>
+          <p className="text-white/60 mb-8 leading-relaxed text-[13px] font-medium">
+            I am your <strong className="text-white">Digital Soul</strong>. I'll flow with your
+            system's rhythm and reside on your desktop.
           </p>
 
-          <div className="space-y-4 mb-8 text-left">
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-lg bg-indigo-100 flex-shrink-0 flex items-center justify-center text-indigo-600 font-bold text-xs">
-                1
+          <div className="space-y-5 mb-10 text-left">
+            {[
+              { id: 1, title: 'System Pulse', desc: 'I sense CPU, Memory, and Temperature to shift my mood.', color: 'bg-indigo-500/20 text-indigo-400' },
+              { id: 2, title: 'Deep Learning', desc: 'Copy code or errors, and I\'ll offer my ethereal wisdom.', color: 'bg-purple-500/20 text-purple-400' },
+              { id: 3, title: 'Vessel Shape', desc: 'Drag a folder of spirits to redefine my crystalline form.', color: 'bg-cyan-500/20 text-cyan-400' }
+            ].map((item) => (
+              <div key={item.id} className="flex items-start gap-4">
+                <div className={`w-8 h-8 rounded-xl ${item.color} flex-shrink-0 flex items-center justify-center font-bold text-xs border border-white/5`}>
+                  {item.id}
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-white/90">{item.title}</p>
+                  <p className="text-[11px] text-white/40 leading-relaxed mt-0.5">
+                    {item.desc}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-semibold">System Aware</p>
-                <p className="text-xs text-slate-500">
-                  I monitor CPU, Memory, and Temperature to change my mood.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-lg bg-purple-100 flex-shrink-0 flex items-center justify-center text-purple-600 font-bold text-xs">
-                2
-              </div>
-              <div>
-                <p className="text-sm font-semibold">AI Interaction</p>
-                <p className="text-xs text-slate-500">
-                  Copy code snippets or errors, and I might give you some advice!
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-lg bg-cyan-100 flex-shrink-0 flex items-center justify-center text-cyan-600 font-bold text-xs">
-                3
-              </div>
-              <div>
-                <p className="text-sm font-semibold">Custom Appearance</p>
-                <p className="text-xs text-slate-500">
-                  Drag and drop a folder of SVG sprites to change how I look.
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
 
           <button
             type="button"
             onClick={handleComplete}
-            className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20"
+            className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 transition-all text-white text-xs font-bold tracking-[0.2em] uppercase rounded-2xl shadow-[0_0_20px_rgba(79,70,229,0.4)]"
           >
             Awaken the Spirit
           </button>

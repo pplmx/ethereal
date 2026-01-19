@@ -67,23 +67,26 @@ export const SettingsModal = () => {
           />
 
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
+            initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden relative z-10 text-slate-800 flex flex-col max-h-[80vh]"
+            exit={{ scale: 0.95, opacity: 0 }}
+            className="glass-effect rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden relative z-10 text-white flex flex-col max-h-[85vh]"
           >
-            <div className="p-4 border-b flex justify-between items-center bg-slate-50">
-              <h2 className="text-lg font-semibold">Settings</h2>
+            <div className="p-5 border-b border-white/10 flex justify-between items-center bg-white/5 backdrop-blur-md">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse shadow-[0_0_8px_rgba(129,140,248,0.8)]" />
+                <h2 className="text-xs font-bold tracking-[0.2em] uppercase text-white/90">Ethereal Intelligence</h2>
+              </div>
               <button
                 type="button"
                 onClick={handleCancel}
-                className="text-slate-400 hover:text-slate-600"
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 text-white/40 hover:text-white transition-all"
               >
                 ✕
               </button>
             </div>
 
-            <div className="flex border-b overflow-x-auto scrollbar-hide">
+            <div className="flex border-b border-white/5 overflow-x-auto scrollbar-hide bg-black/20 px-4">
               {(
                 [
                   'window',
@@ -98,16 +101,21 @@ export const SettingsModal = () => {
                 ] as const
               ).map((tab) => (
                 <button
-                  type="button"
                   key={tab}
+                  type="button"
                   onClick={() => setActiveTab(tab)}
-                  className={`flex-1 py-3 text-sm font-medium capitalize whitespace-nowrap px-4 ${
-                    activeTab === tab
-                      ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50/50'
-                      : 'text-slate-500 hover:bg-slate-50'
-                  }`}
+                  className={`py-3.5 px-3 text-[10px] font-bold tracking-widest uppercase whitespace-nowrap transition-all relative ${activeTab === tab
+                    ? 'text-indigo-400'
+                    : 'text-white/30 hover:text-white/60'
+                    }`}
                 >
                   {tab}
+                  {activeTab === tab && (
+                    <motion.div
+                      layoutId="activeTabGlow"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-400 shadow-[0_0_12px_rgba(129,140,248,0.6)]"
+                    />
+                  )}
                 </button>
               ))}
             </div>
@@ -190,11 +198,10 @@ export const SettingsModal = () => {
                             </button>
                             <button
                               type="button"
-                              className={`text-xs font-medium px-2 py-1 rounded ${
-                                formData.window.target_monitor === m.name
-                                  ? 'text-gray-400 cursor-default'
-                                  : 'text-green-600 hover:bg-green-100'
-                              }`}
+                              className={`text-xs font-medium px-2 py-1 rounded ${formData.window.target_monitor === m.name
+                                ? 'text-gray-400 cursor-default'
+                                : 'text-green-600 hover:bg-green-100'
+                                }`}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 if (m.name) {
@@ -770,7 +777,7 @@ export const SettingsModal = () => {
                       />
                     </label>
                   </div>
-                  <p className="text-xs text-slate-500 mt-2 italic">
+                  <p className="text-[11px] text-white/40 mt-3 leading-relaxed italic">
                     When enabled, the title of your currently active window will be sent to the AI
                     context. This helps the spirit provide more relevant responses based on what you
                     are doing.
@@ -779,18 +786,18 @@ export const SettingsModal = () => {
               )}
             </div>
 
-            <div className="p-4 border-t bg-slate-50 flex justify-end space-x-3">
+            <div className="p-5 border-t border-white/10 bg-black/40 flex justify-end space-x-4">
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200 rounded-lg transition-colors"
+                className="px-5 py-2 text-[11px] font-bold tracking-widest uppercase text-white/60 hover:text-white hover:bg-white/5 rounded-full transition-all"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleSave}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                className="px-6 py-2 text-[11px] font-bold tracking-widest uppercase text-white rounded-full bg-indigo-600 hover:bg-indigo-500 shadow-[0_0_15px_rgba(79,70,229,0.4)] transition-all"
               >
                 Save Changes
               </button>

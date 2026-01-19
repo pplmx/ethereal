@@ -4,10 +4,7 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { useSpriteStore } from '../stores/spriteStore';
 
 export const DevTools = () => {
-  const [stats, setStats] = useState({
-    fps: 0,
-    memory: 0,
-  });
+  const [stats, setStats] = useState({ fps: 0 });
   const [isExpanded, setIsExpanded] = useState(false);
   const { setIsOpen } = useSettingsStore();
   const { hardware } = useSpriteStore();
@@ -35,30 +32,35 @@ export const DevTools = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
+      initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
-      className="fixed top-3 right-3 z-50 pointer-events-auto"
+      className="fixed top-3 left-3 z-50 pointer-events-auto"
     >
-      <div className="glass-effect rounded-xl overflow-hidden shadow-2xl">
-        {/* Collapsed header */}
+      <div
+        className="rounded-xl overflow-hidden"
+        style={{
+          background: 'rgba(0, 0, 0, 0.6)',
+          backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+        }}
+      >
+        {/* Header */}
         <button
           type="button"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full flex items-center justify-between gap-3 px-3 py-2 hover:bg-white/5 transition-colors"
+          className="flex items-center gap-2 px-3 py-2 w-full hover:bg-white/5 transition-colors"
         >
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[10px] font-mono text-white/70">DEV</span>
-          </div>
-          <div className="flex items-center gap-3 text-[10px] font-mono text-white/50">
-            <span>{stats.fps} FPS</span>
-            <motion.span
-              animate={{ rotate: isExpanded ? 180 : 0 }}
-              className="text-white/30"
-            >
-              ▼
-            </motion.span>
-          </div>
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="text-[10px] font-mono text-white/60">DEV</span>
+          <span className="text-[10px] font-mono text-white/40 ml-auto">
+            {stats.fps} fps
+          </span>
+          <motion.span
+            animate={{ rotate: isExpanded ? 180 : 0 }}
+            className="text-[8px] text-white/30 ml-1"
+          >
+            ▼
+          </motion.span>
         </button>
 
         {/* Expanded panel */}
@@ -68,54 +70,33 @@ export const DevTools = () => {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="overflow-hidden"
+              transition={{ duration: 0.15 }}
+              className="overflow-hidden border-t border-white/5"
             >
-              <div className="px-3 pb-3 pt-1 space-y-2 border-t border-white/5">
-                {/* Stats grid */}
-                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] font-mono">
-                  <div className="text-white/40">Memory</div>
-                  <div className="text-white/70 text-right">
-                    {(performance as any).memory?.usedJSHeapSize >> 20 || 0}MB
+              <div className="p-3 space-y-2">
+                {hardware && (
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] font-mono">
+                    <span className="text-white/40">CPU</span>
+                    <span className="text-white/70 text-right">
+                      {hardware.utilization.toFixed(0)}%
+                    </span>
+                    <span className="text-white/40">Net</span>
+                    <span className="text-white/70 text-right">
+                      ↓{hardware.network_rx} ↑{hardware.network_tx}
+                    </span>
+                    <span className="text-white/40">State</span>
+                    <span className="text-cyan-400 text-right">{hardware.state}</span>
                   </div>
+                )}
 
-                  {hardware && (
-                    <>
-                      <div className="text-white/40">CPU</div>
-                      <div className="text-white/70 text-right">
-                        {hardware.utilization.toFixed(1)}%
-                      </div>
-
-                      <div className="text-white/40">Net ↓↑</div>
-                      <div className="text-white/70 text-right">
-                        {hardware.network_rx}/{hardware.network_tx} KB/s
-                      </div>
-
-                      <div className="text-white/40">Disk R/W</div>
-                      <div className="text-white/70 text-right">
-                        {hardware.disk_read}/{hardware.disk_write} KB/s
-                      </div>
-
-                      {hardware.battery_state !== 'N/A' && (
-                        <>
-                          <div className="text-white/40">Battery</div>
-                          <div className="text-white/70 text-right">
-                            {hardware.battery_level.toFixed(0)}% ({hardware.battery_state})
-                          </div>
-                        </>
-                      )}
-
-                      <div className="text-cyan-400/60">State</div>
-                      <div className="text-cyan-400 text-right">{hardware.state}</div>
-                    </>
-                  )}
-                </div>
-
-                {/* Settings button */}
                 <button
                   type="button"
                   onClick={() => setIsOpen(true)}
-                  className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 px-3 py-1.5 rounded-lg text-[10px] font-medium text-white transition-all shadow-lg shadow-indigo-500/20"
+                  className="w-full mt-2 px-3 py-1.5 rounded-lg text-[10px] font-medium text-white/80 transition-all hover:bg-white/10"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3))',
+                    border: '1px solid rgba(139, 92, 246, 0.3)',
+                  }}
                 >
                   ⚙️ Settings
                 </button>

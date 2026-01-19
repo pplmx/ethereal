@@ -16,109 +16,112 @@ export const StateOverlay = () => {
         return '😐';
       case 'angry':
         return '😡';
-      case 'sad':
-        return '😢';
       default:
         return '🙂';
     }
   };
 
-  const getStateColor = (s: string) => {
+  const getStateConfig = (s: string) => {
     switch (s.toLowerCase()) {
       case 'overheating':
-        return 'from-rose-500 to-orange-500';
+        return { color: '#EF4444', icon: '🔥' };
       case 'highload':
       case 'high_load':
-        return 'from-amber-500 to-yellow-500';
+        return { color: '#F59E0B', icon: '⚡' };
       case 'working':
-        return 'from-emerald-500 to-teal-500';
+        return { color: '#10B981', icon: '💻' };
       case 'gaming':
-        return 'from-violet-500 to-purple-500';
+        return { color: '#8B5CF6', icon: '🎮' };
       case 'thinking':
-        return 'from-cyan-400 to-blue-500';
+        return { color: '#06B6D4', icon: '💭' };
       case 'lowbattery':
       case 'low_battery':
-        return 'from-red-500 to-rose-600';
+        return { color: '#DC2626', icon: '🪫' };
+      case 'sleeping':
+        return { color: '#64748B', icon: '💤' };
+      case 'browsing':
+        return { color: '#0EA5E9', icon: '🌐' };
       default:
-        return 'from-indigo-500 to-violet-500';
+        return { color: '#6366F1', icon: '✨' };
     }
   };
 
+  const stateConfig = getStateConfig(state);
   const cpuPercent = hardware?.utilization ?? 0;
 
   return (
-    <div className="w-full flex justify-center py-2 pointer-events-none">
-      <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={`${state}-${mood}`}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 8 }}
+        transition={{ duration: 0.3 }}
+        className="flex items-center gap-3"
+      >
+        {/* State indicator pill */}
         <motion.div
-          key={`${state}-${mood}`}
-          initial={{ opacity: 0, scale: 0.8, y: 10, filter: 'blur(8px)' }}
-          animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, scale: 0.8, y: 10, filter: 'blur(8px)' }}
-          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-full"
+          style={{
+            background: `linear-gradient(135deg, ${stateConfig.color}20, ${stateConfig.color}10)`,
+            border: `1px solid ${stateConfig.color}40`,
+            boxShadow: `0 0 20px ${stateConfig.color}30`,
+          }}
         >
-          <div className="flex items-center gap-3 px-4 py-2 glass-effect rounded-full ring-1 ring-white/10">
-            {/* State indicator with gradient */}
-            <div className="flex items-center gap-2">
-              <motion.div
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.7, 1, 0.7],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-                className={`w-2 h-2 rounded-full bg-gradient-to-r ${getStateColor(state)}`}
-                style={{
-                  boxShadow: '0 0 8px currentColor',
-                }}
-              />
-              <span className="text-[10px] font-bold tracking-[0.12em] text-white/80 uppercase">
-                {state.replace('_', ' ')}
-              </span>
-            </div>
-
-            {/* Divider */}
-            <div className="w-px h-4 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
-
-            {/* CPU mini indicator */}
-            <div className="flex items-center gap-1.5">
-              <div className="relative w-8 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                <motion.div
-                  className={`absolute left-0 top-0 h-full rounded-full bg-gradient-to-r ${cpuPercent > 80
-                      ? 'from-rose-500 to-red-500'
-                      : cpuPercent > 50
-                        ? 'from-amber-500 to-yellow-500'
-                        : 'from-emerald-500 to-teal-500'
-                    }`}
-                  initial={{ width: 0 }}
-                  animate={{ width: `${Math.min(cpuPercent, 100)}%` }}
-                  transition={{ duration: 0.5, ease: 'easeOut' }}
-                />
-              </div>
-              <span className="text-[9px] font-medium text-white/60 tabular-nums">
-                {cpuPercent.toFixed(0)}%
-              </span>
-            </div>
-
-            {/* Divider */}
-            <div className="w-px h-4 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
-
-            {/* Mood emoji with animation */}
-            <motion.span
-              key={mood}
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 15 }}
-              className="text-base filter drop-shadow-md"
-              title={mood}
-            >
-              {getMoodEmoji(mood)}
-            </motion.span>
-          </div>
+          <motion.span
+            animate={{ scale: [1, 1.15, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="text-sm"
+          >
+            {stateConfig.icon}
+          </motion.span>
+          <span
+            className="text-xs font-medium tracking-wide"
+            style={{ color: stateConfig.color }}
+          >
+            {state.replace('_', ' ').toUpperCase()}
+          </span>
         </motion.div>
-      </AnimatePresence>
-    </div>
+
+        {/* CPU indicator */}
+        <div
+          className="flex items-center gap-2 px-3 py-1.5 rounded-full"
+          style={{
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+          }}
+        >
+          <span className="text-[10px] text-white/50">CPU</span>
+          <div className="w-10 h-1 bg-white/10 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full rounded-full"
+              style={{
+                background:
+                  cpuPercent > 80
+                    ? 'linear-gradient(90deg, #EF4444, #F97316)'
+                    : cpuPercent > 50
+                      ? 'linear-gradient(90deg, #F59E0B, #FBBF24)'
+                      : 'linear-gradient(90deg, #10B981, #34D399)',
+              }}
+              animate={{ width: `${Math.min(cpuPercent, 100)}%` }}
+              transition={{ duration: 0.5 }}
+            />
+          </div>
+          <span className="text-[10px] text-white/70 tabular-nums w-7">
+            {cpuPercent.toFixed(0)}%
+          </span>
+        </div>
+
+        {/* Mood emoji */}
+        <motion.div
+          key={mood}
+          initial={{ scale: 0, rotate: -180 }}
+          animate={{ scale: 1, rotate: 0 }}
+          className="text-xl filter drop-shadow-lg"
+        >
+          {getMoodEmoji(mood)}
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 };

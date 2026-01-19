@@ -9,7 +9,7 @@ import { useWindowPosition } from '@hooks/useWindowPosition';
 import { logger } from '@lib/logger';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
 import './App.css';
 import { useSoundEffects } from './hooks/useSoundEffects';
@@ -203,39 +203,74 @@ function App() {
       onMouseDown={startDragging}
       onDoubleClick={handleDoubleClick}
     >
-      {/* DevTools - top right corner */}
       <DevTools />
       <SettingsModal />
       <WelcomeModal />
 
-      {/* Centered content container */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-6">
-          {/* Speech bubble */}
+      {/* Ambient background glow */}
+      <AnimatePresence>
+        <motion.div
+          key={spriteMood}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.4 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 2 }}
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at 50% 50%, ${spriteMood === 'excited' ? 'rgba(6, 182, 212, 0.15)' :
+              spriteMood === 'angry' ? 'rgba(244, 63, 94, 0.15)' :
+                spriteMood === 'happy' ? 'rgba(99, 102, 241, 0.15)' :
+                  spriteMood === 'tired' ? 'rgba(245, 158, 11, 0.1)' :
+                    'rgba(99, 102, 241, 0.1)'
+              }, transparent 70%)`
+          }}
+        />
+      </AnimatePresence>
+
+      {/* Full-screen centered container */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+        }}
+      >
+        {/* Speech bubble - above sprite */}
+        <div className="mb-2 pointer-events-auto">
           <SpeechBubble />
+        </div>
 
-          {/* Sprite */}
-          <motion.div
-            className="relative"
-            whileHover={config?.interaction?.enable_hover_effects ? { scale: 1.08 } : {}}
-            transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-          >
-            <SpriteAnimator
-              frames={getAnimationFrames()}
-              fps={getCurrentFps()}
-              loop={shouldLoop()}
-              mood={spriteMood}
-              className="w-32 h-32"
-            />
+        {/* Sprite container with fixed size */}
+        <motion.div
+          className="relative pointer-events-auto"
+          style={{ width: 180, height: 180 }}
+          whileHover={config?.interaction?.enable_hover_effects ? { scale: 1.08 } : {}}
+          transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+        >
+          <SpriteAnimator
+            frames={getAnimationFrames()}
+            fps={getCurrentFps()}
+            loop={shouldLoop()}
+            mood={spriteMood}
+            className="w-full h-full"
+          />
 
-            {getAnimationFrames().length === 0 && (
-              <div className="w-32 h-32 glass-effect rounded-full animate-pulse flex items-center justify-center">
-                <span className="text-white/40 text-xs">No Sprites</span>
-              </div>
-            )}
-          </motion.div>
+          {getAnimationFrames().length === 0 && (
+            <div className="absolute inset-0 glass-effect rounded-full animate-pulse flex items-center justify-center">
+              <span className="text-white/40 text-xs">No Sprites</span>
+            </div>
+          )}
+        </motion.div>
 
-          {/* State overlay */}
+        {/* State overlay - below sprite */}
+        <div className="mt-3 pointer-events-auto">
           <StateOverlay />
         </div>
       </div>
