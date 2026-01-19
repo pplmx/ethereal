@@ -145,13 +145,14 @@ export const useSpriteStore = create<SpriteStore>()(
           const prefix = state;
 
           if (customSpritePath) {
+            const separator = customSpritePath.includes('\\') ? '\\' : '/';
             return Array.from({ length: config.frameCount }, (_, i) => {
-              const separator = customSpritePath.includes('\\') ? '\\' : '/';
               const path = `${customSpritePath}${separator}${prefix}-${i + 1}.svg`;
               return isTauri() ? convertFileSrc(path) : path;
             });
           }
 
+          // Try PNG first (new high-quality sprites), fallback to SVG
           return Array.from(
             { length: config.frameCount },
             (_, i) => `/sprites/${prefix}-${i + 1}.svg`,

@@ -6,6 +6,7 @@
   --spirit-indigo: #6366f1;
   --spirit-rose: #f43f5e;
   --spirit-amber: #f59e0b;
+  --spirit-emerald: #10b981;
 }
 
 body {
@@ -22,42 +23,128 @@ body {
   background-color: transparent !important;
 }
 
+/* Glassmorphism effect */
 .glass-effect {
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.8) 0%,
+    rgba(30, 41, 59, 0.7) 100%
+  );
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 8px 32px 0 rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
+/* Enhanced floating animation */
 @keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px);
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-8px) rotate(0.5deg);
   }
   50% {
-    transform: translateY(-12px);
+    transform: translateY(-14px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-8px) rotate(-0.5deg);
   }
 }
 
 .animate-spirit-float {
-  animation: float 6s ease-in-out infinite;
+  animation: float 5s ease-in-out infinite;
 }
 
+/* Glow pulse with color cycling */
 @keyframes glow-pulse {
-  0%,
-  100% {
-    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.4));
+  0%, 100% {
+    filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.5))
+            drop-shadow(0 0 30px rgba(139, 92, 246, 0.3));
   }
-  50% {
-    filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.8));
+  33% {
+    filter: drop-shadow(0 0 18px rgba(6, 182, 212, 0.6))
+            drop-shadow(0 0 40px rgba(99, 102, 241, 0.4));
+  }
+  66% {
+    filter: drop-shadow(0 0 14px rgba(139, 92, 246, 0.5))
+            drop-shadow(0 0 35px rgba(6, 182, 212, 0.3));
   }
 }
 
 .animate-glow-pulse {
-  animation: glow-pulse 4s ease-in-out infinite;
+  animation: glow-pulse 6s ease-in-out infinite;
 }
 
+/* Ethereal aura ring */
+@keyframes aura-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+}
+
+.aura-ring {
+  animation: aura-ring 3s ease-out infinite;
+}
+
+/* Particle float effect */
+@keyframes particle-float {
+  0%, 100% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-60px) translateX(20px) scale(0);
+    opacity: 0;
+  }
+}
+
+.particle {
+  animation: particle-float 4s ease-in-out infinite;
+}
+
+/* Shimmer effect for text */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.6) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Enhanced scrollbar */
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -65,6 +152,48 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.4), rgba(139, 92, 246, 0.4));
   border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.6), rgba(139, 92, 246, 0.6));
+}
+
+/* Mood-specific glows */
+.glow-happy {
+  filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.6));
+}
+
+.glow-excited {
+  filter: drop-shadow(0 0 25px rgba(6, 182, 212, 0.7))
+          drop-shadow(0 0 50px rgba(6, 182, 212, 0.4));
+}
+
+.glow-angry {
+  filter: drop-shadow(0 0 25px rgba(244, 63, 94, 0.7))
+          drop-shadow(0 0 50px rgba(244, 63, 94, 0.4));
+}
+
+.glow-sad {
+  filter: drop-shadow(0 0 15px rgba(96, 165, 250, 0.5));
+}
+
+.glow-tired {
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.4));
+}
+
+/* Breathing glow for thinking state */
+@keyframes breathe {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.animate-breathe {
+  animation: breathe 2s ease-in-out infinite;
 }

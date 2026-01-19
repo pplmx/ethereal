@@ -1,60 +1,116 @@
-
 <svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
-      <feGaussianBlur stdDeviation="15" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    <!-- 主光晕滤镜 -->
+    <filter id="glow-gaming-1" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="8" result="blur1" />
+      <feGaussianBlur stdDeviation="16" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
     </filter>
-    
-    <radialGradient id="coreGrad-gaming-1" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#F43F5E" stop-opacity="1" />
-      <stop offset="30%" stop-color="#F43F5E" stop-opacity="0.7" />
-      <stop offset="60%" stop-color="#F43F5E" stop-opacity="0.3" />
-      <stop offset="100%" stop-color="#F43F5E" stop-opacity="0" />
+
+    <!-- 外层光环渐变 -->
+    <radialGradient id="auraGrad-gaming-1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#C4B5FD" stop-opacity="0.6" />
+      <stop offset="40%" stop-color="#8B5CF6" stop-opacity="0.3" />
+      <stop offset="70%" stop-color="#6D28D9" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#6D28D9" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- 核心渐变 -->
+    <radialGradient id="coreGrad-gaming-1" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.9" />
+      <stop offset="30%" stop-color="#C4B5FD" />
+      <stop offset="60%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#6D28D9" />
+    </radialGradient>
+
+    <!-- 内核高光 -->
+    <radialGradient id="innerGlow-gaming-1" cx="35%" cy="35%" r="40%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#C4B5FD" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- 眼睛渐变 -->
+    <radialGradient id="eyeGrad-gaming-1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FCA5A5" />
+      <stop offset="60%" stop-color="#FCA5A5" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#FCA5A5" stop-opacity="0.6" />
     </radialGradient>
   </defs>
 
-  <!-- Spirit Aura -->
-  <circle cx="128" cy="128" r="95" fill="url(#coreGrad-gaming-1)" opacity="0.6" filter="url(#glow)">
-    <animate attributeName="r" values="85;105;85" dur="3s" repeatCount="indefinite" />
-    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="3s" repeatCount="indefinite" />
-  </circle>
+  <!-- 外层光环 - 呼吸动画 -->
+  <ellipse cx="128" cy="138" rx="90" ry="85" fill="url(#auraGrad-gaming-1)" filter="url(#glow-gaming-1)">
+    <animate attributeName="rx" values="85;95;85" dur="1.5s" repeatCount="indefinite" />
+    <animate attributeName="ry" values="80;90;80" dur="1.5s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0.6;0.9;0.6" dur="1.5s" repeatCount="indefinite" />
+  </ellipse>
 
-  <!-- Prominent Energy Ribbons -->
-  <path d="M128 40 Q200 128 128 216 Q56 128 128 40" fill="none" stroke="#F43F5E" stroke-width="4" stroke-opacity="0.8" filter="url(#glow)">
-    <animate attributeName="d" 
-             values="M128 40 Q200 128 128 216 Q56 128 128 40;
-                     M128 20 Q260 128 128 236 Q-4 128 128 20;
-                     M128 40 Q200 128 128 216 Q56 128 128 40" 
-             dur="4s" repeatCount="indefinite" />
-  </path>
-  
-  <path d="M128 60 Q180 128 128 196 Q76 128 128 60" fill="none" stroke="white" stroke-width="2" stroke-opacity="0.5" filter="url(#glow)">
-    <animate attributeName="d" 
-             values="M128 60 Q180 128 128 196 Q76 128 128 60;
-                     M128 40 Q220 128 128 216 Q36 128 128 40;
-                     M128 60 Q180 128 128 196 Q76 128 128 60" 
-             dur="6s" repeatCount="indefinite" />
+  <!-- 飘动的能量缎带 1 -->
+  <path fill="none" stroke="#8B5CF6" stroke-width="3" stroke-linecap="round" opacity="0.7" filter="url(#glow-gaming-1)">
+    <animate attributeName="d"
+      values="M128 180 Q100 128 128 76 Q156 40 140 20;
+              M128 180 Q90 128 128 76 Q166 50 155 25;
+              M128 180 Q100 128 128 76 Q156 40 140 20"
+      dur="2s" repeatCount="indefinite" />
   </path>
 
-  <!-- Intelligence Core -->
-  <g filter="url(#glow)">
-    <circle cx="128" cy="128" r="28" fill="white" opacity="0.2" />
-    <circle cx="128" cy="128" r="14" fill="white" opacity="1">
-      <animate attributeName="opacity" values="0.7;1;0.7" dur="1s" repeatCount="indefinite" />
-      <animate attributeName="r" values="12;16;12" dur="1s" repeatCount="indefinite" />
-    </circle>
+  <!-- 飘动的能量缎带 2 -->
+  <path fill="none" stroke="#C4B5FD" stroke-width="2" stroke-linecap="round" opacity="0.5" filter="url(#glow-gaming-1)">
+    <animate attributeName="d"
+      values="M128 180 Q160 128 128 76 Q96 50 110 25;
+              M128 180 Q170 128 128 76 Q86 40 95 20;
+              M128 180 Q160 128 128 76 Q96 50 110 25"
+      dur="2s" repeatCount="indefinite" />
+  </path>
+
+  <!-- 主体 - 半透明球体 -->
+  <ellipse cx="128" cy="138" rx="55" ry="52" fill="url(#coreGrad-gaming-1)" opacity="0.85" filter="url(#glow-gaming-1)">
+    <animate attributeName="ry" values="52;54;52" dur="1.5s" repeatCount="indefinite" />
+  </ellipse>
+
+  <!-- 内核高光 -->
+  <ellipse cx="115" cy="125" rx="35" ry="32" fill="url(#innerGlow-gaming-1)" />
+
+  <!-- 左眼 -->
+  <g filter="url(#glow-gaming-1)">
+    <ellipse cx="110" cy="140" rx="14" ry="12" fill="url(#eyeGrad-gaming-1)">
+      <animate attributeName="ry" values="12;14;12" dur="1s" repeatCount="indefinite" />
+    </ellipse>
+    <ellipse cx="108" cy="138" rx="4" ry="3" fill="white" opacity="0.9" />
   </g>
 
-  <!-- Floating Particles -->
-  <circle cx="100" cy="100" r="3" fill="white" opacity="0.9">
-    <animate attributeName="cy" values="100;70;100" dur="2s" repeatCount="indefinite" />
+  <!-- 右眼 -->
+  <g filter="url(#glow-gaming-1)">
+    <ellipse cx="146" cy="140" rx="14" ry="12" fill="url(#eyeGrad-gaming-1)">
+      <animate attributeName="ry" values="12;14;12" dur="1s" repeatCount="indefinite" />
+    </ellipse>
+    <ellipse cx="144" cy="138" rx="4" ry="3" fill="white" opacity="0.9" />
+  </g>
+
+  <!-- 漂浮粒子 -->
+  <circle cx="85" cy="100" r="3" fill="#C4B5FD" opacity="0.8" filter="url(#glow-gaming-1)">
+    <animate attributeName="cy" values="100;80;100" dur="3s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0.8;0.3;0.8" dur="3s" repeatCount="indefinite" />
   </circle>
-  <circle cx="156" cy="140" r="2" fill="white" opacity="0.7">
-    <animate attributeName="cy" values="140;170;140" dur="3s" repeatCount="indefinite" />
+  <circle cx="170" cy="90" r="2" fill="#8B5CF6" opacity="0.7" filter="url(#glow-gaming-1)">
+    <animate attributeName="cy" values="90;70;90" dur="4s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="155" cy="180" r="2.5" fill="#6D28D9" opacity="0.6" filter="url(#glow-gaming-1)">
+    <animate attributeName="cy" values="180;160;180" dur="3.5s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="95" cy="175" r="2" fill="#C4B5FD" opacity="0.5" filter="url(#glow-gaming-1)">
+    <animate attributeName="cy" values="175;155;175" dur="2.5s" repeatCount="indefinite" />
   </circle>
 
-  <text x="128" y="245" text-anchor="middle" fill="white" font-family="monospace" font-size="11" font-weight="bold" opacity="0.6">
-    ETHEREAL::GAMING
-  </text>
+  <!-- 星星闪烁 -->
+  <path d="M75 70 l2 5 l5 2 l-5 2 l-2 5 l-2 -5 l-5 -2 l5 -2 z" fill="white" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.2;0.8" dur="2s" repeatCount="indefinite" />
+  </path>
+  <path d="M185 85 l1.5 4 l4 1.5 l-4 1.5 l-1.5 4 l-1.5 -4 l-4 -1.5 l4 -1.5 z" fill="#C4B5FD" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2.5s" repeatCount="indefinite" />
+  </path>
 </svg>

@@ -87,11 +87,9 @@ function App() {
           addToHistory('user', content);
 
           try {
-            const system_context = `Current State: ${state}, Mood: ${mood}, CPU: ${
-              hw?.utilization
-            }%, Mem: ${hw?.memory_used}/${hw?.memory_total}MB, Net: ${
-              hw?.network_rx
-            }KB/s down, Bat: ${hw?.battery_level}% (${hw?.battery_state})`;
+            const system_context = `Current State: ${state}, Mood: ${mood}, CPU: ${hw?.utilization
+              }%, Mem: ${hw?.memory_used}/${hw?.memory_total}MB, Net: ${hw?.network_rx
+              }KB/s down, Bat: ${hw?.battery_level}% (${hw?.battery_state})`;
 
             const response = await invoke<string>('chat_with_ethereal', {
               message: content,
@@ -179,11 +177,9 @@ function App() {
       setVisible(true);
       addToHistory('user', message);
       try {
-        const system_context = `Current State: ${spriteState}, Mood: ${spriteMood}, CPU: ${
-          hardware?.utilization
-        }%, Mem: ${hardware?.memory_used}/${hardware?.memory_total}MB, Net: ${
-          hardware?.network_rx
-        }KB/s down, Bat: ${hardware?.battery_level}% (${hardware?.battery_state})`;
+        const system_context = `Current State: ${spriteState}, Mood: ${spriteMood}, CPU: ${hardware?.utilization
+          }%, Mem: ${hardware?.memory_used}/${hardware?.memory_total}MB, Net: ${hardware?.network_rx
+          }KB/s down, Bat: ${hardware?.battery_level}% (${hardware?.battery_state})`;
 
         const response = await invoke<string>('chat_with_ethereal', {
           message: message,
@@ -203,39 +199,43 @@ function App() {
 
   return (
     <main
-      className="w-screen h-screen overflow-hidden bg-transparent flex flex-col items-center justify-center select-none p-4"
+      className="w-screen h-screen overflow-hidden bg-transparent select-none relative"
       onMouseDown={startDragging}
       onDoubleClick={handleDoubleClick}
     >
+      {/* DevTools - top right corner */}
       <DevTools />
       <SettingsModal />
       <WelcomeModal />
 
-      <div className="relative flex flex-col items-center justify-center min-h-[300px] w-full">
-        <div className="absolute top-0 w-full flex justify-center h-24">
+      {/* Centered content container */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-6">
+          {/* Speech bubble */}
           <SpeechBubble />
-        </div>
 
-        <motion.div
-          className="relative mt-8"
-          whileHover={config?.interaction?.enable_hover_effects ? { scale: 1.05 } : {}}
-          transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-        >
-          <SpriteAnimator
-            frames={getAnimationFrames()}
-            fps={getCurrentFps()}
-            loop={shouldLoop()}
-            className="w-32 h-32 object-contain pointer-events-none drop-shadow-xl"
-          />
+          {/* Sprite */}
+          <motion.div
+            className="relative"
+            whileHover={config?.interaction?.enable_hover_effects ? { scale: 1.08 } : {}}
+            transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+          >
+            <SpriteAnimator
+              frames={getAnimationFrames()}
+              fps={getCurrentFps()}
+              loop={shouldLoop()}
+              mood={spriteMood}
+              className="w-32 h-32"
+            />
 
-          {getAnimationFrames().length === 0 && (
-            <div className="w-32 h-32 bg-white/20 backdrop-blur-md rounded-full animate-pulse border border-white/30 flex items-center justify-center text-white/50 text-xs">
-              No Sprites
-            </div>
-          )}
-        </motion.div>
+            {getAnimationFrames().length === 0 && (
+              <div className="w-32 h-32 glass-effect rounded-full animate-pulse flex items-center justify-center">
+                <span className="text-white/40 text-xs">No Sprites</span>
+              </div>
+            )}
+          </motion.div>
 
-        <div className="absolute bottom-0 w-full flex justify-center h-12">
+          {/* State overlay */}
           <StateOverlay />
         </div>
       </div>
