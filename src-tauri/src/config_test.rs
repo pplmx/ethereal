@@ -30,18 +30,21 @@ mod tests {
     #[test]
     fn test_config_deserialization() {
         let toml_input = r#"
+            [general]
+            first_launch = false
+
             [window]
             default_x = 500
             default_y = 500
             always_on_top = false
-            
+
             [hardware]
             monitor_source = "nvidia"
             polling_interval_ms = 1000
-            
+
             [hardware.thresholds]
             nvidia_temp = 75.0
-            
+
             [ai]
             model_name = "test-model"
             api_endpoint = "http://test:1234"

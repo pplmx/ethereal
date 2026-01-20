@@ -358,6 +358,11 @@ pub fn save_window_position(app: AppHandle, x: i32, y: i32) -> Result<(), String
 pub fn watch_config(app: AppHandle) {
     let app_handle = app.clone();
     std::thread::spawn(move || {
+        // Ensure config file exists before watching
+        if let Err(e) = AppConfig::load(&app_handle) {
+            tracing::warn!("Could not pre-load config for watching: {}", e);
+        }
+
         let (tx, rx) = std::sync::mpsc::channel();
         let mut debouncer = new_debouncer(Duration::from_secs(2), tx).unwrap();
 
@@ -369,6 +374,14 @@ pub fn watch_config(app: AppHandle) {
             }
         };
 
+        if !config_path.exists() {
+            tracing::warn!(
+                "Config file does not exist yet, skipping watch: {:?}",
+                config_path
+            );
+            return;
+        }
+
         if let Err(e) = debouncer
             .watcher()
             .watch(&config_path, RecursiveMode::NonRecursive)
@@ -376,6 +389,8 @@ pub fn watch_config(app: AppHandle) {
             tracing::error!("Failed to watch config file: {}", e);
             return;
         }
+
+        tracing::info!("Watching config file: {:?}", config_path);
 
         for result in rx {
             match result {
