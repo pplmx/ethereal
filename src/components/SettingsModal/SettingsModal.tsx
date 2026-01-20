@@ -147,10 +147,11 @@ export const SettingsModal = () => {
                   key={tab}
                   type="button"
                   onClick={() => setActiveTab(tab)}
-                  className={`py-3 px-4 text-[9px] font-bold tracking-[0.2em] uppercase whitespace-nowrap transition-all relative rounded-t-lg font-['Michroma'] ${activeTab === tab
+                  className={`py-3 px-4 text-[9px] font-bold tracking-[0.2em] uppercase whitespace-nowrap transition-all relative rounded-t-lg font-['Michroma'] ${
+                    activeTab === tab
                       ? 'text-white bg-white/5'
                       : 'text-white/30 hover:text-white/60 hover:bg-white/5'
-                    }`}
+                  }`}
                 >
                   {tab}
                   {activeTab === tab && (

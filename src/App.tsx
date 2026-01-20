@@ -93,9 +93,11 @@ function App() {
           addToHistory('user', content);
 
           try {
-            const system_context = `Current State: ${state}, Mood: ${mood}, CPU: ${hw?.utilization
-              }%, Mem: ${hw?.memory_used}/${hw?.memory_total}MB, Net: ${hw?.network_rx
-              }KB/s down, Bat: ${hw?.battery_level}% (${hw?.battery_state})`;
+            const system_context = `Current State: ${state}, Mood: ${mood}, CPU: ${
+              hw?.utilization
+            }%, Mem: ${hw?.memory_used}/${hw?.memory_total}MB, Net: ${
+              hw?.network_rx
+            }KB/s down, Bat: ${hw?.battery_level}% (${hw?.battery_state})`;
 
             const response = await invoke<string>('chat_with_ethereal', {
               message: content,
@@ -183,9 +185,11 @@ function App() {
       setVisible(true);
       addToHistory('user', message);
       try {
-        const system_context = `Current State: ${spriteState}, Mood: ${spriteMood}, CPU: ${hardware?.utilization
-          }%, Mem: ${hardware?.memory_used}/${hardware?.memory_total}MB, Net: ${hardware?.network_rx
-          }KB/s down, Bat: ${hardware?.battery_level}% (${hardware?.battery_state})`;
+        const system_context = `Current State: ${spriteState}, Mood: ${spriteMood}, CPU: ${
+          hardware?.utilization
+        }%, Mem: ${hardware?.memory_used}/${hardware?.memory_total}MB, Net: ${
+          hardware?.network_rx
+        }KB/s down, Bat: ${hardware?.battery_level}% (${hardware?.battery_state})`;
 
         const response = await invoke<string>('chat_with_ethereal', {
           message: message,
@@ -222,16 +226,16 @@ function App() {
         <motion.div
           style={{ x: smoothX, y: smoothY }}
           animate={{ rotate: [0, 1, -1, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
           className="absolute -inset-40 mesh-layer-1 opacity-40 shadow-inner"
         />
         <motion.div
           style={{
             x: useSpring(mouseX, { stiffness: 40, damping: 25 }),
-            y: useSpring(mouseY, { stiffness: 40, damping: 25 })
+            y: useSpring(mouseY, { stiffness: 40, damping: 25 }),
           }}
           animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute -inset-40 mesh-layer-2 opacity-30"
         />
         {/* Caustics - Ethereal Water Patterns */}
@@ -247,19 +251,19 @@ function App() {
           <motion.div
             key={`dust-${i}`}
             initial={{
-              x: Math.random() * 1000 % 800,
-              y: Math.random() * 800 % 600,
-              opacity: 0
+              x: (Math.random() * 1000) % 800,
+              y: (Math.random() * 800) % 600,
+              opacity: 0,
             }}
             animate={{
               y: [0, -100],
               opacity: [0, 0.4, 0],
-              scale: [0, 1, 0]
+              scale: [0, 1, 0],
             }}
             transition={{
               duration: 5 + Math.random() * 5,
               repeat: Infinity,
-              delay: Math.random() * 5
+              delay: Math.random() * 5,
             }}
             className="absolute w-1 h-1 rounded-full bg-indigo-300 blur-[1px]"
             style={{ left: `${(i * 7) % 100}%`, top: `${(i * 13) % 100}%` }}
@@ -269,8 +273,14 @@ function App() {
 
       {/* Dynamic Streaks */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="ethereal-streak" style={{ top: '25%', animationDelay: '0s', height: '1px' }} />
-        <div className="ethereal-streak" style={{ top: '65%', animationDelay: '5s', height: '1px' }} />
+        <div
+          className="ethereal-streak"
+          style={{ top: '25%', animationDelay: '0s', height: '1px' }}
+        />
+        <div
+          className="ethereal-streak"
+          style={{ top: '65%', animationDelay: '5s', height: '1px' }}
+        />
       </div>
 
       <DevTools />
@@ -287,16 +297,17 @@ function App() {
           transition={{ duration: 2 }}
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: `radial-gradient(circle at 50% 50%, ${spriteMood === 'excited'
-              ? 'rgba(6, 182, 212, 0.15)'
-              : spriteMood === 'angry'
-                ? 'rgba(244, 63, 94, 0.15)'
-                : spriteMood === 'happy'
-                  ? 'rgba(99, 102, 241, 0.15)'
-                  : spriteMood === 'tired'
-                    ? 'rgba(245, 158, 11, 0.1)'
-                    : 'rgba(99, 102, 241, 0.1)'
-              }, transparent 70%)`,
+            background: `radial-gradient(circle at 50% 50%, ${
+              spriteMood === 'excited'
+                ? 'rgba(6, 182, 212, 0.15)'
+                : spriteMood === 'angry'
+                  ? 'rgba(244, 63, 94, 0.15)'
+                  : spriteMood === 'happy'
+                    ? 'rgba(99, 102, 241, 0.15)'
+                    : spriteMood === 'tired'
+                      ? 'rgba(245, 158, 11, 0.1)'
+                      : 'rgba(99, 102, 241, 0.1)'
+            }, transparent 70%)`,
           }}
         />
       </AnimatePresence>
@@ -312,21 +323,35 @@ function App() {
         <motion.div
           className="relative pointer-events-auto"
           style={{ width: 180, height: 180 }}
-          whileHover={config?.interaction?.enable_hover_effects ? {
-            scale: 1.12,
-            rotate: [0, -1, 1, -1, 0],
-          } : {}}
+          whileHover={
+            config?.interaction?.enable_hover_effects
+              ? {
+                  scale: 1.12,
+                  rotate: [0, -1, 1, -1, 0],
+                }
+              : {}
+          }
           transition={{
             type: 'spring',
             stiffness: 400,
             damping: 12,
-            rotate: { duration: 0.5, repeat: Infinity, ease: "linear" }
+            rotate: { duration: 0.5, repeat: Infinity, ease: 'linear' },
           }}
         >
           {/* Orbital Rings / Aura */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[220px] h-[220px] pointer-events-none opacity-40">
-            <div className="orbital-ring w-full h-full" style={{ animationDuration: '15s', borderColor: 'rgba(99, 102, 241, 0.2)' }} />
-            <div className="orbital-ring w-[80%] h-[80%]" style={{ animationDuration: '10s', animationDirection: 'reverse', borderColor: 'rgba(6, 182, 212, 0.15)' }} />
+            <div
+              className="orbital-ring w-full h-full"
+              style={{ animationDuration: '15s', borderColor: 'rgba(99, 102, 241, 0.2)' }}
+            />
+            <div
+              className="orbital-ring w-[80%] h-[80%]"
+              style={{
+                animationDuration: '10s',
+                animationDirection: 'reverse',
+                borderColor: 'rgba(6, 182, 212, 0.15)',
+              }}
+            />
           </div>
 
           <SpriteAnimator
@@ -339,7 +364,9 @@ function App() {
 
           {getAnimationFrames().length === 0 && (
             <div className="absolute inset-0 glass-effect rounded-full animate-pulse flex items-center justify-center">
-              <span className="text-white/40 text-[10px] font-bold tracking-[0.2em] font-['Michroma'] text-bloom">INITIALIZING</span>
+              <span className="text-white/40 text-[10px] font-bold tracking-[0.2em] font-['Michroma'] text-bloom">
+                INITIALIZING
+              </span>
             </div>
           )}
         </motion.div>

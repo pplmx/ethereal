@@ -87,7 +87,7 @@ export const StateOverlay = () => {
             style={{
               color: stateConfig.color,
               textShadow: `0 0 15px ${stateConfig.color}80`,
-              backgroundImage: `linear-gradient(90deg, ${stateConfig.color}88 0%, #fff 50%, ${stateConfig.color}88 100%)`
+              backgroundImage: `linear-gradient(90deg, ${stateConfig.color}88 0%, #fff 50%, ${stateConfig.color}88 100%)`,
             }}
           >
             {state.replace('_', ' ').toUpperCase()}
@@ -126,7 +126,8 @@ export const StateOverlay = () => {
               </motion.div>
             </div>
             <span className="text-[10px] text-white/70 tabular-nums font-bold min-w-[24px]">
-              {cpuPercent.toFixed(0)}<span className="text-[7px] opacity-50 ml-0.5">%</span>
+              {cpuPercent.toFixed(0)}
+              <span className="text-[7px] opacity-50 ml-0.5">%</span>
             </span>
           </div>
 
