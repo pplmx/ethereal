@@ -57,110 +57,93 @@ export const StateOverlay = () => {
     <AnimatePresence mode="wait">
       <motion.div
         key={`${state}-${mood}`}
-        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+        initial={{ opacity: 0, y: 15, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className="flex items-center gap-2"
+        exit={{ opacity: 0, y: 15, scale: 0.95 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="flex items-center gap-1.5 p-1.5 rounded-2xl glass-premium whitespace-nowrap w-fit"
+        style={{
+          boxShadow: `0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px ${stateConfig.color}20`,
+          minWidth: 'max-content',
+        }}
       >
-        {/* State indicator pill */}
-        <motion.div
-          className="flex items-center gap-2 px-3 py-2 rounded-full glass-effect"
-          whileHover={{ scale: 1.05 }}
-          style={{
-            boxShadow: `0 0 25px ${stateConfig.color}30, 0 4px 20px rgba(0, 0, 0, 0.3)`,
-          }}
-        >
-          {/* Animated icon */}
+        {/* State indicator pill - Minimal version */}
+        <div className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl bg-white/5 border border-white/5">
           <motion.div
             animate={{
               scale: [1, 1.2, 1],
-              rotate: [0, 5, -5, 0],
+              opacity: [0.7, 1, 0.7],
             }}
             transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            className={`w-6 h-6 rounded-lg bg-gradient-to-br ${stateConfig.gradient} flex items-center justify-center text-xs shadow-lg`}
-          >
-            {stateConfig.icon}
-          </motion.div>
-
+            className={`w-2 h-2 rounded-full bg-gradient-to-br ${stateConfig.gradient} shadow-[0_0_10px_${stateConfig.color}]`}
+          />
           <span
-            className="text-[10px] font-bold tracking-widest"
-            style={{ color: stateConfig.color }}
+            className="text-[9px] font-black tracking-[0.2em] uppercase"
+            style={{ color: stateConfig.color, textShadow: `0 0 8px ${stateConfig.color}40` }}
           >
             {state.replace('_', ' ').toUpperCase()}
           </span>
-        </motion.div>
+        </div>
 
-        {/* Metrics container */}
-        <motion.div
-          className="flex items-center gap-3 px-3 py-2 rounded-full glass-effect"
-          style={{
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
-          }}
-        >
+        {/* Divider */}
+        <div className="w-px h-4 bg-white/10 mx-0.5" />
+
+        {/* Metrics Section */}
+        <div className="flex items-center gap-4 px-2">
           {/* CPU meter */}
           <div className="flex items-center gap-2">
-            <span className="text-[9px] text-white/40 font-medium">CPU</span>
-            <div className="w-12 h-1.5 bg-white/10 rounded-full overflow-hidden relative">
+            <span className="text-[8px] text-white/30 font-bold tracking-tighter">CPU</span>
+            <div className="w-16 h-1 bg-black/40 rounded-full overflow-hidden border border-white/5">
               <motion.div
-                className="absolute inset-0 rounded-full"
+                className="h-full rounded-full"
                 style={{
                   background:
                     cpuPercent > 80
-                      ? 'linear-gradient(90deg, #EF4444, #F97316)'
+                      ? 'linear-gradient(90deg, #F43F5E, #FB7185)'
                       : cpuPercent > 50
-                        ? 'linear-gradient(90deg, #F59E0B, #FBBF24)'
+                        ? 'linear-gradient(90deg, #F59E0B, #FCD34D)'
                         : 'linear-gradient(90deg, #10B981, #34D399)',
                   boxShadow:
-                    cpuPercent > 80
-                      ? '0 0 10px rgba(239, 68, 68, 0.5)'
-                      : cpuPercent > 50
-                        ? '0 0 10px rgba(245, 158, 11, 0.5)'
-                        : '0 0 10px rgba(16, 185, 129, 0.5)',
+                    cpuPercent > 50
+                      ? `0 0 10px ${cpuPercent > 80 ? '#F43F5E' : '#F59E0B'}60`
+                      : 'none',
                 }}
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.min(cpuPercent, 100)}%` }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
+                transition={{ duration: 1, ease: 'backOut' }}
               />
             </div>
-            <span className="text-[10px] text-white/70 tabular-nums font-medium w-6 text-right">
+            <span className="text-[10px] text-white/60 tabular-nums font-medium min-w-[24px]">
               {cpuPercent.toFixed(0)}%
             </span>
           </div>
 
-          {/* Divider */}
-          <div className="w-px h-3 bg-white/10" />
-
-          {/* Memory meter */}
+          {/* MEM meter */}
           <div className="flex items-center gap-2">
-            <span className="text-[9px] text-white/40 font-medium">MEM</span>
-            <div className="w-10 h-1.5 bg-white/10 rounded-full overflow-hidden relative">
+            <span className="text-[8px] text-white/30 font-bold tracking-tighter">MEM</span>
+            <div className="w-12 h-1 bg-black/40 rounded-full overflow-hidden border border-white/5">
               <motion.div
-                className="absolute inset-0 rounded-full"
+                className="h-full rounded-full bg-gradient-to-r from-violet-500 to-indigo-400"
                 style={{
-                  background: 'linear-gradient(90deg, #8B5CF6, #A78BFA)',
-                  boxShadow: '0 0 10px rgba(139, 92, 246, 0.5)',
+                  boxShadow: '0 0 8px rgba(139, 92, 246, 0.4)',
                 }}
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.min(memPercent, 100)}%` }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
+                transition={{ duration: 1, ease: 'backOut', delay: 0.2 }}
               />
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Mood emoji with glow */}
+        {/* Mood indicator */}
         <motion.div
           key={mood}
-          initial={{ scale: 0, rotate: -180 }}
+          initial={{ scale: 0, rotate: -45 }}
           animate={{ scale: 1, rotate: 0 }}
-          className="text-xl filter drop-shadow-lg"
-          whileHover={{ scale: 1.2, rotate: 15 }}
-          style={{
-            filter: `drop-shadow(0 0 8px ${stateConfig.color}60)`,
-          }}
+          whileHover={{ scale: 1.2, rotate: 10 }}
+          className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 border border-white/5 ml-1"
         >
-          {getMoodEmoji(mood)}
+          <span className="text-sm filter contrast-[1.1]">{getMoodEmoji(mood)}</span>
         </motion.div>
       </motion.div>
     </AnimatePresence>

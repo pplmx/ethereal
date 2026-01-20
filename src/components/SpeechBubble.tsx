@@ -78,9 +78,10 @@ export const SpeechBubble = () => {
         >
           {/* Main Bubble with enhanced glass effect */}
           <div
-            className="glass-premium rounded-2xl px-5 py-4 relative z-10 overflow-hidden"
+            className="glass-premium rounded-2xl px-6 py-4 relative z-10 overflow-hidden mesh-gradient"
             style={{
-              boxShadow: `0 12px 40px rgba(0, 0, 0, 0.5), 0 0 30px ${moodConfig.glow}`,
+              boxShadow: `0 12px 48px rgba(0, 0, 0, 0.6), 0 0 30px ${moodConfig.glow}`,
+              border: `1px solid ${moodConfig.color}40`,
             }}
           >
             {/* Animated top border */}

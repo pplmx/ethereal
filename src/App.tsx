@@ -203,10 +203,14 @@ function App() {
 
   return (
     <main
-      className="w-screen h-screen overflow-hidden bg-transparent select-none relative"
+      className="w-screen h-screen overflow-hidden bg-[#050508] select-none relative"
       onMouseDown={startDragging}
       onDoubleClick={handleDoubleClick}
     >
+      {/* Background Layers */}
+      <div className="absolute inset-0 mesh-gradient opacity-40 pointer-events-none" />
+      <div className="absolute inset-0 ambient-vignette pointer-events-none" />
+
       <DevTools />
       <SettingsModal />
       <WelcomeModal />
@@ -237,20 +241,7 @@ function App() {
       </AnimatePresence>
 
       {/* Full-screen centered container */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          pointerEvents: 'none',
-        }}
-      >
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
         {/* Speech bubble - above sprite */}
         <div className="mb-2 pointer-events-auto">
           <SpeechBubble />
@@ -268,7 +259,7 @@ function App() {
             fps={getCurrentFps()}
             loop={shouldLoop()}
             mood={spriteMood}
-            className="w-full h-full"
+            className="w-full h-full animate-spirit-float"
           />
 
           {getAnimationFrames().length === 0 && (
@@ -279,7 +270,7 @@ function App() {
         </motion.div>
 
         {/* State overlay - below sprite */}
-        <div className="mt-3 pointer-events-auto">
+        <div className="mt-8 pointer-events-auto min-w-max">
           <StateOverlay />
         </div>
       </div>
