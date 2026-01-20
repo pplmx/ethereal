@@ -87,7 +87,7 @@
       "markdownlint -f"
     ],
     "src-tauri/**/*.rs": [
-      "rustfmt --edition 2021"
+      "pnpm fmt:rs"
     ]
   },
   "config": {
