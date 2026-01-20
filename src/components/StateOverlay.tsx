@@ -61,7 +61,12 @@ export const StateOverlay = () => {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 15, scale: 0.95 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="flex items-center gap-1.5 p-1.5 rounded-2xl glass-premium whitespace-nowrap w-fit"
+        whileHover={{
+          y: -4,
+          scale: 1.02,
+          boxShadow: `0 15px 45px rgba(0, 0, 0, 0.5), 0 0 30px ${stateConfig.color}40`,
+        }}
+        className="flex items-center gap-1.5 p-1.5 rounded-2xl glass-premium whitespace-nowrap w-fit cursor-default"
         style={{
           boxShadow: `0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px ${stateConfig.color}20`,
           minWidth: 'max-content',

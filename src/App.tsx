@@ -291,8 +291,16 @@ function App() {
         <motion.div
           className="relative pointer-events-auto"
           style={{ width: 180, height: 180 }}
-          whileHover={config?.interaction?.enable_hover_effects ? { scale: 1.08 } : {}}
-          transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+          whileHover={config?.interaction?.enable_hover_effects ? {
+            scale: 1.12,
+            rotate: [0, -1, 1, -1, 0],
+          } : {}}
+          transition={{
+            type: 'spring',
+            stiffness: 400,
+            damping: 12,
+            rotate: { duration: 0.5, repeat: Infinity, ease: "linear" }
+          }}
         >
           {/* Orbital Rings / Aura */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[220px] h-[220px] pointer-events-none opacity-40">
