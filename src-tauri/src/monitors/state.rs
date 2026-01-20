@@ -23,6 +23,7 @@ pub enum Mood {
     Bored,
     Angry,
     Sad,
+    Sleeping,
 }
 
 pub fn is_within_sleep_time(start: &str, end: &str, now: NaiveTime) -> bool {
@@ -44,7 +45,7 @@ pub fn determine_mood(state: &SpriteState, usage: f32, config: &AppConfig) -> Mo
         SpriteState::HighLoad => Mood::Tired,
         SpriteState::Gaming => Mood::Excited,
         SpriteState::Working => Mood::Happy,
-        SpriteState::Sleeping => Mood::Bored,
+        SpriteState::Sleeping => Mood::Sleeping,
         SpriteState::LowBattery => Mood::Sad,
         _ => {
             if usage < config.mood.boredom_threshold_cpu {

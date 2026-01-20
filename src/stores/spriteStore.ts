@@ -9,7 +9,8 @@ export type SpriteState =
   | 'browsing'
   | 'overheating'
   | 'high_load'
-  | 'thinking';
+  | 'thinking'
+  | 'sleeping';
 
 export interface HardwareData {
   temperature: number;
@@ -27,7 +28,7 @@ export interface HardwareData {
   mood: string;
 }
 
-export type MoodState = 'happy' | 'excited' | 'tired' | 'bored' | 'angry';
+export type MoodState = 'happy' | 'excited' | 'tired' | 'bored' | 'angry' | 'sleeping';
 
 interface SpriteConfig {
   [key: string]: {
@@ -45,6 +46,7 @@ const DEFAULT_SPRITE_CONFIG: SpriteConfig = {
   overheating: { frameCount: 4, fps: 24, loop: true },
   high_load: { frameCount: 4, fps: 16, loop: true },
   thinking: { frameCount: 4, fps: 12, loop: true },
+  sleeping: { frameCount: 4, fps: 4, loop: true },
 };
 
 interface SpriteStore {
@@ -80,6 +82,8 @@ const mapBackendStateToFrontend = (backendState: string): SpriteState => {
       return 'gaming';
     case 'Browsing':
       return 'browsing';
+    case 'Sleeping':
+      return 'sleeping';
     default:
       return 'idle';
   }
@@ -95,6 +99,8 @@ const mapBackendMoodToFrontend = (backendMood: string): MoodState => {
       return 'bored';
     case 'Angry':
       return 'angry';
+    case 'Sleeping':
+      return 'sleeping';
     default:
       return 'happy';
   }
@@ -172,6 +178,8 @@ export const useSpriteStore = create<SpriteStore>()(
               return baseFps * 0.5;
             case 'angry':
               return baseFps * 2.0;
+            case 'sleeping':
+              return baseFps * 0.4;
             default:
               return baseFps;
           }

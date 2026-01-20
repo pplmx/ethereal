@@ -104,6 +104,12 @@ export const SpriteAnimator = memo(
             shadow: 'shadow-slate-500/30',
             intensity: 0.5,
           };
+        case 'sleeping':
+          return {
+            color: 'from-blue-900 via-indigo-900 to-slate-900',
+            shadow: 'shadow-indigo-900/50',
+            intensity: 0.3,
+          };
         default:
           return {
             color: 'from-indigo-500 via-violet-500 to-purple-500',
@@ -229,6 +235,7 @@ export const SpriteAnimator = memo(
                 mood === 'sad' && 'glow-sad',
                 mood === 'tired' && 'glow-tired',
                 mood === 'happy' && 'glow-happy',
+                mood === 'sleeping' && 'glow-sleeping',
                 className,
               )}
             />
