@@ -66,7 +66,7 @@ describe('Settings Form Interactions', () => {
   it('updates notification toggles correctly', async () => {
     render(<SettingsModal />);
 
-    await waitFor(() => expect(screen.getByText('Settings')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Spirit Configuration')).toBeInTheDocument());
 
     fireEvent.click(screen.getByText('notifications'));
 
@@ -76,7 +76,7 @@ describe('Settings Form Interactions', () => {
     fireEvent.click(overheatingCheckbox);
     expect(overheatingCheckbox).not.toBeChecked();
 
-    fireEvent.click(screen.getByText('Save Changes'));
+    fireEvent.click(screen.getByText('Sync Configuration'));
 
     await waitFor(() => {
       expect(invoke).toHaveBeenCalledWith(
@@ -94,14 +94,14 @@ describe('Settings Form Interactions', () => {
 
   it('updates sleep schedule correctly', async () => {
     render(<SettingsModal />);
-    await waitFor(() => expect(screen.getByText('Settings')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Spirit Configuration')).toBeInTheDocument());
 
     fireEvent.click(screen.getByText('sleep'));
 
     const startInput = await screen.findByLabelText(/Start Time/i);
     fireEvent.change(startInput, { target: { value: '22:00' } });
 
-    fireEvent.click(screen.getByText('Save Changes'));
+    fireEvent.click(screen.getByText('Sync Configuration'));
 
     await waitFor(() => {
       expect(invoke).toHaveBeenCalledWith(

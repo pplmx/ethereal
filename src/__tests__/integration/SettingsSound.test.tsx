@@ -88,7 +88,7 @@ describe('Settings Sound Integration', () => {
 
     // Wait for modal to render (it depends on config loading)
     await waitFor(() => {
-      expect(screen.getByText('Settings')).toBeInTheDocument();
+      expect(screen.getByText('Spirit Configuration')).toBeInTheDocument();
     });
 
     // Switch to Sound tab
@@ -107,7 +107,7 @@ describe('Settings Sound Integration', () => {
     fireEvent.change(range, { target: { value: '0.8' } });
 
     // Click save
-    fireEvent.click(screen.getByText('Save Changes'));
+    fireEvent.click(screen.getByText('Sync Configuration'));
 
     await waitFor(() => {
       expect(invoke).toHaveBeenCalledWith('update_config', {

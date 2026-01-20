@@ -1,4 +1,4 @@
-name: Desktop Ethereal CI/CD
+name: CI
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
     types: [created]
 
 jobs:
-  # Lint and format check
-  lint:
+  frontend:
+    name: Frontend Quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -21,17 +21,14 @@ jobs:
         with:
           node-version: 24
           cache: 'pnpm'
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-            components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@v2
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm lint:md
-      - run: pnpm lint:rs
+      - run: pnpm type-check
+      - run: pnpm test:run
 
-  # Test frontend
-  test:
+  backend:
+    name: Backend Quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -47,12 +44,14 @@ jobs:
             components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
       - run: pnpm install --frozen-lockfile
-      - run: pnpm test:run
+      - run: pnpm lint:rs
       - run: pnpm test:rust
 
-  # Build for all platforms
   build:
+    name: Build & Release
+    needs: [frontend, backend]
     strategy:
+      fail-fast: false
       matrix:
         platform: [windows-latest, macos-latest, ubuntu-latest]
     runs-on: ${{ matrix.platform }}
@@ -65,10 +64,9 @@ jobs:
         with:
           node-version: 24
           cache: 'pnpm'
-
       # Setup Rust
       - uses: dtolnay/rust-toolchain@stable
-      - uses: swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@v2
 
       # Install platform-specific dependencies
       - name: Install Linux dependencies
@@ -88,14 +86,14 @@ jobs:
           rustup target add x86_64-pc-windows-msvc
           echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-      # Install dependencies
-      - run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      # Build Tauri app
-      - run: pnpm tauri build
+      - name: Build Tauri app
+        run: pnpm tauri build
 
-      # Upload artifacts
-      - uses: actions/upload-artifact@v4
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: ethereal-${{ matrix.platform }}
           path: |
@@ -106,8 +104,8 @@ jobs:
             src-tauri/target/release/bundle/**/*.msi
             src-tauri/target/release/bundle/**/*.exe
 
-  # Release on tag
   release:
+    name: GitHub Release
     needs: build
     if: github.event_name == 'release'
     runs-on: ubuntu-latest

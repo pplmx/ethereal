@@ -22,7 +22,7 @@ describe('WelcomeModal', () => {
 
   it('renders when first_launch is true', () => {
     render(<WelcomeModal />);
-    expect(screen.getByText('Welcome, Summoner!')).toBeInTheDocument();
+    expect(screen.getAllByText('Awaken the Spirit').length).toBeGreaterThan(0);
   });
 
   it('does not render when first_launch is false', () => {
@@ -34,13 +34,14 @@ describe('WelcomeModal', () => {
     });
 
     render(<WelcomeModal />);
-    expect(screen.queryByText('Welcome, Summoner!')).toBeNull();
+    expect(screen.queryByText('Awaken the Spirit')).toBeNull();
   });
 
   it('calls updateConfig and closes on button click', async () => {
     render(<WelcomeModal />);
 
-    const button = screen.getByText('Awaken the Spirit');
+    // The button is the one with the uppercase class or we can find by role
+    const button = screen.getByRole('button', { name: /Awaken the Spirit/i });
     fireEvent.click(button);
 
     expect(updateConfigMock).toHaveBeenCalledWith(

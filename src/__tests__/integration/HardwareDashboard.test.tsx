@@ -1,6 +1,6 @@
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import App from '../../App';
 import { useSettingsStore } from '../../stores/settingsStore';
@@ -98,6 +98,10 @@ describe('Hardware Dashboard Integration', () => {
       expect(listen).toHaveBeenCalledWith('gpu-update', expect.any(Function));
     });
 
+    // Expand DevTools to see hardware data
+    const devButton = screen.getByText('DEV');
+    fireEvent.click(devButton);
+
     expect(hardwareCallback).toBeDefined();
 
     await act(async () => {
@@ -121,11 +125,9 @@ describe('Hardware Dashboard Integration', () => {
       }
     });
 
-    expect(screen.getByText(/CPU: 42.5%/)).toBeInTheDocument();
-    expect(screen.getByText(/Net ↓: 123 KB\/s/)).toBeInTheDocument();
-    expect(screen.getByText(/Net ↑: 45 KB\/s/)).toBeInTheDocument();
-    expect(screen.getByText(/Disk R: 10 KB\/s/)).toBeInTheDocument();
-    expect(screen.getByText(/Bat: 80%/)).toBeInTheDocument();
-    expect(screen.getByText(/State: Working/)).toBeInTheDocument();
+    expect(screen.getAllByText('CPU').length).toBeGreaterThan(0);
+    expect(screen.getByText('43%')).toBeInTheDocument(); // toFixed(0)
+    expect(screen.getByText(/↓123 ↑45/)).toBeInTheDocument();
+    expect(screen.getByText('Working')).toBeInTheDocument();
   });
 });

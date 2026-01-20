@@ -66,14 +66,14 @@ describe('Hotkey Settings Integration', () => {
   it('allows changing hotkeys in settings', async () => {
     render(<SettingsModal />);
 
-    await waitFor(() => expect(screen.getByText('Settings')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Spirit Configuration')).toBeInTheDocument());
 
     fireEvent.click(screen.getByText('hotkeys'));
 
     const input = await screen.findByDisplayValue('Ctrl+Shift+E');
     fireEvent.change(input, { target: { value: 'Ctrl+Alt+K' } });
 
-    fireEvent.click(screen.getByText('Save Changes'));
+    fireEvent.click(screen.getByText('Sync Configuration'));
 
     await waitFor(() => {
       expect(invoke).toHaveBeenCalledWith('update_config', {

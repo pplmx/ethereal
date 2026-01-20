@@ -32,7 +32,7 @@ We are committed to providing a welcoming and inclusive environment. All contrib
 
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-```
+```bash
 feat(ai): add conversation history
 fix(monitor): handle GPU disconnect
 docs: update README

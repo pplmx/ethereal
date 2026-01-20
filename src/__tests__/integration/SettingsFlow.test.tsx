@@ -111,7 +111,7 @@ describe('Settings Flow Integration', () => {
     fireEvent.change(input, { target: { value: 'gpt-4' } });
 
     // Click save
-    fireEvent.click(screen.getByText('Save Changes'));
+    fireEvent.click(screen.getByText('Sync Configuration'));
 
     await waitFor(() => {
       expect(invoke).toHaveBeenCalledWith('update_config', {

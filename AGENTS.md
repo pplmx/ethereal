@@ -13,7 +13,7 @@
 
 ## The Golden Loop
 
-```
+```text
 Implement → Verify → Commit → Repeat
 ```
 
@@ -39,19 +39,21 @@ pnpm build        # 6. Production build
 ### When to Commit
 
 ✅ **Commit immediately** after:
+
 - A single component/function is implemented AND verified
 - A bug is fixed AND a regression test is added
 - A refactor is complete with tests passing
 - Documentation is updated
 
 ❌ **Never**:
+
 - Commit failing code to "fix later"
 - Batch unrelated changes into one commit
 - Skip verification steps
 
 ### Commit Message Format
 
-```
+```text
 <type>(<scope>): <description>
 
 [optional body]
@@ -60,8 +62,9 @@ pnpm build        # 6. Production build
 ```
 
 **Types:**
+
 | Type | When |
-|------|------|
+| :--- | :--- |
 | `feat` | New feature |
 | `fix` | Bug fix |
 | `refactor` | Code restructure (no behavior change) |
@@ -92,7 +95,7 @@ wip
 - Use bullet points for multiple changes
 - Max 72 chars for subject, 100 chars for body lines
 
-```
+```text
 fix(monitor): handle GPU disconnect gracefully
 
 - Add fallback to CPU monitoring when GPU unavailable
@@ -152,9 +155,11 @@ When implementing AI responses:
 
 - **Tone**: Witty, concise (<30 words), slightly mysterious
 - **Context**: Include system state:
-  ```
+
+  ```text
   State: Working, Mood: Happy, CPU: 45%, Mem: 8/16GB
   ```
+
 - **Personality**: The spirit is aware of its environment
 
 ---
@@ -162,7 +167,7 @@ When implementing AI responses:
 ## Architecture Rules
 
 | Rule | Reason |
-|------|--------|
+| :--- | :--- |
 | Backend is source of truth | `AppConfig` (TOML) owns settings |
 | Use `requestAnimationFrame` | Never `setInterval` for animations |
 | Preload assets | Use `useResourceStore` to avoid popping |
@@ -173,7 +178,7 @@ When implementing AI responses:
 ## Troubleshooting
 
 | Error | Fix |
-|-------|-----|
+| :--- | :--- |
 | Test timed out | Wrap in `act()` or `vi.advanceTimersByTime` |
 | Audio not a constructor | Mock `window.Audio` in `beforeEach` |
 | Zustand persist fails | Mock `localStorage` in `setup.ts` |
@@ -185,7 +190,7 @@ When implementing AI responses:
 ## File Naming Conventions
 
 | Type | Pattern | Example |
-|------|---------|---------|
+| :--- | :--- | :--- |
 | Component | PascalCase | `SpriteAnimator.tsx` |
 | Hook | camelCase, `use` prefix | `useSpriteStore.ts` |
 | Store | camelCase, `Store` suffix | `spriteStore.ts` |

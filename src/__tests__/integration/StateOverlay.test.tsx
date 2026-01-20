@@ -14,7 +14,7 @@ describe('StateOverlay', () => {
   it('renders current state and mood emoji', () => {
     render(<StateOverlay />);
 
-    expect(screen.getByText('idle')).toBeInTheDocument();
+    expect(screen.getByText('IDLE')).toBeInTheDocument();
     expect(screen.getByText('😊')).toBeInTheDocument();
   });
 
@@ -29,7 +29,7 @@ describe('StateOverlay', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('overheating')).toBeInTheDocument();
+      expect(screen.getByText('OVERHEATING')).toBeInTheDocument();
       expect(screen.getByText('😡')).toBeInTheDocument();
     });
   });
@@ -44,7 +44,7 @@ describe('StateOverlay', () => {
 
     render(<StateOverlay />);
 
-    expect(screen.getByText('high load')).toBeInTheDocument();
+    expect(screen.getByText('HIGH LOAD')).toBeInTheDocument();
     expect(screen.getByText('😴')).toBeInTheDocument();
   });
 });
