@@ -8,22 +8,42 @@ export const SpeechBubble = () => {
   const { mood } = useSpriteStore();
   const [displayedText, setDisplayedText] = useState('');
 
-  const getMoodColor = (m: string) => {
+  const getMoodConfig = (m: string) => {
     switch (m) {
       case 'excited':
-        return 'rgba(6, 182, 212, 0.4)';
+        return {
+          color: 'rgba(6, 182, 212, 0.6)',
+          gradient: 'from-cyan-400 to-teal-400',
+          glow: 'rgba(6, 182, 212, 0.4)',
+        };
       case 'angry':
-        return 'rgba(244, 63, 94, 0.4)';
+        return {
+          color: 'rgba(244, 63, 94, 0.6)',
+          gradient: 'from-rose-400 to-red-400',
+          glow: 'rgba(244, 63, 94, 0.4)',
+        };
       case 'happy':
-        return 'rgba(99, 102, 241, 0.4)';
+        return {
+          color: 'rgba(99, 102, 241, 0.6)',
+          gradient: 'from-indigo-400 to-violet-400',
+          glow: 'rgba(99, 102, 241, 0.4)',
+        };
       case 'tired':
-        return 'rgba(245, 158, 11, 0.3)';
+        return {
+          color: 'rgba(245, 158, 11, 0.5)',
+          gradient: 'from-amber-400 to-orange-400',
+          glow: 'rgba(245, 158, 11, 0.3)',
+        };
       default:
-        return 'rgba(99, 102, 241, 0.3)';
+        return {
+          color: 'rgba(99, 102, 241, 0.5)',
+          gradient: 'from-indigo-400 to-purple-400',
+          glow: 'rgba(99, 102, 241, 0.3)',
+        };
     }
   };
 
-  const moodColor = getMoodColor(mood);
+  const moodConfig = getMoodConfig(mood);
 
   useEffect(() => {
     if (!message || isThinking) {
@@ -41,7 +61,7 @@ export const SpeechBubble = () => {
       } else {
         clearInterval(interval);
       }
-    }, 30);
+    }, 25);
 
     return () => clearInterval(interval);
   }, [message, isThinking]);
@@ -50,35 +70,66 @@ export const SpeechBubble = () => {
     <AnimatePresence>
       {(isVisible || isThinking) && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 10 }}
+          initial={{ opacity: 0, scale: 0.85, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 10 }}
-          className="relative max-w-[280px] pointer-events-none"
+          exit={{ opacity: 0, scale: 0.85, y: 15 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="relative max-w-[300px] pointer-events-none"
         >
-          {/* Main Bubble */}
+          {/* Main Bubble with enhanced glass effect */}
           <div
-            className="glass-effect rounded-2xl px-5 py-4 relative z-10 overflow-hidden"
+            className="glass-premium rounded-2xl px-5 py-4 relative z-10 overflow-hidden"
             style={{
-              boxShadow: `0 8px 32px rgba(0, 0, 0, 0.4), 0 0 15px ${moodColor}`,
+              boxShadow: `0 12px 40px rgba(0, 0, 0, 0.5), 0 0 30px ${moodConfig.glow}`,
             }}
           >
-            {/* Top accent line */}
-            <div
+            {/* Animated top border */}
+            <motion.div
+              animate={{
+                backgroundPosition: ['0% center', '200% center'],
+              }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
               className="absolute top-0 left-0 right-0 h-px"
               style={{
-                background: `linear-gradient(90deg, transparent, ${moodColor}, transparent)`,
+                background: `linear-gradient(90deg, transparent, ${moodConfig.color}, transparent)`,
+                backgroundSize: '200% 100%',
+              }}
+            />
+
+            {/* Corner accents */}
+            <div
+              className="absolute top-0 left-0 w-8 h-8 opacity-30"
+              style={{
+                background: `radial-gradient(circle at 0% 0%, ${moodConfig.color}, transparent 70%)`,
+              }}
+            />
+            <div
+              className="absolute top-0 right-0 w-8 h-8 opacity-30"
+              style={{
+                background: `radial-gradient(circle at 100% 0%, ${moodConfig.color}, transparent 70%)`,
               }}
             />
 
             {isThinking ? (
-              <div className="flex space-x-2 items-center justify-center py-2">
+              <div className="flex space-x-2.5 items-center justify-center py-3">
                 {[0, 1, 2].map((i) => (
                   <motion.div
                     key={i}
-                    animate={{ scale: [1, 1.3, 1], opacity: [0.4, 1, 0.4] }}
-                    transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.15 }}
-                    className="w-2 h-2 rounded-full"
-                    style={{ background: moodColor.replace('0.4', '1').replace('0.3', '1') }}
+                    animate={{
+                      scale: [1, 1.4, 1],
+                      opacity: [0.3, 1, 0.3],
+                      y: [0, -4, 0],
+                    }}
+                    transition={{
+                      duration: 0.8,
+                      repeat: Infinity,
+                      delay: i * 0.15,
+                      ease: 'easeInOut',
+                    }}
+                    className={`w-2.5 h-2.5 rounded-full bg-gradient-to-br ${moodConfig.gradient}`}
+                    style={{
+                      boxShadow: `0 0 10px ${moodConfig.glow}`,
+                    }}
                   />
                 ))}
               </div>
@@ -88,26 +139,41 @@ export const SpeechBubble = () => {
                 {displayedText.length < (message?.length || 0) && (
                   <motion.span
                     animate={{ opacity: [1, 0] }}
-                    transition={{ duration: 0.6, repeat: Infinity }}
-                    className="inline-block w-[1.5px] h-3 ml-0.5 align-middle"
-                    style={{ background: moodColor.replace('0.4', '1').replace('0.3', '1') }}
+                    transition={{ duration: 0.5, repeat: Infinity }}
+                    className={`inline-block w-0.5 h-3.5 ml-0.5 align-middle rounded-full bg-gradient-to-b ${moodConfig.gradient}`}
+                    style={{
+                      boxShadow: `0 0 8px ${moodConfig.glow}`,
+                    }}
                   />
                 )}
               </p>
             )}
           </div>
 
-          {/* Tail */}
+          {/* Enhanced tail with gradient */}
           <div className="flex justify-center -mt-px relative z-0">
             <div
-              className="w-4 h-3"
+              className="w-5 h-4 relative"
               style={{
                 clipPath: 'polygon(0 0, 100% 0, 50% 100%)',
-                background: 'rgba(15, 23, 42, 0.7)',
-                backdropFilter: 'blur(16px)',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
               }}
-            />
+            >
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    'linear-gradient(180deg, rgba(30, 35, 60, 0.95), rgba(20, 25, 45, 0.9))',
+                  backdropFilter: 'blur(20px)',
+                }}
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: `linear-gradient(180deg, ${moodConfig.glow}, transparent)`,
+                  opacity: 0.3,
+                }}
+              />
+            </div>
           </div>
         </motion.div>
       )}
