@@ -127,7 +127,7 @@ export const SettingsModal = () => {
                   transition={{ duration: 2, repeat: Infinity }}
                   className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-400 to-violet-400 shadow-[0_0_12px_rgba(129,140,248,0.8)]"
                 />
-                <h2 className="text-xs font-bold tracking-[0.25em] uppercase bg-gradient-to-r from-white/90 to-white/60 bg-clip-text text-transparent">
+                <h2 className="text-[10px] font-bold tracking-[0.4em] uppercase bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent font-['Michroma']">
                   Spirit Configuration
                 </h2>
               </div>
@@ -147,11 +147,10 @@ export const SettingsModal = () => {
                   key={tab}
                   type="button"
                   onClick={() => setActiveTab(tab)}
-                  className={`py-3 px-4 text-[10px] font-bold tracking-widest uppercase whitespace-nowrap transition-all relative rounded-t-lg ${
-                    activeTab === tab
+                  className={`py-3 px-4 text-[9px] font-bold tracking-[0.2em] uppercase whitespace-nowrap transition-all relative rounded-t-lg font-['Michroma'] ${activeTab === tab
                       ? 'text-white bg-white/5'
                       : 'text-white/30 hover:text-white/60 hover:bg-white/5'
-                  }`}
+                    }`}
                 >
                   {tab}
                   {activeTab === tab && (

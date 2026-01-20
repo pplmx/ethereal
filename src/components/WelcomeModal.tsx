@@ -116,7 +116,7 @@ export const WelcomeModal = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-2xl font-bold mb-2 tracking-wide bg-gradient-to-r from-indigo-300 via-violet-300 to-purple-300 bg-clip-text text-transparent"
+            className="text-2xl font-bold mb-2 tracking-[0.1em] bg-gradient-to-r from-indigo-300 via-violet-100 to-purple-300 bg-clip-text text-transparent font-['Michroma']"
           >
             Awaken the Spirit
           </motion.h2>
@@ -124,7 +124,7 @@ export const WelcomeModal = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-white/50 mb-8 leading-relaxed text-sm"
+            className="text-white/60 mb-8 leading-relaxed text-sm font-light tracking-wide"
           >
             I am your <span className="text-white font-medium">Digital Soul</span>. I'll flow with
             your system's rhythm and reside on your desktop.
@@ -147,7 +147,7 @@ export const WelcomeModal = () => {
                   {item.icon}
                 </motion.div>
                 <div className="text-left">
-                  <p className="text-sm font-semibold text-white/90 group-hover:text-white transition-colors">
+                  <p className="text-[11px] font-bold text-white/90 group-hover:text-white transition-colors tracking-widest uppercase font-['Michroma']">
                     {item.title}
                   </p>
                   <p className="text-xs text-white/40 leading-relaxed mt-0.5 group-hover:text-white/50 transition-colors">

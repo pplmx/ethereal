@@ -9,7 +9,7 @@ import { useWindowPosition } from '@hooks/useWindowPosition';
 import { logger } from '@lib/logger';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useMotionValue, useSpring } from 'framer-motion';
 import { useEffect } from 'react';
 import './App.css';
 import { useSoundEffects } from './hooks/useSoundEffects';
@@ -36,6 +36,12 @@ function App() {
     setCustomSpritePath,
   } = useSpriteStore();
   const { syncWithConfig } = useSoundStore();
+
+  // Parallax motion values
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const smoothX = useSpring(mouseX, { stiffness: 50, damping: 20 });
+  const smoothY = useSpring(mouseY, { stiffness: 50, damping: 20 });
 
   useEffect(() => {
     logger.info('App mounted');
@@ -197,23 +203,36 @@ function App() {
     }
   };
 
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const { clientX, clientY } = e;
+    const { innerWidth, innerHeight } = window;
+    mouseX.set((clientX / innerWidth - 0.5) * 40);
+    mouseY.set((clientY / innerHeight - 0.5) * 40);
+  };
+
   return (
     <main
       className="w-screen h-screen overflow-hidden bg-[#050508] select-none relative"
       onMouseDown={startDragging}
       onDoubleClick={handleDoubleClick}
+      onMouseMove={handleMouseMove}
     >
-      {/* Background Layers - Parallax Deep Space */}
+      {/* Background Layers - Parallax Deep Space with Mouse Follow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          animate={{ x: [-20, 20, -20], y: [-15, 15, -15] }}
+          style={{ x: smoothX, y: smoothY }}
+          animate={{ rotate: [0, 1, -1, 0] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -inset-20 mesh-layer-1 opacity-40 shadow-inner"
+          className="absolute -inset-40 mesh-layer-1 opacity-40 shadow-inner"
         />
         <motion.div
-          animate={{ x: [20, -20, 20], y: [15, -15, 15] }}
-          transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
-          className="absolute -inset-20 mesh-layer-2 opacity-30"
+          style={{
+            x: useSpring(mouseX, { stiffness: 40, damping: 25 }),
+            y: useSpring(mouseY, { stiffness: 40, damping: 25 })
+          }}
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -inset-40 mesh-layer-2 opacity-30"
         />
       </div>
 
