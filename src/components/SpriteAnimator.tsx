@@ -156,58 +156,52 @@ export const SpriteAnimator = memo(
         />
 
         {/* Floating particles */}
-        {mood === 'excited' && (
-          <>
-            {[...Array(6)].map((_, i) => (
-              <motion.div
-                key={`particle-${i}`}
-                className="absolute w-1.5 h-1.5 bg-cyan-300 rounded-full"
-                style={{
-                  left: `${30 + Math.random() * 40}%`,
-                  top: `${60 + Math.random() * 20}%`,
-                }}
-                animate={{
-                  y: [-20, -80],
-                  x: [0, (Math.random() - 0.5) * 40],
-                  opacity: [0, 1, 0],
-                  scale: [0, 1, 0],
-                }}
-                transition={{
-                  duration: 2 + Math.random() * 2,
-                  repeat: Infinity,
-                  delay: i * 0.3,
-                  ease: 'easeOut',
-                }}
-              />
-            ))}
-          </>
-        )}
+        {mood === 'excited' &&
+          [...Array(6)].map((_, i) => (
+            <motion.div
+              key={`particle-${i}`}
+              className="absolute w-1.5 h-1.5 bg-cyan-300 rounded-full"
+              style={{
+                left: `${30 + Math.random() * 40}%`,
+                top: `${60 + Math.random() * 20}%`,
+              }}
+              animate={{
+                y: [-20, -80],
+                x: [0, (Math.random() - 0.5) * 40],
+                opacity: [0, 1, 0],
+                scale: [0, 1, 0],
+              }}
+              transition={{
+                duration: 2 + Math.random() * 2,
+                repeat: Infinity,
+                delay: i * 0.3,
+                ease: 'easeOut',
+              }}
+            />
+          ))}
 
         {/* Spark effects for angry mood */}
-        {mood === 'angry' && (
-          <>
-            {[...Array(4)].map((_, i) => (
-              <motion.div
-                key={`spark-${i}`}
-                className="absolute w-1 h-3 bg-gradient-to-t from-orange-500 to-yellow-300 rounded-full"
-                style={{
-                  left: `${20 + i * 20}%`,
-                  top: '20%',
-                }}
-                animate={{
-                  y: [-10, -30, -10],
-                  opacity: [0, 1, 0],
-                  scaleY: [1, 1.5, 1],
-                }}
-                transition={{
-                  duration: 0.8,
-                  repeat: Infinity,
-                  delay: i * 0.2,
-                }}
-              />
-            ))}
-          </>
-        )}
+        {mood === 'angry' &&
+          [...Array(4)].map((_, i) => (
+            <motion.div
+              key={`spark-${i}`}
+              className="absolute w-1 h-3 bg-gradient-to-t from-orange-500 to-yellow-300 rounded-full"
+              style={{
+                left: `${20 + i * 20}%`,
+                top: '20%',
+              }}
+              animate={{
+                y: [-10, -30, -10],
+                opacity: [0, 1, 0],
+                scaleY: [1, 1.5, 1],
+              }}
+              transition={{
+                duration: 0.8,
+                repeat: Infinity,
+                delay: i * 0.2,
+              }}
+            />
+          ))}
 
         {/* Sprite with floating animation */}
         <div className="relative z-10 animate-spirit-float w-full h-full flex items-center justify-center">
