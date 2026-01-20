@@ -116,7 +116,7 @@ export const WelcomeModal = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-2xl font-bold mb-2 tracking-[0.1em] bg-gradient-to-r from-indigo-300 via-violet-100 to-purple-300 bg-clip-text text-transparent font-['Michroma']"
+            className="text-2xl font-bold mb-2 tracking-[0.1em] bg-gradient-to-r from-indigo-300 via-violet-100 to-purple-300 bg-clip-text text-transparent font-['Michroma'] text-bloom"
           >
             Awaken the Spirit
           </motion.h2>

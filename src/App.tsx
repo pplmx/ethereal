@@ -234,6 +234,8 @@ function App() {
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
           className="absolute -inset-40 mesh-layer-2 opacity-30"
         />
+        {/* Caustics - Ethereal Water Patterns */}
+        <div className="absolute inset-0 caustics-layer" />
       </div>
 
       <div className="absolute inset-0 ambient-vignette pointer-events-none" />
@@ -337,7 +339,7 @@ function App() {
 
           {getAnimationFrames().length === 0 && (
             <div className="absolute inset-0 glass-effect rounded-full animate-pulse flex items-center justify-center">
-              <span className="text-white/40 text-[10px] font-bold tracking-[0.2em] font-['Michroma']">INITIALIZING</span>
+              <span className="text-white/40 text-[10px] font-bold tracking-[0.2em] font-['Michroma'] text-bloom">INITIALIZING</span>
             </div>
           )}
         </motion.div>

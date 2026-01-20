@@ -61,15 +61,15 @@ body {
   }
 
   20% {
-    opacity: 0.1;
+    opacity: 0.15;
   }
 
   50% {
-    opacity: 0.2;
+    opacity: 0.25;
   }
 
   80% {
-    opacity: 0.1;
+    opacity: 0.15;
   }
 
   100% {
@@ -81,15 +81,20 @@ body {
 
 .glass-premium {
   position: relative;
-  background: linear-gradient(145deg, rgba(20, 25, 45, 0.98) 0%, rgba(30, 35, 60, 0.92) 100%);
+  background: linear-gradient(145deg, rgba(20, 25, 45, 0.98) 0%, rgba(30, 35, 60, 0.94) 100%);
   backdrop-filter: blur(48px) saturate(220%);
   -webkit-backdrop-filter: blur(48px) saturate(220%);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow:
-    0 32px 64px -16px rgba(0, 0, 0, 0.7),
+    0 32px 64px -16px rgba(0, 0, 0, 0.8),
     0 0 0 1px rgba(255, 255, 255, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    0 0 100px -20px rgba(99, 102, 241, 0.1);
+    inset 0 1px 2px rgba(255, 255, 255, 0.2),
+    /* Top rim */
+    inset 0 -1px 4px rgba(0, 0, 0, 0.4),
+    /* Bottom thickness */
+    inset 4px 4px 15px rgba(255, 255, 255, 0.05),
+    /* Inner refraction left */
+    0 0 100px -20px rgba(99, 102, 241, 0.15);
   overflow: hidden;
 }
 
@@ -415,27 +420,42 @@ body {
   filter: blur(1.5px) drop-shadow(0 0 5px rgba(255, 255, 255, 0.4));
 }
 
-/* Shimmer effect for text */
-@keyframes shimmer {
-  0% {
-    background-position: -200% center;
+/* Typography Bloom - High-end Aura for Headers */
+@keyframes bloom-breath {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+    opacity: 0.95;
   }
 
-  100% {
-    background-position: 200% center;
+  50% {
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7));
+    opacity: 1;
   }
 }
 
-.text-shimmer {
-  background: linear-gradient(90deg,
-      rgba(255, 255, 255, 0.6) 0%,
-      rgba(255, 255, 255, 1) 50%,
-      rgba(255, 255, 255, 0.6) 100%);
-  background-size: 200% auto;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer 3s linear infinite;
+.text-bloom {
+  animation: bloom-breath 4s ease-in-out infinite;
+}
+
+/* Water Caustics - Ethereal liquid patterns */
+@keyframes caustics {
+  0% {
+    background-position: 0% 0%;
+  }
+
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+.caustics-layer {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='causticsFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.015' numOctaves='3' stitchTiles='stitch'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='50'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='rgba(99,102,241,0.05)' filter='url(%23causticsFilter)'/%3E%3C/svg%3E");
+  background-size: 400% 400%;
+  animation: caustics 30s linear infinite;
+  mix-blend-mode: screen;
+  opacity: 0.15;
 }
 
 /* Enhanced scrollbar */

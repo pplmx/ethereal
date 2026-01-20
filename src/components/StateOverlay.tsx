@@ -83,7 +83,7 @@ export const StateOverlay = () => {
             className={`w-2 h-2 rounded-full bg-gradient-to-br ${stateConfig.gradient} shadow-[0_0_10px_${stateConfig.color}]`}
           />
           <span
-            className="text-[8px] font-bold tracking-[0.3em] uppercase text-shimmer font-['Michroma']"
+            className="text-[8px] font-bold tracking-[0.3em] uppercase text-shimmer font-['Michroma'] text-bloom"
             style={{
               color: stateConfig.color,
               textShadow: `0 0 15px ${stateConfig.color}80`,
