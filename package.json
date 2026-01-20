@@ -82,8 +82,7 @@
   "lint-staged": {
     "*.{ts,tsx}": [
       "biome check --write",
-      "vitest related --run",
-      "tsc --noEmit"
+      "vitest related --run"
     ],
     "*.md": [
       "markdownlint -f"

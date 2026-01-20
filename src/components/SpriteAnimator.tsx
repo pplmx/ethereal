@@ -209,6 +209,34 @@ export const SpriteAnimator = memo(
             />
           ))}
 
+        {/* Floating Zzz for sleeping mood */}
+        {mood === 'sleeping' &&
+          [...Array(3)].map((_, i) => (
+            <motion.div
+              key={`zzz-${i}`}
+              className="absolute text-indigo-300/60 font-bold select-none pointer-events-none"
+              style={{
+                right: `${15 + i * 12}%`,
+                top: `${25 + i * 8}%`,
+                fontSize: `${14 + i * 2}px`,
+              }}
+              animate={{
+                y: [-10, -40],
+                x: [0, 15],
+                opacity: [0, 0.8, 0],
+                scale: [0.6, 1, 0.6],
+              }}
+              transition={{
+                duration: 3 + i * 0.5,
+                repeat: Infinity,
+                delay: i * 1,
+                ease: 'easeOut',
+              }}
+            >
+              Z
+            </motion.div>
+          ))}
+
         {/* Sprite with floating animation */}
         <div className="relative z-10 animate-spirit-float w-full h-full flex items-center justify-center">
           {!ready ? (
