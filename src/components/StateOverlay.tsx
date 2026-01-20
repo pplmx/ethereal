@@ -78,8 +78,12 @@ export const StateOverlay = () => {
             className={`w-2 h-2 rounded-full bg-gradient-to-br ${stateConfig.gradient} shadow-[0_0_10px_${stateConfig.color}]`}
           />
           <span
-            className="text-[9px] font-black tracking-[0.2em] uppercase"
-            style={{ color: stateConfig.color, textShadow: `0 0 8px ${stateConfig.color}40` }}
+            className="text-[9px] font-black tracking-[0.25em] uppercase text-shimmer"
+            style={{
+              color: stateConfig.color,
+              textShadow: `0 0 12px ${stateConfig.color}60`,
+              backgroundImage: `linear-gradient(90deg, ${stateConfig.color}88 0%, #fff 50%, ${stateConfig.color}88 100%)`
+            }}
           >
             {state.replace('_', ' ').toUpperCase()}
           </span>
@@ -95,7 +99,7 @@ export const StateOverlay = () => {
             <span className="text-[8px] text-white/30 font-bold tracking-tighter">CPU</span>
             <div className="w-16 h-1 bg-black/40 rounded-full overflow-hidden border border-white/5">
               <motion.div
-                className="h-full rounded-full"
+                className="h-full rounded-full relative"
                 style={{
                   background:
                     cpuPercent > 80
@@ -105,13 +109,16 @@ export const StateOverlay = () => {
                         : 'linear-gradient(90deg, #10B981, #34D399)',
                   boxShadow:
                     cpuPercent > 50
-                      ? `0 0 10px ${cpuPercent > 80 ? '#F43F5E' : '#F59E0B'}60`
-                      : 'none',
+                      ? `0 0 12px ${cpuPercent > 80 ? '#F43F5E' : '#F59E0B'}80`
+                      : '0 0 8px rgba(16, 185, 129, 0.3)',
                 }}
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.min(cpuPercent, 100)}%` }}
                 transition={{ duration: 1, ease: 'backOut' }}
-              />
+              >
+                {/* Inner highlight (liquid look) */}
+                <div className="absolute top-0 left-0 right-0 h-[40%] bg-white/20 pointer-events-none rounded-full blur-[1px]" />
+              </motion.div>
             </div>
             <span className="text-[10px] text-white/60 tabular-nums font-medium min-w-[24px]">
               {cpuPercent.toFixed(0)}%
@@ -123,14 +130,17 @@ export const StateOverlay = () => {
             <span className="text-[8px] text-white/30 font-bold tracking-tighter">MEM</span>
             <div className="w-12 h-1 bg-black/40 rounded-full overflow-hidden border border-white/5">
               <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-violet-500 to-indigo-400"
+                className="h-full rounded-full bg-gradient-to-r from-violet-500 to-indigo-400 relative"
                 style={{
-                  boxShadow: '0 0 8px rgba(139, 92, 246, 0.4)',
+                  boxShadow: '0 0 10px rgba(139, 92, 246, 0.5)',
                 }}
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.min(memPercent, 100)}%` }}
                 transition={{ duration: 1, ease: 'backOut', delay: 0.2 }}
-              />
+              >
+                {/* Inner highlight */}
+                <div className="absolute top-0 left-0 right-0 h-[40%] bg-white/20 pointer-events-none rounded-full blur-[1px]" />
+              </motion.div>
             </div>
           </div>
         </div>

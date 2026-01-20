@@ -87,11 +87,9 @@ function App() {
           addToHistory('user', content);
 
           try {
-            const system_context = `Current State: ${state}, Mood: ${mood}, CPU: ${
-              hw?.utilization
-            }%, Mem: ${hw?.memory_used}/${hw?.memory_total}MB, Net: ${
-              hw?.network_rx
-            }KB/s down, Bat: ${hw?.battery_level}% (${hw?.battery_state})`;
+            const system_context = `Current State: ${state}, Mood: ${mood}, CPU: ${hw?.utilization
+              }%, Mem: ${hw?.memory_used}/${hw?.memory_total}MB, Net: ${hw?.network_rx
+              }KB/s down, Bat: ${hw?.battery_level}% (${hw?.battery_state})`;
 
             const response = await invoke<string>('chat_with_ethereal', {
               message: content,
@@ -179,11 +177,9 @@ function App() {
       setVisible(true);
       addToHistory('user', message);
       try {
-        const system_context = `Current State: ${spriteState}, Mood: ${spriteMood}, CPU: ${
-          hardware?.utilization
-        }%, Mem: ${hardware?.memory_used}/${hardware?.memory_total}MB, Net: ${
-          hardware?.network_rx
-        }KB/s down, Bat: ${hardware?.battery_level}% (${hardware?.battery_state})`;
+        const system_context = `Current State: ${spriteState}, Mood: ${spriteMood}, CPU: ${hardware?.utilization
+          }%, Mem: ${hardware?.memory_used}/${hardware?.memory_total}MB, Net: ${hardware?.network_rx
+          }KB/s down, Bat: ${hardware?.battery_level}% (${hardware?.battery_state})`;
 
         const response = await invoke<string>('chat_with_ethereal', {
           message: message,
@@ -210,6 +206,13 @@ function App() {
       {/* Background Layers */}
       <div className="absolute inset-0 mesh-gradient opacity-40 pointer-events-none" />
       <div className="absolute inset-0 ambient-vignette pointer-events-none" />
+      <div className="absolute inset-0 scanlines opacity-[0.03] pointer-events-none" />
+
+      {/* Dynamic Streaks */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="ethereal-streak" style={{ top: '20%', animationDelay: '0s' }} />
+        <div className="ethereal-streak" style={{ top: '60%', animationDelay: '4s' }} />
+      </div>
 
       <DevTools />
       <SettingsModal />
@@ -225,17 +228,16 @@ function App() {
           transition={{ duration: 2 }}
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: `radial-gradient(circle at 50% 50%, ${
-              spriteMood === 'excited'
-                ? 'rgba(6, 182, 212, 0.15)'
-                : spriteMood === 'angry'
-                  ? 'rgba(244, 63, 94, 0.15)'
-                  : spriteMood === 'happy'
-                    ? 'rgba(99, 102, 241, 0.15)'
-                    : spriteMood === 'tired'
-                      ? 'rgba(245, 158, 11, 0.1)'
-                      : 'rgba(99, 102, 241, 0.1)'
-            }, transparent 70%)`,
+            background: `radial-gradient(circle at 50% 50%, ${spriteMood === 'excited'
+              ? 'rgba(6, 182, 212, 0.15)'
+              : spriteMood === 'angry'
+                ? 'rgba(244, 63, 94, 0.15)'
+                : spriteMood === 'happy'
+                  ? 'rgba(99, 102, 241, 0.15)'
+                  : spriteMood === 'tired'
+                    ? 'rgba(245, 158, 11, 0.1)'
+                    : 'rgba(99, 102, 241, 0.1)'
+              }, transparent 70%)`,
           }}
         />
       </AnimatePresence>
@@ -254,6 +256,12 @@ function App() {
           whileHover={config?.interaction?.enable_hover_effects ? { scale: 1.08 } : {}}
           transition={{ type: 'spring', stiffness: 300, damping: 15 }}
         >
+          {/* Orbital Rings / Aura */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[220px] h-[220px] pointer-events-none opacity-40">
+            <div className="orbital-ring w-full h-full" style={{ animationDuration: '15s', borderColor: 'rgba(99, 102, 241, 0.2)' }} />
+            <div className="orbital-ring w-[80%] h-[80%]" style={{ animationDuration: '10s', animationDirection: 'reverse', borderColor: 'rgba(6, 182, 212, 0.15)' }} />
+          </div>
+
           <SpriteAnimator
             frames={getAnimationFrames()}
             fps={getCurrentFps()}
