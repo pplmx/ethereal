@@ -22,11 +22,11 @@ A task is NOT complete until all verification passes.
 ### Verification Commands
 
 ```bash
-pnpm type-check   # 1. TypeScript errors
+pnpm typecheck    # 1. TypeScript errors
 pnpm lint:fix     # 2. Biome (format + lint)
 pnpm lint:rs      # 3. Rust Clippy
 pnpm test:run     # 4. Frontend tests
-pnpm test:rust    # 5. Backend tests
+pnpm test:rs      # 5. Backend tests
 pnpm build        # 6. Production build
 ```
 

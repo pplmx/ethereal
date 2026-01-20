@@ -17,17 +17,20 @@
     "tauri:build": "tauri build",
     "generate:assets": "tsx scripts/generate-assets.ts",
     "test": "vitest",
-    "test:e2e": "playwright test",
-    "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "test:rust": "cd src-tauri && cargo test",
+    "test:ui": "vitest --ui",
+    "test:e2e": "playwright test",
+    "test:rs": "cd src-tauri && cargo test",
     "coverage": "vitest run --coverage",
     "lint": "biome check ./src",
     "lint:fix": "biome check --write ./src",
-    "lint:md": "markdownlint -f **/*.md",
-    "lint:rs": "cd src-tauri && cargo fmt --all && cargo clippy --fix --allow-dirty --allow-staged --all-targets --all-features --workspace -- -D warnings",
-    "format": "biome format --write ./src",
-    "type-check": "tsc --noEmit",
+    "lint:md": "markdownlint **/*.md",
+    "lint:md:fix": "markdownlint -f **/*.md",
+    "lint:rs": "cd src-tauri && cargo fmt --all --check && cargo clippy --all-targets --all-features --workspace -- -D warnings",
+    "lint:rs:fix": "cd src-tauri && cargo fmt --all && cargo clippy --fix --allow-dirty --allow-staged --all-targets --all-features --workspace -- -D warnings",
+    "fmt": "biome format --write ./src",
+    "fmt:rs": "cd src-tauri && cargo fmt --all",
+    "typecheck": "tsc --noEmit",
     "prepare": "husky",
     "preinstall": "npx only-allow pnpm",
     "cz": "cz"
@@ -79,7 +82,14 @@
   "lint-staged": {
     "*.{ts,tsx}": [
       "biome check --write",
-      "vitest related --run"
+      "vitest related --run",
+      "tsc --noEmit"
+    ],
+    "*.md": [
+      "markdownlint -f"
+    ],
+    "src-tauri/**/*.rs": [
+      "pnpm fmt:rs"
     ]
   },
   "config": {

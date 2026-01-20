@@ -22,20 +22,20 @@ Before building for distribution, ensure you have:
 cd ethereal
 
 # Install dependencies
-npm install
+pnpm install
 
 # Verify Tauri setup
-npm run tauri info
+pnpm tauri info
 ```
 
 #### 2. Build for Current Platform
 
 ```bash
 # Development build
-npm run tauri build
+pnpm tauri build
 
 # Production build with optimizations
-npm run tauri build -- --release
+pnpm tauri build -- --release
 ```
 
 #### 3. Build for Specific Platforms
@@ -65,8 +65,8 @@ The build process is configured in `src-tauri/tauri.conf.json`:
 ```json
 {
   "build": {
-    "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "npm run build",
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm build",
     "devUrl": "http://localhost:1420",
     "frontendDist": "../dist"
   },
@@ -149,7 +149,7 @@ set TAURI_SIGNING_PRIVATE_KEY=password
 set TAURI_SIGNING_PRIVATE_KEY_PATH=path/to/private.key
 
 # Build with signing
-npm run tauri build
+pnpm tauri build
 ```
 
 **macOS:**
@@ -162,7 +162,7 @@ export APPLE_ID="apple-id"
 export APPLE_PASSWORD="app-specific-password"
 
 # Build with signing
-npm run tauri build
+pnpm tauri build
 ```
 
 ## Distribution Channels

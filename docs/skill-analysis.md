@@ -16,7 +16,7 @@ We have successfully integrated specialized skills for the Ethereal project. The
 
 - **Status**: Active
 - **Details**: Added logic for testing Rust commands and system monitors.
-- **Command**: `pnpm test:rust`
+- **Command**: `pnpm test:rs`
 
 ### 3. Desktop E2E Testing
 
