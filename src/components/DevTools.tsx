@@ -1,5 +1,5 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useSpriteStore } from '../stores/spriteStore';
 
@@ -52,9 +52,7 @@ export const DevTools = () => {
         >
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
           <span className="text-[10px] font-mono text-white/60">DEV</span>
-          <span className="text-[10px] font-mono text-white/40 ml-auto">
-            {stats.fps} fps
-          </span>
+          <span className="text-[10px] font-mono text-white/40 ml-auto">{stats.fps} fps</span>
           <motion.span
             animate={{ rotate: isExpanded ? 180 : 0 }}
             className="text-[8px] text-white/30 ml-1"
@@ -94,7 +92,8 @@ export const DevTools = () => {
                   onClick={() => setIsOpen(true)}
                   className="w-full mt-2 px-3 py-1.5 rounded-lg text-[10px] font-medium text-white/80 transition-all hover:bg-white/10"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3))',
+                    background:
+                      'linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3))',
                     border: '1px solid rgba(139, 92, 246, 0.3)',
                   }}
                 >

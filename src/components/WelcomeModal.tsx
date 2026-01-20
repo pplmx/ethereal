@@ -34,7 +34,9 @@ export const WelcomeModal = () => {
         </div>
 
         <div className="p-8 text-center relative z-10">
-          <h2 className="text-xl font-bold mb-3 tracking-widest uppercase text-indigo-300">Awaken the Spirit</h2>
+          <h2 className="text-xl font-bold mb-3 tracking-widest uppercase text-indigo-300">
+            Awaken the Spirit
+          </h2>
           <p className="text-white/60 mb-8 leading-relaxed text-[13px] font-medium">
             I am your <strong className="text-white">Digital Soul</strong>. I'll flow with your
             system's rhythm and reside on your desktop.
@@ -42,19 +44,34 @@ export const WelcomeModal = () => {
 
           <div className="space-y-5 mb-10 text-left">
             {[
-              { id: 1, title: 'System Pulse', desc: 'I sense CPU, Memory, and Temperature to shift my mood.', color: 'bg-indigo-500/20 text-indigo-400' },
-              { id: 2, title: 'Deep Learning', desc: 'Copy code or errors, and I\'ll offer my ethereal wisdom.', color: 'bg-purple-500/20 text-purple-400' },
-              { id: 3, title: 'Vessel Shape', desc: 'Drag a folder of spirits to redefine my crystalline form.', color: 'bg-cyan-500/20 text-cyan-400' }
+              {
+                id: 1,
+                title: 'System Pulse',
+                desc: 'I sense CPU, Memory, and Temperature to shift my mood.',
+                color: 'bg-indigo-500/20 text-indigo-400',
+              },
+              {
+                id: 2,
+                title: 'Deep Learning',
+                desc: "Copy code or errors, and I'll offer my ethereal wisdom.",
+                color: 'bg-purple-500/20 text-purple-400',
+              },
+              {
+                id: 3,
+                title: 'Vessel Shape',
+                desc: 'Drag a folder of spirits to redefine my crystalline form.',
+                color: 'bg-cyan-500/20 text-cyan-400',
+              },
             ].map((item) => (
               <div key={item.id} className="flex items-start gap-4">
-                <div className={`w-8 h-8 rounded-xl ${item.color} flex-shrink-0 flex items-center justify-center font-bold text-xs border border-white/5`}>
+                <div
+                  className={`w-8 h-8 rounded-xl ${item.color} flex-shrink-0 flex items-center justify-center font-bold text-xs border border-white/5`}
+                >
                   {item.id}
                 </div>
                 <div>
                   <p className="text-sm font-bold text-white/90">{item.title}</p>
-                  <p className="text-[11px] text-white/40 leading-relaxed mt-0.5">
-                    {item.desc}
-                  </p>
+                  <p className="text-[11px] text-white/40 leading-relaxed mt-0.5">{item.desc}</p>
                 </div>
               </div>
             ))}

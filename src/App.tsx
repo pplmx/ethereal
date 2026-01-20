@@ -87,9 +87,11 @@ function App() {
           addToHistory('user', content);
 
           try {
-            const system_context = `Current State: ${state}, Mood: ${mood}, CPU: ${hw?.utilization
-              }%, Mem: ${hw?.memory_used}/${hw?.memory_total}MB, Net: ${hw?.network_rx
-              }KB/s down, Bat: ${hw?.battery_level}% (${hw?.battery_state})`;
+            const system_context = `Current State: ${state}, Mood: ${mood}, CPU: ${
+              hw?.utilization
+            }%, Mem: ${hw?.memory_used}/${hw?.memory_total}MB, Net: ${
+              hw?.network_rx
+            }KB/s down, Bat: ${hw?.battery_level}% (${hw?.battery_state})`;
 
             const response = await invoke<string>('chat_with_ethereal', {
               message: content,
@@ -177,9 +179,11 @@ function App() {
       setVisible(true);
       addToHistory('user', message);
       try {
-        const system_context = `Current State: ${spriteState}, Mood: ${spriteMood}, CPU: ${hardware?.utilization
-          }%, Mem: ${hardware?.memory_used}/${hardware?.memory_total}MB, Net: ${hardware?.network_rx
-          }KB/s down, Bat: ${hardware?.battery_level}% (${hardware?.battery_state})`;
+        const system_context = `Current State: ${spriteState}, Mood: ${spriteMood}, CPU: ${
+          hardware?.utilization
+        }%, Mem: ${hardware?.memory_used}/${hardware?.memory_total}MB, Net: ${
+          hardware?.network_rx
+        }KB/s down, Bat: ${hardware?.battery_level}% (${hardware?.battery_state})`;
 
         const response = await invoke<string>('chat_with_ethereal', {
           message: message,
@@ -217,12 +221,17 @@ function App() {
           transition={{ duration: 2 }}
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: `radial-gradient(circle at 50% 50%, ${spriteMood === 'excited' ? 'rgba(6, 182, 212, 0.15)' :
-              spriteMood === 'angry' ? 'rgba(244, 63, 94, 0.15)' :
-                spriteMood === 'happy' ? 'rgba(99, 102, 241, 0.15)' :
-                  spriteMood === 'tired' ? 'rgba(245, 158, 11, 0.1)' :
-                    'rgba(99, 102, 241, 0.1)'
-              }, transparent 70%)`
+            background: `radial-gradient(circle at 50% 50%, ${
+              spriteMood === 'excited'
+                ? 'rgba(6, 182, 212, 0.15)'
+                : spriteMood === 'angry'
+                  ? 'rgba(244, 63, 94, 0.15)'
+                  : spriteMood === 'happy'
+                    ? 'rgba(99, 102, 241, 0.15)'
+                    : spriteMood === 'tired'
+                      ? 'rgba(245, 158, 11, 0.1)'
+                      : 'rgba(99, 102, 241, 0.1)'
+            }, transparent 70%)`,
           }}
         />
       </AnimatePresence>

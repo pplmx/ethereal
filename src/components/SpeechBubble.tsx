@@ -10,11 +10,16 @@ export const SpeechBubble = () => {
 
   const getMoodColor = (m: string) => {
     switch (m) {
-      case 'excited': return 'rgba(6, 182, 212, 0.4)';
-      case 'angry': return 'rgba(244, 63, 94, 0.4)';
-      case 'happy': return 'rgba(99, 102, 241, 0.4)';
-      case 'tired': return 'rgba(245, 158, 11, 0.3)';
-      default: return 'rgba(99, 102, 241, 0.3)';
+      case 'excited':
+        return 'rgba(6, 182, 212, 0.4)';
+      case 'angry':
+        return 'rgba(244, 63, 94, 0.4)';
+      case 'happy':
+        return 'rgba(99, 102, 241, 0.4)';
+      case 'tired':
+        return 'rgba(245, 158, 11, 0.3)';
+      default:
+        return 'rgba(99, 102, 241, 0.3)';
     }
   };
 
@@ -54,13 +59,15 @@ export const SpeechBubble = () => {
           <div
             className="glass-effect rounded-2xl px-5 py-4 relative z-10 overflow-hidden"
             style={{
-              boxShadow: `0 8px 32px rgba(0, 0, 0, 0.4), 0 0 15px ${moodColor}`
+              boxShadow: `0 8px 32px rgba(0, 0, 0, 0.4), 0 0 15px ${moodColor}`,
             }}
           >
             {/* Top accent line */}
             <div
               className="absolute top-0 left-0 right-0 h-px"
-              style={{ background: `linear-gradient(90deg, transparent, ${moodColor}, transparent)` }}
+              style={{
+                background: `linear-gradient(90deg, transparent, ${moodColor}, transparent)`,
+              }}
             />
 
             {isThinking ? (
@@ -98,7 +105,7 @@ export const SpeechBubble = () => {
                 clipPath: 'polygon(0 0, 100% 0, 50% 100%)',
                 background: 'rgba(15, 23, 42, 0.7)',
                 backdropFilter: 'blur(16px)',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.12)'
+                borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
               }}
             />
           </div>

@@ -75,10 +75,7 @@ export const StateOverlay = () => {
           >
             {stateConfig.icon}
           </motion.span>
-          <span
-            className="text-xs font-medium tracking-wide"
-            style={{ color: stateConfig.color }}
-          >
+          <span className="text-xs font-medium tracking-wide" style={{ color: stateConfig.color }}>
             {state.replace('_', ' ').toUpperCase()}
           </span>
         </motion.div>
