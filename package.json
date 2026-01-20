@@ -30,6 +30,7 @@
     "lint:rs:fix": "cd src-tauri && cargo fmt --all && cargo clippy --fix --allow-dirty --allow-staged --all-targets --all-features --workspace -- -D warnings",
     "fmt": "biome format --write ./src",
     "fmt:rs": "cd src-tauri && cargo fmt --all",
+    "fmt:rs:staged": "tsx scripts/fmt-rs-staged.ts",
     "typecheck": "tsc --noEmit",
     "prepare": "husky",
     "preinstall": "npx only-allow pnpm",
@@ -87,7 +88,7 @@
       "markdownlint -f"
     ],
     "src-tauri/**/*.rs": [
-      "pnpm fmt:rs"
+      "pnpm fmt:rs:staged"
     ]
   },
   "config": {
