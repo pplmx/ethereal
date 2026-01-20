@@ -1,3 +1,4 @@
+import { HotkeyRecorder } from './HotkeyRecorder';
 import type { SettingsTabProps } from './types';
 
 export const HotkeysTab = ({ formData, setFormData }: SettingsTabProps) => {
@@ -8,41 +9,33 @@ export const HotkeysTab = ({ formData, setFormData }: SettingsTabProps) => {
           Global Shortcuts
         </h3>
         <div>
-          <label className="block text-sm font-medium mb-1">
-            Toggle Click-through
-            <input
-              type="text"
-              value={formData.hotkeys.toggle_click_through}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  hotkeys: {
-                    ...formData.hotkeys,
-                    toggle_click_through: e.target.value,
-                  },
-                })
-              }
-              className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
-              placeholder="Ctrl+Shift+E"
-            />
-          </label>
+          <div className="block text-sm font-medium mb-1">Toggle Click-through</div>
+          <HotkeyRecorder
+            value={formData.hotkeys.toggle_click_through}
+            onChange={(hotkey) =>
+              setFormData({
+                ...formData,
+                hotkeys: {
+                  ...formData.hotkeys,
+                  toggle_click_through: hotkey,
+                },
+              })
+            }
+            placeholder="Ctrl+Shift+E"
+          />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">
-            Quit Application
-            <input
-              type="text"
-              value={formData.hotkeys.quit}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  hotkeys: { ...formData.hotkeys, quit: e.target.value },
-                })
-              }
-              className="w-full bg-white/5 border-white/10 rounded-xl p-3 text-sm border focus:ring-2 focus:ring-indigo-500/50 outline-none text-white transition-all"
-              placeholder="Ctrl+Shift+Q"
-            />
-          </label>
+          <div className="block text-sm font-medium mb-1">Quit Application</div>
+          <HotkeyRecorder
+            value={formData.hotkeys.quit}
+            onChange={(hotkey) =>
+              setFormData({
+                ...formData,
+                hotkeys: { ...formData.hotkeys, quit: hotkey },
+              })
+            }
+            placeholder="Ctrl+Shift+Q"
+          />
         </div>
       </div>
 
