@@ -70,8 +70,25 @@ describe('Hotkey Settings Integration', () => {
 
     fireEvent.click(screen.getByText('hotkeys'));
 
-    const input = await screen.findByDisplayValue('Ctrl+Shift+E');
-    fireEvent.change(input, { target: { value: 'Ctrl+Alt+K' } });
+    // Find the recorder by its current value text, which is rendered in a span
+    const recorder = await screen.findByText('Ctrl+Shift+E');
+
+    // Click to start recording
+    fireEvent.click(recorder);
+
+    // Simulate pressing keys: Ctrl + Alt + K
+    // Note: HotkeyRecorder listens to window events
+    fireEvent.keyDown(window, { key: 'Control', ctrlKey: true });
+    fireEvent.keyDown(window, { key: 'Alt', altKey: true, ctrlKey: true });
+    fireEvent.keyDown(window, { key: 'k', ctrlKey: true, altKey: true });
+    fireEvent.keyUp(window, { key: 'k', ctrlKey: true, altKey: true });
+    fireEvent.keyUp(window, { key: 'Alt', ctrlKey: true });
+    fireEvent.keyUp(window, { key: 'Control' });
+
+    // Verify visual update (text matches uppercase format from recorder)
+    await waitFor(() => {
+      expect(screen.getByText('Ctrl+Alt+K')).toBeInTheDocument();
+    });
 
     fireEvent.click(screen.getByText('Sync Configuration'));
 
