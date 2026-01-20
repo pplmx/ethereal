@@ -78,10 +78,10 @@ export const StateOverlay = () => {
             className={`w-2 h-2 rounded-full bg-gradient-to-br ${stateConfig.gradient} shadow-[0_0_10px_${stateConfig.color}]`}
           />
           <span
-            className="text-[9px] font-black tracking-[0.25em] uppercase text-shimmer"
+            className="text-[8px] font-bold tracking-[0.3em] uppercase text-shimmer font-['Michroma']"
             style={{
               color: stateConfig.color,
-              textShadow: `0 0 12px ${stateConfig.color}60`,
+              textShadow: `0 0 15px ${stateConfig.color}80`,
               backgroundImage: `linear-gradient(90deg, ${stateConfig.color}88 0%, #fff 50%, ${stateConfig.color}88 100%)`
             }}
           >
@@ -120,8 +120,8 @@ export const StateOverlay = () => {
                 <div className="absolute top-0 left-0 right-0 h-[40%] bg-white/20 pointer-events-none rounded-full blur-[1px]" />
               </motion.div>
             </div>
-            <span className="text-[10px] text-white/60 tabular-nums font-medium min-w-[24px]">
-              {cpuPercent.toFixed(0)}%
+            <span className="text-[10px] text-white/70 tabular-nums font-bold min-w-[24px]">
+              {cpuPercent.toFixed(0)}<span className="text-[7px] opacity-50 ml-0.5">%</span>
             </span>
           </div>
 

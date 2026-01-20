@@ -203,15 +203,53 @@ function App() {
       onMouseDown={startDragging}
       onDoubleClick={handleDoubleClick}
     >
-      {/* Background Layers */}
-      <div className="absolute inset-0 mesh-gradient opacity-40 pointer-events-none" />
+      {/* Background Layers - Parallax Deep Space */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{ x: [-20, 20, -20], y: [-15, 15, -15] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="absolute -inset-20 mesh-layer-1 opacity-40 shadow-inner"
+        />
+        <motion.div
+          animate={{ x: [20, -20, 20], y: [15, -15, 15] }}
+          transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+          className="absolute -inset-20 mesh-layer-2 opacity-30"
+        />
+      </div>
+
       <div className="absolute inset-0 ambient-vignette pointer-events-none" />
-      <div className="absolute inset-0 scanlines opacity-[0.03] pointer-events-none" />
+      <div className="absolute inset-0 scanlines opacity-[0.04] pointer-events-none" />
+
+      {/* Spirit Dust / Particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(15)].map((_, i) => (
+          <motion.div
+            key={`dust-${i}`}
+            initial={{
+              x: Math.random() * 1000 % 800,
+              y: Math.random() * 800 % 600,
+              opacity: 0
+            }}
+            animate={{
+              y: [0, -100],
+              opacity: [0, 0.4, 0],
+              scale: [0, 1, 0]
+            }}
+            transition={{
+              duration: 5 + Math.random() * 5,
+              repeat: Infinity,
+              delay: Math.random() * 5
+            }}
+            className="absolute w-1 h-1 rounded-full bg-indigo-300 blur-[1px]"
+            style={{ left: `${(i * 7) % 100}%`, top: `${(i * 13) % 100}%` }}
+          />
+        ))}
+      </div>
 
       {/* Dynamic Streaks */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="ethereal-streak" style={{ top: '20%', animationDelay: '0s' }} />
-        <div className="ethereal-streak" style={{ top: '60%', animationDelay: '4s' }} />
+        <div className="ethereal-streak" style={{ top: '25%', animationDelay: '0s', height: '1px' }} />
+        <div className="ethereal-streak" style={{ top: '65%', animationDelay: '5s', height: '1px' }} />
       </div>
 
       <DevTools />
@@ -272,7 +310,7 @@ function App() {
 
           {getAnimationFrames().length === 0 && (
             <div className="absolute inset-0 glass-effect rounded-full animate-pulse flex items-center justify-center">
-              <span className="text-white/40 text-xs">No Sprites</span>
+              <span className="text-white/40 text-[10px] font-bold tracking-[0.2em] font-['Michroma']">INITIALIZING</span>
             </div>
           )}
         </motion.div>

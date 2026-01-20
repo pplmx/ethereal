@@ -135,7 +135,7 @@ export const SpeechBubble = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-white/90 text-[13px] font-medium leading-relaxed tracking-tight text-center">
+              <p className="text-white/95 text-[14px] font-light leading-relaxed tracking-wide text-center">
                 {displayedText}
                 {displayedText.length < (message?.length || 0) && (
                   <motion.span
