@@ -19,12 +19,12 @@ describe('AnimationPreview', () => {
   it('renders correctly', () => {
     render(<AnimationPreview />);
     expect(screen.getByTestId('sprite-animator')).toBeInTheDocument();
-    expect(screen.getByLabelText(/preview state/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/action/i)).toBeInTheDocument();
   });
 
   it('allows changing preview state', () => {
     render(<AnimationPreview />);
-    const select = screen.getByLabelText(/preview state/i);
+    const select = screen.getByLabelText(/action/i);
 
     fireEvent.change(select, { target: { value: 'working' } });
     expect(select).toHaveValue('working');
