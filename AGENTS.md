@@ -73,6 +73,7 @@ pnpm build        # 6. Production build
 | `docs` | Documentation only |
 | `style` | Formatting (no logic change) |
 | `build` | Build system or dependencies |
+| `ci` | CI/CD |
 
 **Examples:**
 
@@ -93,7 +94,7 @@ wip
 
 - Explain **WHAT** changed and **WHY**
 - Use bullet points for multiple changes
-- Max 72 chars for subject, 100 chars for body lines
+- Max 88 chars for subject, 120 chars for body lines
 
 ```text
 fix(monitor): handle GPU disconnect gracefully
