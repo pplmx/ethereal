@@ -8,6 +8,9 @@ use tauri::{AppHandle, Emitter, Manager};
 mod config_test;
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct ConfigState(pub std::sync::Arc<std::sync::RwLock<AppConfig>>);
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct AppConfig {
     pub general: GeneralConfig,
     pub window: WindowConfig,
@@ -396,7 +399,14 @@ pub fn watch_config(app: AppHandle) {
             match result {
                 Ok(_events) => {
                     if let Ok(new_config) = AppConfig::load(&app_handle) {
-                        tracing::info!("Config reloaded");
+                        tracing::info!("Config reloaded from disk");
+
+                        // Update shared state if it exists
+                        if let Some(state) = app_handle.try_state::<ConfigState>() {
+                            let mut w = state.0.write().unwrap();
+                            *w = new_config.clone();
+                        }
+
                         let _ = crate::utils::hotkeys::refresh_hotkeys(&app_handle);
                         app_handle.emit("config-updated", new_config).ok();
                     }

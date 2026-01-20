@@ -52,7 +52,7 @@ impl ClipboardMonitor {
                         // Ignore errors (empty clipboard, non-text content)
                     }
                 }
-                std::thread::sleep(Duration::from_millis(500));
+                std::thread::sleep(Duration::from_millis(1000));
             }
         });
     }

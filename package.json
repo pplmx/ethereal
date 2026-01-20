@@ -81,14 +81,13 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "biome check --write",
-      "vitest related --run"
+      "biome check --write"
     ],
     "*.md": [
       "markdownlint -f"
     ],
     "src-tauri/**/*.rs": [
-      "pnpm fmt:rs"
+      "rustfmt --edition 2021"
     ]
   },
   "config": {

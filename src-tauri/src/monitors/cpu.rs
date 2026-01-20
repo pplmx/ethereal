@@ -6,10 +6,14 @@ use sysinfo::{
     Components, CpuRefreshKind, MemoryRefreshKind, ProcessRefreshKind, RefreshKind, System,
 };
 
+use std::time::{Duration, Instant};
+
 pub struct CpuMonitor {
     sys: Arc<Mutex<System>>,
     net: NetworkMonitor,
     bat: Option<BatteryMonitor>,
+    last_disk_refresh: Mutex<Instant>,
+    last_disk_stats: Mutex<(u64, u64)>,
 }
 
 impl Default for CpuMonitor {
@@ -24,7 +28,7 @@ impl CpuMonitor {
             RefreshKind::new()
                 .with_cpu(CpuRefreshKind::everything())
                 .with_memory(MemoryRefreshKind::everything())
-                .with_processes(ProcessRefreshKind::everything().with_disk_usage()),
+                .with_processes(ProcessRefreshKind::new().with_disk_usage()),
         );
         sys.refresh_cpu_usage();
         sys.refresh_memory();
@@ -33,6 +37,8 @@ impl CpuMonitor {
             sys: Arc::new(Mutex::new(sys)),
             net: NetworkMonitor::new(),
             bat: BatteryMonitor::new().ok(),
+            last_disk_refresh: Mutex::new(Instant::now() - Duration::from_secs(60)),
+            last_disk_stats: Mutex::new((0, 0)),
         }
     }
 }
@@ -79,6 +85,14 @@ impl HardwareMonitor for CpuMonitor {
     }
 
     fn get_disk_usage(&self) -> (u64, u64) {
+        let now = Instant::now();
+        let mut last_refresh = self.last_disk_refresh.lock().unwrap();
+
+        // Only refresh process disk usage every 10 seconds to save CPU
+        if now.duration_since(*last_refresh) < Duration::from_secs(10) {
+            return *self.last_disk_stats.lock().unwrap();
+        }
+
         let mut sys = self.sys.lock().unwrap();
         sys.refresh_processes_specifics(
             sysinfo::ProcessesToUpdate::All,
@@ -95,7 +109,10 @@ impl HardwareMonitor for CpuMonitor {
             total_written += usage.written_bytes;
         }
 
-        (total_read / 1024, total_written / 1024)
+        let stats = (total_read / 1024, total_written / 1024);
+        *last_refresh = now;
+        *self.last_disk_stats.lock().unwrap() = stats;
+        stats
     }
 
     fn get_battery_status(&self) -> (f32, String) {

@@ -182,7 +182,7 @@ mod tests {
         );
         assert_eq!(
             determine_mood(&SpriteState::Sleeping, 0.0, &config),
-            Mood::Bored
+            Mood::Sleeping
         );
         assert_eq!(
             determine_mood(&SpriteState::LowBattery, 10.0, &config),

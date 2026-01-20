@@ -24,7 +24,7 @@ use crate::monitors::window::WindowMonitor;
 use crate::utils::notification::send_notification;
 use serde::Serialize;
 use std::time::{Duration, Instant};
-use tauri::{AppHandle, Emitter};
+use tauri::{AppHandle, Emitter, Manager};
 
 #[derive(Clone, Serialize)]
 struct GpuStats {
@@ -52,8 +52,17 @@ pub fn spawn_monitor_thread(app: AppHandle) {
         let mut last_low_battery_notif = Instant::now() - Duration::from_secs(300);
 
         loop {
+            let mut sleep_ms = 2000;
+
             if monitor.is_available() {
-                let config = AppConfig::load(&app).unwrap_or_default();
+                // Use cached config from state
+                let config = if let Some(state) = app.try_state::<crate::config::ConfigState>() {
+                    state.0.read().unwrap().clone()
+                } else {
+                    AppConfig::load(&app).unwrap_or_default()
+                };
+
+                sleep_ms = config.hardware.polling_interval_ms;
 
                 let (used, total) = monitor.get_memory_usage();
                 let (rx, tx) = monitor.get_network_usage();
@@ -69,6 +78,14 @@ pub fn spawn_monitor_thread(app: AppHandle) {
                 let state =
                     determine_state(monitor.as_ref(), rx, tx, read, write, category, &config);
                 let mood = determine_mood(&state, monitor.get_utilization(), &config);
+
+                // Adaptive polling based on state
+                match state {
+                    SpriteState::Sleeping => sleep_ms = 10000, // 10s when sleeping
+                    SpriteState::Idle => sleep_ms = 5000,      // 5s when idle
+                    SpriteState::LowBattery => sleep_ms = 5000, // 5s to save energy
+                    _ => {}
+                }
 
                 if config.notifications.enabled {
                     if state == SpriteState::Overheating
@@ -128,7 +145,7 @@ pub fn spawn_monitor_thread(app: AppHandle) {
                     tracing::error!("Failed to emit gpu-update: {}", e);
                 }
             }
-            std::thread::sleep(Duration::from_millis(2000));
+            std::thread::sleep(Duration::from_millis(sleep_ms));
         }
     });
 }

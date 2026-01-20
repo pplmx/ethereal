@@ -1,5 +1,5 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-use tauri::Emitter;
+use tauri::{Emitter, Manager};
 
 pub mod ai;
 pub mod config;
@@ -74,6 +74,13 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             utils::logger::init_logging(app.handle());
+
+            // Initialize config state
+            let config = config::AppConfig::load(app.handle()).unwrap_or_default();
+            let config_state =
+                config::ConfigState(std::sync::Arc::new(std::sync::RwLock::new(config)));
+            app.manage(config_state);
+
             config::watch_config(app.handle().clone());
             monitors::spawn_monitor_thread(app.handle().clone());
             monitors::clipboard::ClipboardMonitor::new().start_polling(app.handle().clone());
