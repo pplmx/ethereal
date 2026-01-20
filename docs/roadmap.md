@@ -1,244 +1,190 @@
-# Roadmap
+# ✨ Ethereal 开发路线图
 
-This document outlines the future direction and planned features for Desktop Ethereal.
+> 以太之灵 - 智能桌面精灵助手
 
-## Vision
+## 🎯 项目概述
 
-Desktop Ethereal aims to become the ultimate desktop companion that intelligently interacts with your computing environment while respecting your privacy and system resources.
+- **技术栈**: Tauri v2 + Rust + React 19 + TypeScript + Ollama
+- **核心特性**: 透明桌宠 + 硬件监控 + AI 交互
+- **当前版本**: 0.1.0
 
-## Current Status
+---
 
-**Version**: 0.1.0 (Initial Release)
-**Status**: Core functionality implemented. AI integration, system monitoring, and transparent window features are fully functional.
+## 📊 当前状态
 
-## Short-term Goals (Next 3 Months)
+### ✅ 已完成功能
 
-### UI/UX Improvements
+#### 核心功能
 
-- [x] Configuration panel for customizing behavior
-- [x] Settings persistence between sessions
-- [x] Improved status indicators and notifications
-- [x] Animation preview functionality
-- [x] User-friendly setup wizard
+- [x] 透明窗口 + 鼠标穿透 + 全局热键
+- [x] CPU/内存/网络/磁盘监控
+- [x] NVIDIA GPU 温度与负载监控
+- [x] 电池状态检测
+- [x] 活跃窗口识别与分类
 
-### Enhanced System Monitoring
+#### AI 智能
 
-- [x] CPU utilization tracking
-- [x] Network activity monitoring
-- [x] Disk I/O monitoring
-- [x] Battery status for laptops
-- [x] Memory pressure detection
+- [x] Ollama 集成与对话
+- [x] 剪贴板代码/错误检测
+- [x] 上下文感知响应
+- [x] 心情系统影响动画与回复
 
-### Ethereal Intelligence
+#### 用户体验
 
-- [x] Context-aware responses based on system state
-- [x] Mood system influencing animations and responses
-- [ ] Learning capabilities for user preferences
-- [ ] Scheduled behaviors (sleep mode at night, etc.)
+- [x] 设置面板与配置持久化
+- [x] 首次启动引导向导
+- [x] 系统托盘菜单
+- [x] 多显示器支持
+- [x] 音效集成
 
-### Technical Improvements
+#### 技术基础
 
-- [x] Comprehensive test suite
-- [ ] Performance profiling and optimization
-- [x] Better error handling and recovery
-- [x] Logging and diagnostics improvements
+- [x] 完整测试套件 (Vitest + Cargo Test)
+- [x] 日志与诊断系统
+- [x] 错误边界与崩溃恢复
+- [x] CI/CD 流水线
 
-## Medium-term Goals (3-6 Months)
+---
 
-### Advanced Features
+## 🚀 短期目标 (1-2 月)
 
-- [x] Sound effect integration with animations
-- [x] Multi-monitor support with positioning options
-- [ ] User-defined hotkeys and gestures
-- [ ] Animation editor for creating custom sprites
-- [ ] Custom personality prompts and character creation
+### 智能增强
 
-### Platform Expansion
+- [ ] 用户偏好学习能力
+- [ ] 计划行为 (夜间休眠模式)
+- [ ] 时间感知问候语
 
-- [ ] Enhanced macOS compatibility
-- [ ] Linux distribution support
-- [ ] Unified configuration interface
-- [ ] Platform-specific optimizations
+### 性能优化
 
-### Integration Capabilities
+- [ ] 性能分析与关键路径优化
+- [ ] 内存占用优化 (目标 < 80MB)
+- [ ] 空闲状态 CPU < 1%
 
-- [ ] Plugin system for extending functionality
-- [ ] API for third-party integrations
-- [ ] Widget system for embedding in other applications
-- [ ] Companion mobile app for remote monitoring
+### 用户体验
 
-### Community Features
+- [ ] 自定义热键配置界面
+- [ ] 动画预览增强
+- [ ] 更丰富的心情表达
 
-- [ ] Sprite marketplace for sharing animations
-- [ ] Personality pack sharing
-- [ ] Community challenge system
-- [ ] Leaderboards for achievements
+---
 
-## Long-term Goals (6-12 Months)
+## 🌟 中期目标 (3-6 月)
 
-### AI Enhancement
+### 高级功能
 
-- [ ] Advanced natural language processing
-- [ ] Predictive behavior based on usage patterns
-- [ ] Voice interaction capabilities
-- [ ] Emotional recognition from user interactions
+- [ ] 自定义动画编辑器
+- [ ] 自定义人设提示词
+- [ ] 插件系统架构
 
-### Ecosystem Development
+### 平台扩展
 
-- [ ] Family of ethereal characters with different abilities
-- [ ] Interactive storylines and quests
-- [ ] Social features for connecting with other users
-- [ ] Virtual pet progression system
+- [ ] macOS 完整支持
+- [ ] Linux 发行版支持
+- [ ] AMD GPU 监控
 
-### Hardware Integration
+### 社区生态
 
-- [ ] RGB lighting synchronization
-- [ ] Haptic feedback devices
-- [ ] AR/VR integration possibilities
-- [ ] IoT device control capabilities
+- [ ] 精灵皮肤市场
+- [ ] 人设包分享
+- [ ] 社区挑战系统
 
-## Potential Features (Future Consideration)
+---
 
-### Gaming Integration
+## 🔮 长期愿景 (6-12 月)
 
-- [ ] Game-specific behaviors and animations
-- [ ] Achievement celebration animations
-- [ ] Streamer mode for content creators
-- [ ] Tournament mode with competitive features
+### AI 进化
 
-### Productivity Enhancement
+- [ ] 高级自然语言处理
+- [ ] 基于使用模式的预测行为
+- [ ] 语音交互能力
 
-- [ ] Focus mode with distraction blocking
-- [ ] Pomodoro technique integration
-- [ ] Task reminder system
-- [ ] Calendar integration
+### 生态系统
 
-### Accessibility Features
+- [ ] 精灵家族 (不同能力的角色)
+- [ ] 互动故事线与任务
+- [ ] 虚拟宠物成长系统
 
-- [ ] Visual impairment assistance
-- [ ] Hearing impairment support
-- [ ] Motor difficulty accommodations
-- [ ] Cognitive support tools
+### 硬件集成
 
-## Technical Debt and Refactoring
+- [ ] RGB 灯光同步
+- [ ] IoT 设备控制
+- [ ] AR/VR 可能性探索
 
-### Architecture Improvements
+---
 
-- [ ] Modular plugin architecture
-- [ ] Better separation of concerns
-- [ ] Improved state management
-- [ ] Enhanced error boundaries
+## 🎮 潜在功能
 
-### Performance Optimization
+### 游戏集成
 
-- [ ] Memory usage reduction
-- [ ] CPU optimization for background tasks
-- [ ] Battery life improvements on portable devices
-- [ ] Startup time reduction
+- [ ] 游戏特定行为与动画
+- [ ] 成就庆祝动画
+- [ ] 主播模式
 
-### Code Quality
+### 生产力增强
 
-- [ ] Comprehensive test coverage
-- [ ] Documentation improvements
-- [ ] Code review process formalization
-- [ ] Static analysis tool integration
+- [ ] 专注模式 (干扰屏蔽)
+- [ ] 番茄钟集成
+- [ ] 日历集成
 
-## Release Schedule
+### 无障碍
 
-### Version 0.2.0 (Planned: March 2026)
+- [ ] 视觉辅助
+- [ ] 听觉辅助
+- [ ] 认知支持工具
 
-- Configuration panel
-- CPU monitoring
-- Basic settings persistence
-- Improved error handling
+---
 
-### Version 0.3.0 (Planned: June 2026)
+## 📅 版本规划
 
-- Sound effect integration
-- Multi-monitor support
-- Custom hotkeys
-- Animation editor beta
+| 版本 | 计划时间 | 主要内容 |
+| :--- | :--- | :--- |
+| 0.2.0 | 2026 年 3 月 | 休眠模式、性能优化、热键配置 |
+| 0.3.0 | 2026 年 6 月 | 动画编辑器、多平台支持 |
+| 1.0.0 | 2026 年 9 月 | 功能稳定、完整文档、跨平台 |
 
-### Version 1.0.0 (Planned: September 2026)
+---
 
-- Full feature set stabilization
-- Comprehensive documentation
-- Performance optimization
-- Cross-platform support
+## 🚨 风险管理
 
-## Community and Ecosystem
+| 风险 | 缓解策略 |
+| :--- | :--- |
+| NVML 兼容性 | 实现 CPU 降级方案 |
+| Ollama 稳定性 | 健康检查与超时控制 |
+| 窗口穿透冲突 | 提供白名单机制 |
+| 多平台差异 | 持续测试与平台特定优化 |
 
-### Contributor Growth
+---
 
-- [ ] Mentorship program for new contributors
-- [ ] Regular contributor meetings
-- [ ] Recognition system for contributions
-- [ ] Educational resources for learning the codebase
+## 🎯 成功标准
 
-### User Engagement
+**MVP 完成** ✅
 
-- [ ] Beta testing program
-- [ ] User feedback collection system
-- [ ] Regular community updates
-- [ ] User showcase for creative uses
+- 透明窗口正常显示
+- 硬件状态检测
+- 基础 AI 对话
 
-### Partnerships
+**v1.0 目标**
 
-- [ ] Collaboration with hardware manufacturers
-- [ ] Integration with popular productivity tools
-- [ ] Partnership with educational institutions
-- [ ] Sponsorship opportunities for open source sustainability
+- 所有核心功能完成
+- 48 小时稳定性测试通过
+- 安装包可在多配置电脑运行
 
-## Metrics for Success
+**优秀产品**
 
-### User Adoption
+- 用户留存率 > 60%
+- 社区反馈积极
+- 插件生态初具规模
 
-- Active user growth
-- Retention rates
-- User satisfaction scores
-- Feature usage analytics
+---
 
-### Technical Excellence
+## 💬 反馈与贡献
 
-- Performance benchmarks
-- Stability metrics
-- Security audit results
-- Code quality scores
+欢迎通过以下方式参与：
 
-### Community Health
+- 提交 [Issue](https://github.com/pplmx/ethereal/issues) 报告问题
+- 参与 [Discussion](https://github.com/pplmx/ethereal/discussions) 讨论功能
+- 提交 Pull Request 贡献代码
 
-- Contributor diversity
-- Issue resolution time
-- Community engagement levels
-- Documentation quality ratings
+---
 
-## Risks and Mitigation
-
-### Technical Risks
-
-- **Platform compatibility issues**: Continuous testing on multiple platforms
-- **Performance degradation**: Regular profiling and optimization
-- **Security vulnerabilities**: Regular security audits and updates
-
-### Market Risks
-
-- **User adoption challenges**: User research and feedback incorporation
-- **Competition**: Focus on unique features and user experience
-- **Changing technology landscape**: Stay current with platform updates
-
-### Resource Risks
-
-- **Maintainer burnout**: Community building and delegation
-- **Financial sustainability**: Explore sponsorship and monetization options
-- **Time constraints**: Prioritize features based on impact and feasibility
-
-## Feedback and Suggestions
-
-We welcome feedback on this roadmap! Please:
-
-1. Open issues with suggestions
-2. Participate in community discussions
-3. Contribute to feature development
-4. Share your use cases and needs
-
-This roadmap is living document that will evolve based on user feedback, technological advances, and project priorities. Check back regularly for updates!
+*祝开发顺利！先让它跑起来，再让它跑得快，最后让它跑得美！ 🚀*
