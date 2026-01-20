@@ -24,7 +24,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm lint:md
-      - run: pnpm type-check
+      - run: pnpm typecheck
       - run: pnpm test:run
 
   backend:
@@ -54,7 +54,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint:rs
-      - run: pnpm test:rust
+      - run: pnpm test:rs
 
   build:
     name: Build & Release
