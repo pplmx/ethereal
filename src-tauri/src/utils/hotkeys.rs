@@ -1,6 +1,6 @@
 use crate::config::AppConfig;
 use std::str::FromStr;
-use tauri::{AppHandle, Emitter};
+use tauri::{AppHandle, Emitter, Manager};
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutEvent, ShortcutState};
 
 pub fn setup_global_hotkeys(app: &AppHandle) -> anyhow::Result<()> {
@@ -15,11 +15,11 @@ pub fn refresh_hotkeys(app: &AppHandle) -> anyhow::Result<()> {
     let register = |key: &str, name: &str| match Shortcut::from_str(key) {
         Ok(shortcut) => {
             if let Err(e) = app.global_shortcut().register(shortcut) {
-                eprintln!("Failed to register {} hotkey '{}': {}", name, key, e);
+                tracing::error!("Failed to register {} hotkey '{}': {}", name, key, e);
             }
         }
         Err(e) => {
-            eprintln!("Failed to parse {} hotkey '{}': {}", name, key, e);
+            tracing::error!("Failed to parse {} hotkey '{}': {}", name, key, e);
         }
     };
 
@@ -30,7 +30,11 @@ pub fn refresh_hotkeys(app: &AppHandle) -> anyhow::Result<()> {
 }
 
 pub fn handle_global_shortcut(app: &AppHandle, shortcut: &Shortcut, event: ShortcutEvent) {
-    let config = AppConfig::load(app).unwrap_or_default();
+    let config = if let Some(state) = app.try_state::<crate::config::ConfigState>() {
+        state.0.read().unwrap().clone()
+    } else {
+        AppConfig::load(app).unwrap_or_default()
+    };
 
     let toggle_click_through = Shortcut::from_str(&config.hotkeys.toggle_click_through).ok();
     let quit_shortcut = Shortcut::from_str(&config.hotkeys.quit).ok();

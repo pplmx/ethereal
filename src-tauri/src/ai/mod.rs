@@ -31,10 +31,11 @@ pub struct OllamaClient {
 
 impl OllamaClient {
     pub fn new(config: AiConfig) -> Self {
-        Self {
-            client: Client::new(),
-            config,
-        }
+        let client = Client::builder()
+            .timeout(std::time::Duration::from_secs(30))
+            .build()
+            .unwrap_or_else(|_| Client::new());
+        Self { client, config }
     }
 
     fn get_mood_modifier(mood_str: &str) -> &'static str {
@@ -45,6 +46,8 @@ impl OllamaClient {
             "Bored" => "You are uninterested and slightly cynical.",
             "Angry" => "You are irritable and short-tempered.",
             "Sad" => "You are melancholic and soft-spoken.",
+            "Curious" => "You are inquisitive and eager to learn. Ask follow-up questions.",
+            "Sleeping" => "You are drowsy and barely awake. Use very short, mumbled responses.",
             _ => "",
         }
     }
