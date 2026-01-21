@@ -92,6 +92,12 @@ export const SpriteAnimator = memo(
             shadow: 'shadow-blue-500/40',
             intensity: 0.8,
           };
+        case 'curious':
+          return {
+            color: 'from-amber-400 via-yellow-400 to-lime-400',
+            shadow: 'shadow-amber-500/40',
+            intensity: 1.1,
+          };
         case 'tired':
           return {
             color: 'from-amber-500 via-orange-400 to-yellow-400',
@@ -237,6 +243,58 @@ export const SpriteAnimator = memo(
             </motion.div>
           ))}
 
+        {/* Teardrop particles for sad mood */}
+        {mood === 'sad' &&
+          [...Array(3)].map((_, i) => (
+            <motion.div
+              key={`tear-${i}`}
+              className="absolute w-2 h-3 bg-gradient-to-b from-blue-300 to-blue-500 rounded-full"
+              style={{
+                left: `${35 + i * 15}%`,
+                top: '40%',
+              }}
+              animate={{
+                y: [0, 60],
+                opacity: [0.8, 0],
+                scale: [1, 0.5],
+              }}
+              transition={{
+                duration: 1.5 + i * 0.3,
+                repeat: Infinity,
+                delay: i * 0.5,
+                ease: 'easeIn',
+              }}
+            />
+          ))}
+
+        {/* Question mark particles for curious mood */}
+        {mood === 'curious' &&
+          [...Array(4)].map((_, i) => (
+            <motion.div
+              key={`question-${i}`}
+              className="absolute text-amber-400/70 font-bold select-none pointer-events-none"
+              style={{
+                left: `${25 + i * 15}%`,
+                top: `${50 + (i % 2) * 10}%`,
+                fontSize: `${12 + i * 2}px`,
+              }}
+              animate={{
+                y: [-5, -35],
+                x: [(i % 2 === 0 ? -1 : 1) * 10, (i % 2 === 0 ? 1 : -1) * 10],
+                opacity: [0, 0.9, 0],
+                rotate: [0, i % 2 === 0 ? 15 : -15],
+              }}
+              transition={{
+                duration: 2 + i * 0.4,
+                repeat: Infinity,
+                delay: i * 0.4,
+                ease: 'easeOut',
+              }}
+            >
+              ?
+            </motion.div>
+          ))}
+
         {/* Sprite with floating animation */}
         <div className="relative z-10 animate-spirit-float w-full h-full flex items-center justify-center">
           {!ready ? (
@@ -261,6 +319,7 @@ export const SpriteAnimator = memo(
                 mood === 'excited' && 'glow-excited',
                 mood === 'angry' && 'glow-angry',
                 mood === 'sad' && 'glow-sad',
+                mood === 'curious' && 'glow-curious',
                 mood === 'tired' && 'glow-tired',
                 mood === 'happy' && 'glow-happy',
                 mood === 'sleeping' && 'glow-sleeping',

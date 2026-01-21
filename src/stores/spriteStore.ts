@@ -28,7 +28,15 @@ export interface HardwareData {
   mood: string;
 }
 
-export type MoodState = 'happy' | 'excited' | 'tired' | 'bored' | 'angry' | 'sleeping';
+export type MoodState =
+  | 'happy'
+  | 'excited'
+  | 'tired'
+  | 'bored'
+  | 'angry'
+  | 'sad'
+  | 'curious'
+  | 'sleeping';
 
 interface SpriteConfig {
   [key: string]: {
@@ -99,6 +107,10 @@ const mapBackendMoodToFrontend = (backendMood: string): MoodState => {
       return 'bored';
     case 'Angry':
       return 'angry';
+    case 'Sad':
+      return 'sad';
+    case 'Curious':
+      return 'curious';
     case 'Sleeping':
       return 'sleeping';
     default:
@@ -178,6 +190,10 @@ export const useSpriteStore = create<SpriteStore>()(
               return baseFps * 0.5;
             case 'angry':
               return baseFps * 2.0;
+            case 'sad':
+              return baseFps * 0.6;
+            case 'curious':
+              return baseFps * 1.2;
             case 'sleeping':
               return baseFps * 0.4;
             default:
