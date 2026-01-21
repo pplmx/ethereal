@@ -247,7 +247,8 @@ function App() {
 
   return (
     <main
-      className="w-screen h-screen overflow-hidden bg-[#050508] select-none relative"
+      className="w-screen h-screen overflow-hidden bg-transparent select-none relative"
+      data-tauri-drag-region
       onMouseDown={startDragging}
       onDoubleClick={handleDoubleClick}
       onMouseMove={handleMouseMove}

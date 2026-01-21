@@ -13,10 +13,11 @@
     "windows": [
       {
         "title": "ethereal",
-        "width": 300,
-        "height": 400,
+        "width": 500,
+        "height": 700,
         "decorations": false,
         "transparent": true,
+        "shadow": false,
         "alwaysOnTop": true,
         "resizable": false,
         "skipTaskbar": true

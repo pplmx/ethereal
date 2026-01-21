@@ -41,7 +41,7 @@ describe('WelcomeModal', () => {
     render(<WelcomeModal />);
 
     // The button is the one with the uppercase class or we can find by role
-    const button = screen.getByRole('button', { name: /Awaken the Spirit/i });
+    const button = screen.getByRole('button', { name: /Begin Journey/i });
     fireEvent.click(button);
 
     expect(updateConfigMock).toHaveBeenCalledWith(

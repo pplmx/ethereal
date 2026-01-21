@@ -9,11 +9,17 @@
   --spirit-emerald: #10b981;
 }
 
+html,
 body {
   margin: 0;
   padding: 0;
   background-color: transparent !important;
   overflow: hidden;
+  border: none;
+  outline: none;
+}
+
+body {
   font-family: "Outfit", system-ui, -apple-system, sans-serif;
   letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
