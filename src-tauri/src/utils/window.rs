@@ -12,6 +12,7 @@ use windows::Win32::UI::WindowsAndMessaging::{
 use tauri::menu::{Menu, MenuItem};
 
 #[tauri::command]
+#[cfg_attr(not(target_os = "windows"), allow(unused_variables))]
 pub fn set_click_through<R: Runtime>(window: Window<R>, enabled: bool) -> Result<(), String> {
     #[cfg(target_os = "windows")]
     {
