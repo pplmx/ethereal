@@ -25,6 +25,8 @@ pub struct AppConfig {
     pub battery: BatteryConfig,
     pub autostart: AutostartConfig,
     pub privacy: PrivacyConfig,
+    #[serde(default)]
+    pub learning: LearningConfig,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -129,6 +131,33 @@ fn default_boredom_threshold() -> f32 {
     5.0
 }
 
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct LearningConfig {
+    #[serde(default = "default_learning_enabled")]
+    pub enabled: bool,
+    #[serde(default)]
+    pub interaction_count: u64,
+    #[serde(default)]
+    pub top_apps: std::collections::HashMap<String, u64>,
+    #[serde(default)]
+    pub preferred_languages: std::collections::HashMap<String, u64>,
+}
+
+fn default_learning_enabled() -> bool {
+    true
+}
+
+impl Default for LearningConfig {
+    fn default() -> Self {
+        Self {
+            enabled: default_learning_enabled(),
+            interaction_count: 0,
+            top_apps: std::collections::HashMap::new(),
+            preferred_languages: std::collections::HashMap::new(),
+        }
+    }
+}
+
 impl Default for AppConfig {
     fn default() -> Self {
         Self {
@@ -187,6 +216,7 @@ impl Default for AppConfig {
             privacy: PrivacyConfig {
                 share_window_title: default_false(),
             },
+            learning: LearningConfig::default(),
         }
     }
 }

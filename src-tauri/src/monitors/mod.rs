@@ -2,6 +2,7 @@ pub mod battery;
 pub mod clipboard;
 pub mod cpu;
 pub mod factory;
+pub mod learning;
 pub mod mock;
 pub mod network;
 pub mod state;
@@ -136,10 +137,20 @@ pub fn spawn_monitor_thread(app: AppHandle) {
                     disk_write: write,
                     battery_level: bat_lvl,
                     battery_state: bat_state,
-                    active_window: window_title,
+                    active_window: window_title.clone(),
                     state: format!("{:?}", state),
                     mood: format!("{:?}", mood),
                 };
+
+                // Track app usage (learning)
+                if let Some(learning) =
+                    app.try_state::<crate::monitors::learning::LearningMonitor>()
+                {
+                    // Only track if we have a valid category
+                    if category != crate::monitors::window::AppCategory::Unknown {
+                        learning.track_app_usage(&window_title.clone(), category);
+                    }
+                }
 
                 if let Err(e) = app.emit("gpu-update", stats) {
                     tracing::error!("Failed to emit gpu-update: {}", e);

@@ -18,12 +18,51 @@ async fn chat_with_ethereal(
 
     let config = AppConfig::load(&app).unwrap_or_default();
 
+    // Track interaction
+    if let Some(learning) = app.try_state::<crate::monitors::learning::LearningMonitor>() {
+        learning.track_interaction();
+    }
+
     let client = crate::ai::OllamaClient::new(config.ai);
 
     let mut full_history = history;
 
+    // Inject learned preferences into context
+    let mut learning_context = String::new();
+    if config.learning.enabled {
+        let top_apps: Vec<_> = config.learning.top_apps.iter().collect();
+        // Sort by usage count descending
+        let mut sorted_apps = top_apps;
+        sorted_apps.sort_by(|a, b| b.1.cmp(a.1));
+
+        let top_3_apps: Vec<String> = sorted_apps
+            .iter()
+            .take(3)
+            .map(|(k, _)| k.to_string())
+            .collect();
+
+        if !top_3_apps.is_empty() {
+            learning_context.push_str(&format!("User's Top Apps: {}. ", top_3_apps.join(", ")));
+        }
+        if config.learning.interaction_count > 100 {
+            learning_context.push_str("User is a frequent chatter. ");
+        }
+    }
+
     let user_content = if let Some(ctx) = system_context {
-        format!("System Context: {}\n\nUser Message: {}", ctx, message)
+        if !learning_context.is_empty() {
+            format!(
+                "System Context: {}\nLearned Context: {}\n\nUser Message: {}",
+                ctx, learning_context, message
+            )
+        } else {
+            format!("System Context: {}\n\nUser Message: {}", ctx, message)
+        }
+    } else if !learning_context.is_empty() {
+        format!(
+            "Learned Context: {}\n\nUser Message: {}",
+            learning_context, message
+        )
     } else {
         message
     };
@@ -82,6 +121,11 @@ pub fn run() {
             app.manage(config_state);
 
             config::watch_config(app.handle().clone());
+
+            // Initialize monitors
+            let learning_monitor = monitors::learning::LearningMonitor::new(app.handle().clone());
+            app.manage(learning_monitor);
+
             monitors::spawn_monitor_thread(app.handle().clone());
             monitors::clipboard::ClipboardMonitor::new().start_polling(app.handle().clone());
             utils::hotkeys::setup_global_hotkeys(app.handle())?;

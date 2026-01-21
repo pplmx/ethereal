@@ -1,6 +1,6 @@
 use active_win_pos_rs::get_active_window;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum AppCategory {
     Coding,
     Gaming,
